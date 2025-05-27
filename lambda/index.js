@@ -55,6 +55,33 @@ async function main() {
   }
   await page.waitForNavigation();
 
+  // 投稿ボタンを探してクリック
+  console.log('投稿ボタンを探します...');
+  const postButtons = await page.$$('button[aria-label="投稿"]');
+  let clicked = false;
+  for (const btn of postButtons) {
+    // 画面上に表示されているか確認
+    const isVisible = await btn.isIntersectingViewport();
+    if (isVisible) {
+      console.log('表示されている投稿ボタンをクリックします。');
+      await btn.click();
+      clicked = true;
+      break;
+    }
+  }
+  if (!clicked) {
+    const html = await page.content();
+    console.error('表示されている投稿ボタンが見つかりませんでした。HTMLの一部:', html.slice(0, 1000));
+    throw new Error('表示されている投稿ボタンが見つかりませんでした');
+  }
+
+  // 「テキスト」メニューをクリック
+  console.log('テキストメニューを探します...');
+  await page.waitForSelector('a[href="/notes/new"]');
+  await page.click('a[href="/notes/new"]');
+  await page.waitForNavigation();
+  console.log('新規投稿画面に遷移しました');
+
   // 新規投稿ページへ
   await page.goto('https://note.com/notes/new', { waitUntil: 'networkidle2' });
 
