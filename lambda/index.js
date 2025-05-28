@@ -60,7 +60,7 @@ async function main() {
   if (closePopupBtn) {
     console.log('ユーザーポップアップを閉じます');
     await closePopupBtn.click();
-    await page.waitForTimeout(500);
+    await new Promise(resolve => setTimeout(resolve, 500));
   }
 
   // 投稿ボタンを探してクリック
@@ -147,6 +147,40 @@ async function main() {
   if (!draftSaved) {
     throw new Error('「下書き保存」ボタンが見つかりませんでした');
   }
+
+  // 「閉じる」ボタン（1回目）をクリック
+  console.log('「閉じる」ボタン（1回目）を探します...');
+  await page.waitForSelector('button');
+  const closeButtons1 = await page.$$('button');
+  let closed1 = false;
+  for (const btn of closeButtons1) {
+    const text = await (await btn.getProperty('innerText')).jsonValue();
+    if (text && text.trim() === '閉じる') {
+      await btn.click();
+      closed1 = true;
+      console.log('「閉じる」ボタン（1回目）をクリックしました');
+      break;
+    }
+  }
+  if (!closed1) throw new Error('「閉じる」ボタン（1回目）が見つかりませんでした');
+  await new Promise(resolve => setTimeout(resolve, 500));
+
+  // 「閉じる」ボタン（2回目/モーダル内）をクリック
+  console.log('「閉じる」ボタン（2回目/モーダル内）を探します...');
+  await page.waitForSelector('.ReactModal__Content button');
+  const closeButtons2 = await page.$$('.ReactModal__Content button');
+  let closed2 = false;
+  for (const btn of closeButtons2) {
+    const text = await (await btn.getProperty('innerText')).jsonValue();
+    if (text && text.trim() === '閉じる') {
+      await btn.click();
+      closed2 = true;
+      console.log('「閉じる」ボタン（2回目/モーダル内）をクリックしました');
+      break;
+    }
+  }
+  if (!closed2) throw new Error('「閉じる」ボタン（2回目/モーダル内）が見つかりませんでした');
+  await new Promise(resolve => setTimeout(resolve, 500));
 
   // await browser.close(); // ブラウザは自動で閉じない
 
