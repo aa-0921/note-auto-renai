@@ -130,22 +130,22 @@ async function main() {
   await page.screenshot({ path: 'after_input.png', fullPage: true });
   console.log('スクリーンショットを保存しました: after_input.png');
 
-  // 「公開に進む」ボタンを探してクリック
-  console.log('「公開に進む」ボタンを探します...');
+  // 「下書き保存」ボタンを探してクリック
+  console.log('「下書き保存」ボタンを探します...');
   await page.waitForSelector('button');
-  const publishButtons = await page.$$('button');
-  let published = false;
-  for (const btn of publishButtons) {
+  const draftButtons = await page.$$('button');
+  let draftSaved = false;
+  for (const btn of draftButtons) {
     const text = await (await btn.getProperty('innerText')).jsonValue();
-    if (text && text.trim().includes('公開に進む')) {
+    if (text && text.trim().includes('下書き保存')) {
       await btn.click();
-      published = true;
-      console.log('「公開に進む」ボタンをクリックしました');
+      draftSaved = true;
+      console.log('「下書き保存」ボタンをクリックしました');
       break;
     }
   }
-  if (!published) {
-    throw new Error('「公開に進む」ボタンが見つかりませんでした');
+  if (!draftSaved) {
+    throw new Error('「下書き保存」ボタンが見つかりませんでした');
   }
 
   // await browser.close(); // ブラウザは自動で閉じない
