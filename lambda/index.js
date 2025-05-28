@@ -94,10 +94,11 @@ async function main() {
   // 記事データの読み込み
   const fs = require('fs');
   const path = require('path');
-  const articlePath = path.join(__dirname, '../posts/8__2025-05-25-大失恋したら自分のことを好きになれた話前編.md');
+  const articlePath = path.join(__dirname, '../posts/8__2025-05-25-大失恋から自分を好きになるまでのリアルストーリー＜前編＞.md');
   const articleRaw = fs.readFileSync(articlePath, 'utf-8');
-  // タイトルはファイル名から抽出
-  const articleTitle = '大失恋したら自分のことを好きになれた話＜前編＞';
+  // タイトルはファイル先頭の# ...行から抽出
+  const titleMatch = articleRaw.match(/^#\s*(.+)$/m);
+  const articleTitle = titleMatch ? titleMatch[1].trim() : 'タイトル未取得';
   // 本文はファイル内容全体
   const articleBody = articleRaw;
 
@@ -128,6 +129,24 @@ async function main() {
   // スクリーンショットを保存
   await page.screenshot({ path: 'after_input.png', fullPage: true });
   console.log('スクリーンショットを保存しました: after_input.png');
+
+  // 「公開に進む」ボタンを探してクリック
+  console.log('「公開に進む」ボタンを探します...');
+  await page.waitForSelector('button');
+  const publishButtons = await page.$$('button');
+  let published = false;
+  for (const btn of publishButtons) {
+    const text = await (await btn.getProperty('innerText')).jsonValue();
+    if (text && text.trim().includes('公開に進む')) {
+      await btn.click();
+      published = true;
+      console.log('「公開に進む」ボタンをクリックしました');
+      break;
+    }
+  }
+  if (!published) {
+    throw new Error('「公開に進む」ボタンが見つかりませんでした');
+  }
 
   // await browser.close(); // ブラウザは自動で閉じない
 
