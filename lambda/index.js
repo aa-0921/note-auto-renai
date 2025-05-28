@@ -263,7 +263,17 @@ async function main() {
         await page.goto('https://note.com/', { waitUntil: 'networkidle2' });
         console.log('記事処理開始: ' + filePath);
         const articlePath = path.join(__dirname, '../', filePath);
-        const { title, body } = getArticleData(articlePath);
+        let title, body;
+        try {
+          ({ title, body } = getArticleData(articlePath));
+        } catch (e) {
+          if (e.code === 'ENOENT') {
+            console.log(`記事ファイルが見つかりません: ${articlePath}`);
+            continue; // 次の記事へ
+          } else {
+            throw e;
+          }
+        }
         await goToNewPost(page);
         await fillArticle(page, title, body);
         await saveDraft(page);
