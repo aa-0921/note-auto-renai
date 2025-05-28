@@ -7,7 +7,8 @@ const { execSync } = require('child_process');
 const API_KEY = process.env.OPENROUTER_API_KEY;
 const API_URL = 'https://openrouter.ai/api/v1/chat/completions'; // OpenAI互換
 // const MODEL = 'google/gemini-pro'; // 必要に応じて変更
-const MODEL = 'deepseek/deepseek-chat-v3-0324:free';
+// const MODEL = 'deepseek/deepseek-chat-v3-0324:free';
+const MODEL = 'google/gemini-2.5-pro-exp-03-25'
 
 const POSTS_DIR = 'posts';
 const CHECK_SCRIPT = 'checkSectionLengths.js';
@@ -69,14 +70,20 @@ function getShortSections(mdPath) {
 
 // 200字未満のセクションをリライト
 async function rewriteSection(heading, body) {
-  const prompt = `あなたは女性の心理カウンセラーです。以下のnote記事の「${heading}」という見出しの本文が${body.length}文字しかありません。200文字以上になるように、やわらかく親しみやすい女性らしい語り口で、実体験や具体例、アドバイスを交えて厚くリライト・追記してください。
+  const prompt = `
+あなたは女性の心理カウンセラーです。以下のnote記事の「${heading}」という見出しの本文が${body.length}文字しかありません。200文字以上になるように、実体験や具体例、アドバイスを交えて厚くリライト・追記してください。
 
 【注意】
 - タイトルや見出しは出力せず、本文のみを返してください。
 - 「追加した要素」や「文字数」などのメタ情報は一切出力しないでください。
+- 「CRIPTION:」「】」などの記号や不要な文字列は一切出力しないでください。
+- 文章は話し言葉やカジュアルな表現を避け、できるだけ丁寧な敬語でまとめてください。
+- です。ます。で統一してください。
 - 文章のみを返してください。
 
-元の本文: ${body}`;
+元の本文: ${body}
+  `.trim();
+
   const messages = [
     { role: 'system', content: 'あなたは日本語のnote記事編集者です。' },
     { role: 'user', content: prompt }
