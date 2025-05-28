@@ -7,8 +7,9 @@ const { execSync } = require('child_process');
 const API_KEY = process.env.OPENROUTER_API_KEY;
 const API_URL = 'https://openrouter.ai/api/v1/chat/completions'; // OpenAI互換
 // const MODEL = 'google/gemini-pro'; // 必要に応じて変更
+// const MODEL = 'google/gemini-2.5-pro-exp-03-25';
 // const MODEL = 'deepseek/deepseek-chat-v3-0324:free';
-const MODEL = 'google/gemini-2.5-pro-exp-03-25'
+const MODEL = 'google/gemini-2.0-flash-exp:free';
 
 const POSTS_DIR = 'posts';
 const CHECK_SCRIPT = 'checkSectionLengths.js';
@@ -80,6 +81,7 @@ async function rewriteSection(heading, body) {
 - 文章は話し言葉やカジュアルな表現を避け、できるだけ丁寧な敬語でまとめてください。
 - です。ます。で統一してください。
 - 文章のみを返してください。
+- 文章は日本語で返してください。acency等の英語が混じらないようにしてください。
 
 元の本文: ${body}
   `.trim();
