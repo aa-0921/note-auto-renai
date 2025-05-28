@@ -29,48 +29,56 @@ if (isLambda) {
   });
 }
 
-async function main() {
-  const options = await launchOptions();
-  const browser = await puppeteer.launch(options);
-  const page = await browser.newPage();
+const fs = require('fs');
+const path = require('path');
 
-  // noteログインページへ
+// 記事データ取得
+function getArticleData(articlePath) {
+  console.log(`記事データを取得します: ${articlePath}`);
+  const raw = fs.readFileSync(articlePath, 'utf-8');
+  const titleMatch = raw.match(/^#\s*(.+)$/m);
+  const title = titleMatch ? titleMatch[1].trim() : 'タイトル未取得';
+  console.log(`タイトル抽出: ${title}`);
+  return { title, body: raw };
+}
+
+// ログイン処理
+async function login(page, email, password) {
+  console.log('noteログインページへ遷移します');
   await page.goto('https://note.com/login?redirectPath=https%3A%2F%2Fnote.com%2F', { waitUntil: 'networkidle2' });
-
-  // 新しいセレクタで入力
-  await page.type('#email', process.env.NOTE_EMAIL);
-  await page.type('#password', process.env.NOTE_PASSWORD);
-
-  // ログインボタンが有効化されるのを待つ
+  console.log('メールアドレスとパスワードを入力します');
+  await page.type('#email', email);
+  await page.type('#password', password);
   await page.waitForSelector('button[type="button"]:not([disabled])');
-
-  // ログインボタン（テキストが「ログイン」）をクリック
+  console.log('ログインボタンを探します');
   const buttons = await page.$$('button[type="button"]');
   for (const btn of buttons) {
     const text = await (await btn.getProperty('innerText')).jsonValue();
     if (text && text.trim() === 'ログイン') {
+      console.log('ログインボタンをクリックします');
       await btn.click();
       break;
     }
   }
   await page.waitForNavigation();
+  console.log('ログイン完了');
+}
 
-  // ログイン後、ユーザーポップアップがあれば閉じる
+// 投稿画面遷移
+async function goToNewPost(page) {
+  console.log('ユーザーポップアップがあれば閉じます');
   const closePopupBtn = await page.$('button.o-userPopup__close[aria-label="閉じる"]');
   if (closePopupBtn) {
-    console.log('ユーザーポップアップを閉じます');
     await closePopupBtn.click();
     await new Promise(resolve => setTimeout(resolve, 500));
+    console.log('ユーザーポップアップを閉じました');
   }
-
-  // 投稿ボタンを探してクリック
+  // 投稿ボタン
   console.log('投稿ボタンを探します...');
   const postButtons = await page.$$('button[aria-label="投稿"]');
   let clicked = false;
   for (const btn of postButtons) {
-    // 画面上に表示されているか確認
-    const isVisible = await btn.isIntersectingViewport();
-    if (isVisible) {
+    if (await btn.isIntersectingViewport()) {
       console.log('表示されている投稿ボタンをクリックします。');
       await btn.click();
       clicked = true;
@@ -82,55 +90,44 @@ async function main() {
     console.error('表示されている投稿ボタンが見つかりませんでした。HTMLの一部:', html.slice(0, 1000));
     throw new Error('表示されている投稿ボタンが見つかりませんでした');
   }
-
-  // 「テキスト」メニューをクリック
+  // テキストメニュー
   console.log('テキストメニューを探します...');
   await page.waitForSelector('a[href="/notes/new"]');
   await page.click('a[href="/notes/new"]');
   await page.waitForNavigation();
   console.log('新規投稿画面に遷移しました');
+}
 
-  // === ここから新規投稿画面での入力処理 ===
-  // 記事データの読み込み
-  const fs = require('fs');
-  const path = require('path');
-  const articlePath = path.join(__dirname, '../posts/8__2025-05-25-大失恋から自分を好きになるまでのリアルストーリー＜前編＞.md');
-  const articleRaw = fs.readFileSync(articlePath, 'utf-8');
-  // タイトルはファイル先頭の# ...行から抽出
-  const titleMatch = articleRaw.match(/^#\s*(.+)$/m);
-  const articleTitle = titleMatch ? titleMatch[1].trim() : 'タイトル未取得';
-  // 本文はファイル内容全体
-  const articleBody = articleRaw;
-
-  // タイトル<textarea>を取得して入力
+// 記事入力
+async function fillArticle(page, title, body) {
+  console.log('タイトル入力欄を探します');
   await page.waitForSelector('textarea[placeholder="記事タイトル"]');
   const titleAreas = await page.$$('textarea[placeholder="記事タイトル"]');
   if (titleAreas.length > 0) {
     await titleAreas[0].focus();
-    await titleAreas[0].click({ clickCount: 3 }); // 全選択して上書き
+    await titleAreas[0].click({ clickCount: 3 });
     await titleAreas[0].press('Backspace');
-    await titleAreas[0].type(articleTitle);
+    await titleAreas[0].type(title);
+    console.log('タイトルを入力しました');
   } else {
     throw new Error('タイトル入力欄が見つかりませんでした');
   }
-
-  // 本文エリア（ProseMirror）を取得して入力
+  console.log('本文入力欄を探します');
   await page.waitForSelector('div.ProseMirror.note-common-styles__textnote-body[contenteditable="true"]');
   const bodyArea = await page.$('div.ProseMirror.note-common-styles__textnote-body[contenteditable="true"]');
   if (bodyArea) {
     await bodyArea.focus();
     await bodyArea.click({ clickCount: 3 });
     await bodyArea.press('Backspace');
-    await bodyArea.type(articleBody);
+    await bodyArea.type(body);
+    console.log('本文を入力しました');
   } else {
     throw new Error('本文入力欄が見つかりませんでした');
   }
+}
 
-  // スクリーンショットを保存
-  await page.screenshot({ path: 'after_input.png', fullPage: true });
-  console.log('スクリーンショットを保存しました: after_input.png');
-
-  // 「下書き保存」ボタンを探してクリック
+// 下書き保存
+async function saveDraft(page) {
   console.log('「下書き保存」ボタンを探します...');
   await page.waitForSelector('button');
   const draftButtons = await page.$$('button');
@@ -147,10 +144,13 @@ async function main() {
   if (!draftSaved) {
     throw new Error('「下書き保存」ボタンが見つかりませんでした');
   }
+}
 
-  // 「閉じる」ボタン（1回目）をクリック
+// 閉じる処理
+async function closeDialogs(page) {
+  // 1回目
   console.log('「閉じる」ボタン（1回目）を探します...');
-  await page.waitForSelector('button');
+  await new Promise(resolve => setTimeout(resolve, 500));
   const closeButtons1 = await page.$$('button');
   let closed1 = false;
   for (const btn of closeButtons1) {
@@ -164,8 +164,7 @@ async function main() {
   }
   if (!closed1) throw new Error('「閉じる」ボタン（1回目）が見つかりませんでした');
   await new Promise(resolve => setTimeout(resolve, 500));
-
-  // 「閉じる」ボタン（2回目/モーダル内）をクリック
+  // 2回目（モーダル内）
   console.log('「閉じる」ボタン（2回目/モーダル内）を探します...');
   await page.waitForSelector('.ReactModal__Content button');
   const closeButtons2 = await page.$$('.ReactModal__Content button');
@@ -181,6 +180,29 @@ async function main() {
   }
   if (!closed2) throw new Error('「閉じる」ボタン（2回目/モーダル内）が見つかりませんでした');
   await new Promise(resolve => setTimeout(resolve, 500));
+}
+
+// メイン処理
+async function main() {
+  console.log('Puppeteer起動オプションを取得します');
+  const options = await launchOptions();
+  console.log('Puppeteerを起動します');
+  const browser = await puppeteer.launch(options);
+  const page = await browser.newPage();
+
+  // ここで記事データのパスを指定
+  const articlePath = path.join(__dirname, '../posts/8__2025-05-25-大失恋から自分を好きになるまでのリアルストーリー＜前編＞.md');
+  const { title, body } = getArticleData(articlePath);
+
+  await login(page, process.env.NOTE_EMAIL, process.env.NOTE_PASSWORD);
+  await goToNewPost(page);
+  await fillArticle(page, title, body);
+  await saveDraft(page);
+  await closeDialogs(page);
+
+  // スクリーンショットを保存
+  await page.screenshot({ path: 'after_input.png', fullPage: true });
+  console.log('スクリーンショットを保存しました: after_input.png');
 
   // await browser.close(); // ブラウザは自動で閉じない
 
