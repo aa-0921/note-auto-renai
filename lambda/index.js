@@ -182,6 +182,59 @@ async function closeDialogs(page) {
   await new Promise(resolve => setTimeout(resolve, 500));
 }
 
+// 投稿一覧管理表.mdをパースし、下書き保存日が空欄の行のファイル名リストを返す
+function parseUnsubmittedArticles(tablePath) {
+  const raw = fs.readFileSync(tablePath, 'utf-8');
+  const lines = raw.split('\n');
+  // テーブル部分のみ抽出
+  const tableLines = lines.filter(line => line.trim().startsWith('|'));
+  if (tableLines.length < 3) return [];
+  const header = tableLines[0].split('|').map(h => h.trim());
+  const fileNameIdx = header.findIndex(h => h === 'ファイル名');
+  const draftDateIdx = header.findIndex(h => h === '下書き保存日');
+  if (fileNameIdx === -1 || draftDateIdx === -1) return [];
+  const result = [];
+  for (let i = 2; i < tableLines.length; i++) { // データ行のみ
+    const cols = tableLines[i].split('|').map(c => c.trim());
+    if (!cols[draftDateIdx] && cols[fileNameIdx]) {
+      // posts/ で始まらない場合は自動で付与
+      let filePath = cols[fileNameIdx];
+      if (!filePath.startsWith('posts/')) filePath = 'posts/' + filePath;
+      result.push({
+        filePath,
+        rowIndex: i, // テーブル行番号（後で更新用に使う）
+      });
+    }
+  }
+  return result;
+}
+
+// 管理表の該当行の下書き保存日を更新する
+function updateDraftDate(tablePath, rowIndex, dateStr) {
+  const raw = fs.readFileSync(tablePath, 'utf-8');
+  const lines = raw.split('\n');
+  // テーブル部分のみ抽出
+  const tableLines = lines.filter(line => line.trim().startsWith('|'));
+  if (rowIndex >= tableLines.length) return;
+  const cols = tableLines[rowIndex].split('|');
+  // 下書き保存日カラムのインデックスを取得
+  const header = tableLines[0].split('|').map(h => h.trim());
+  const draftDateIdx = header.findIndex(h => h === '下書き保存日');
+  if (draftDateIdx === -1) return;
+  // カラム数が足りない場合は拡張
+  while (cols.length <= draftDateIdx) cols.push('');
+  cols[draftDateIdx] = ' ' + dateStr + ' ';
+  tableLines[rowIndex] = cols.join('|');
+  // テーブル部分を元のlinesに戻す
+  let t = 0;
+  for (let i = 0; i < lines.length; i++) {
+    if (lines[i].trim().startsWith('|')) {
+      lines[i] = tableLines[t++];
+    }
+  }
+  fs.writeFileSync(tablePath, lines.join('\n'), 'utf-8');
+}
+
 // メイン処理
 async function main() {
   console.log('Puppeteer起動オプションを取得します');
@@ -190,23 +243,50 @@ async function main() {
   const browser = await puppeteer.launch(options);
   const page = await browser.newPage();
 
-  // ここで記事データのパスを指定
-  const articlePath = path.join(__dirname, '../posts/8__2025-05-25-大失恋から自分を好きになるまでのリアルストーリー＜前編＞.md');
-  const { title, body } = getArticleData(articlePath);
+  // 管理表パス
+  const tablePath = path.join(__dirname, '../投稿一覧管理表.md');
+  // 未下書き記事リスト取得
+  const unsubmitted = parseUnsubmittedArticles(tablePath);
+  if (unsubmitted.length === 0) {
+    console.log('下書き保存待ちの記事はありません');
+    return { status: 'no-article' };
+  }
 
+  // ログインは1回だけ
   await login(page, process.env.NOTE_EMAIL, process.env.NOTE_PASSWORD);
-  await goToNewPost(page);
-  await fillArticle(page, title, body);
-  await saveDraft(page);
-  await closeDialogs(page);
 
-  // スクリーンショットを保存
-  await page.screenshot({ path: 'after_input.png', fullPage: true });
-  console.log('スクリーンショットを保存しました: after_input.png');
-
-  // await browser.close(); // ブラウザは自動で閉じない
-
-  return { status: 'ok' };
+  try {
+    for (const { filePath, rowIndex } of unsubmitted) {
+      try {
+        // 記事ごとにnoteトップページに遷移してから投稿ボタンを押す
+        console.log('noteトップページに遷移します');
+        await page.goto('https://note.com/', { waitUntil: 'networkidle2' });
+        console.log('記事処理開始: ' + filePath);
+        const articlePath = path.join(__dirname, '../', filePath);
+        const { title, body } = getArticleData(articlePath);
+        await goToNewPost(page);
+        await fillArticle(page, title, body);
+        await saveDraft(page);
+        await closeDialogs(page);
+        // スクリーンショット保存
+        await page.screenshot({ path: `after_input_${rowIndex}.png`, fullPage: true });
+        console.log('スクリーンショットを保存しました: after_input_' + rowIndex + '.png');
+        // 管理表に日付記入
+        const today = new Date().toISOString().slice(0, 10);
+        updateDraftDate(tablePath, rowIndex, today);
+        console.log(`管理表の下書き保存日を更新: ${filePath} → ${today}`);
+      } catch (e) {
+        console.error(`記事処理失敗: ${filePath}`, e);
+        throw e; // 途中でストップ
+      }
+    }
+  } catch (e) {
+    console.error('記事処理中にエラーが発生したため、処理を中断します:', e);
+    // await browser.close(); // 必要なら有効化
+    return { status: 'error', error: e.toString() };
+  }
+  // await browser.close();
+  return { status: 'done' };
 }
 
 if (isLambda) {
