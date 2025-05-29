@@ -9,7 +9,9 @@ const API_URL = 'https://openrouter.ai/api/v1/chat/completions'; // OpenAI互換
 // const MODEL = 'google/gemini-pro'; // 必要に応じて変更
 // const MODEL = 'google/gemini-2.5-pro-exp-03-25';
 // const MODEL = 'deepseek/deepseek-chat-v3-0324:free';
-const MODEL = 'google/gemini-2.0-flash-exp:free';
+// const MODEL = 'google/gemini-2.0-flash-exp:free';
+// ↓早いし、内容も問題なさそう
+const MODEL = 'meta-llama/llama-4-maverick:free';
 
 const POSTS_DIR = 'posts';
 const CHECK_SCRIPT = 'checkSectionLengths.js';
