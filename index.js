@@ -244,7 +244,7 @@ async function main() {
   const page = await browser.newPage();
 
   // 管理表パス
-  const tablePath = path.join(__dirname, '../投稿一覧管理表.md');
+  const tablePath = path.join(__dirname, './投稿一覧管理表.md');
   // 未下書き記事リスト取得
   const unsubmitted = parseUnsubmittedArticles(tablePath);
   if (unsubmitted.length === 0) {
@@ -262,7 +262,7 @@ async function main() {
         console.log('noteトップページに遷移します');
         await page.goto('https://note.com/', { waitUntil: 'networkidle2' });
         console.log('記事処理開始: ' + filePath);
-        const articlePath = path.join(__dirname, '../', filePath);
+        const articlePath = path.join(__dirname, './', filePath);
         let title, body;
         try {
           ({ title, body } = getArticleData(articlePath));

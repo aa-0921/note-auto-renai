@@ -125,8 +125,10 @@ async function processFile(mdPath) {
       if (ngSections.includes(heading)) {
         console.log(`「${heading}」の本文が${body.length}文字と少なめです。AIでリライトします...`);
         const newBody = await rewriteSection(heading, body);
+        // 末尾に余分な改行を追加
+        const newBodyWithExtraLine = newBody + '\n';
         const lines = sectionRaw.split('\n');
-        lines.splice(1, lines.length - 1, newBody);
+        lines.splice(1, lines.length - 1, newBodyWithExtraLine);
         sections[i].raw = lines.join('\n');
         updated = true;
       }
