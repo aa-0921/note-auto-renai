@@ -34,12 +34,13 @@ const path = require('path');
 
 // 記事データ取得
 function getArticleData(articlePath) {
-  console.log(`記事データを取得します: ${articlePath}`);
-  const raw = fs.readFileSync(articlePath, 'utf-8');
-  const titleMatch = raw.match(/^#\s*(.+)$/m);
-  const title = titleMatch ? titleMatch[1].trim() : 'タイトル未取得';
-  console.log(`タイトル抽出: ${title}`);
-  return { title, body: raw };
+  // ファイル名からタイトルを抽出
+  const fileName = path.basename(articlePath, '.md');
+  // 例: 31__2025-05-25-引き寄せの法則で億万長者になった最強の秘密
+  const match = fileName.match(/^\d+__\d{4}-\d{2}-\d{2}-(.+)$/);
+  const title = match ? match[1] : fileName;
+  const body = fs.readFileSync(articlePath, 'utf-8');
+  return { title, body };
 }
 
 // ログイン処理
@@ -279,8 +280,8 @@ async function main() {
         await saveDraft(page);
         await closeDialogs(page);
         // スクリーンショット保存
-        await page.screenshot({ path: `after_input_${rowIndex}.png`, fullPage: true });
-        console.log('スクリーンショットを保存しました: after_input_' + rowIndex + '.png');
+        // await page.screenshot({ path: `after_input_${rowIndex}.png`, fullPage: true });
+        // console.log('スクリーンショットを保存しました: after_input_' + rowIndex + '.png');
         // 管理表に日付記入
         const today = new Date().toISOString().slice(0, 10);
         updateDraftDate(tablePath, rowIndex, today);
