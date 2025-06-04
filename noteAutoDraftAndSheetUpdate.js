@@ -293,10 +293,10 @@ async function main() {
     }
   } catch (e) {
     console.error('記事処理中にエラーが発生したため、処理を中断します:', e);
-    // await browser.close(); // 必要なら有効化
+    await browser.close(); // 必要なら有効化
     return { status: 'error', error: e.toString() };
   }
-  // await browser.close();
+  await browser.close();
   return { status: 'done' };
 }
 
