@@ -64,6 +64,7 @@ async function login(page, email, password) {
   await page.waitForNavigation();
   console.log('ログイン完了');
 }
+exports.login = login;
 
 // 投稿画面遷移
 async function goToNewPost(page) {
@@ -304,6 +305,6 @@ if (isLambda) {
   exports.handler = async (event) => {
     return await main();
   };
-} else {
+} else if (require.main === module) {
   main().then(() => console.log('完了')).catch(console.error);
 } 
