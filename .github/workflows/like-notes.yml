@@ -3,8 +3,7 @@ name: Like Unliked Notes
 on:
   schedule:
     - cron: '45 2 * * *'   # 毎日11:45(JST)に実行
-    - cron: '45 10 * * *'  # 毎日19:45(JST)に実行
-    - cron: '45 14 * * *'  # 毎日23:45(JST)に実行
+    - cron: '45 12 * * *'  # 毎日19:45(JST)に実行
   workflow_dispatch:
 
 jobs:
