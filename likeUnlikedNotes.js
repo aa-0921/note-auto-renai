@@ -47,10 +47,29 @@ const { login } = require('./noteAutoDraftAndSheetUpdate'); // login関数をexp
   const maxLikes = 40;
   const unlikedButtons = await page.$$('i.o-noteLikeV3__icon.a-icon.a-icon--heart.a-icon--size_mediumSmall');
   for (let i = 0; i < Math.min(maxLikes, unlikedButtons.length); i++) {
-    await unlikedButtons[i].evaluate(btn => {
+    // ボタンの親要素からタイトルと投稿者名を取得し、クリック
+    const info = await unlikedButtons[i].evaluate((btn) => {
+      // 記事タイトルを取得
+      let title = 'タイトル不明';
+      let user = '投稿者不明';
+      // .m-largeNoteWrapper__body からタイトルを探す
+      const body = btn.closest('.m-largeNoteWrapper__card');
+      if (body) {
+        const titleElem = body.querySelector('.m-noteBodyTitle__title');
+        if (titleElem) {
+          title = titleElem.textContent.trim();
+        }
+        // .m-largeNoteWrapper__body の親要素からユーザー名を探す
+        const infoElem = body.parentElement?.querySelector('.o-largeNoteSummary__userName');
+        if (infoElem) {
+          user = infoElem.textContent.trim();
+        }
+      }
+      // クリック
       btn.dispatchEvent(new MouseEvent('click', { view: window, bubbles: true, cancelable: true }));
+      return { title, user };
     });
-    console.log(`ボタン${i + 1}をクリックしました`);
+    console.log(`ボタン${i + 1}をクリックしました｜タイトル: ${info.title}｜投稿者: ${info.user}`);
     await new Promise(resolve => setTimeout(resolve, 1000)); // 1秒待機
   }
   console.log('クリック処理が全て完了しました');
