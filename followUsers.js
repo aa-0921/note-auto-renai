@@ -57,7 +57,16 @@ const { login } = require('./noteAutoDraftAndSheetUpdate');
       try {
         await followBtn.evaluate(btn => btn.scrollIntoView({ behavior: 'auto', block: 'center' }));
         await followBtn.click();
-        console.log(`フォローボタンをクリックしました（${followCount + 1}件目）`);
+        // タイトルと投稿者名を取得
+        await new Promise(resolve => setTimeout(resolve, 1000)); // 1秒待機
+        const info = await page.evaluate(() => {
+          const titleElem = document.querySelector('h1.o-noteContentHeader__title');
+          const title = titleElem ? titleElem.textContent.trim() : 'タイトル不明';
+          const userElem = document.querySelector('.o-noteContentHeader__name a.a-link');
+          const user = userElem ? userElem.textContent.trim() : '投稿者不明';
+          return { title, user };
+        });
+        console.log(`フォローボタンをクリックしました（${followCount + 1}件目）｜ ■ タイトル: ${info.title} ■ 投稿者: ${info.user}`);
         followCount++;
         await new Promise(resolve => setTimeout(resolve, 1000));
       } catch (e) {
