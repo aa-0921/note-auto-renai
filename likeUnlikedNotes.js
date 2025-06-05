@@ -4,8 +4,10 @@ const { login } = require('./noteAutoDraftAndSheetUpdate'); // login関数をexp
 
 (async () => {
   console.log('Puppeteer起動オプションを取得します');
+  // CI環境（GitHub Actions等）ではheadless:true、ローカルではheadless:false
+  const isCI = process.env.CI === 'true';
   const browser = await puppeteer.launch({
-    headless: false, // ブラウザ画面を表示
+    headless: isCI ? true : false, // 自動切り替え
     args: [
       '--no-sandbox',
       '--disable-setuid-sandbox',
