@@ -27,7 +27,15 @@ const { login } = require('./noteAutoDraftAndSheetUpdate'); // login関数をexp
   // はじめてのnote
   // const targetUrl = 'https://note.com/interests/%E3%81%AF%E3%81%98%E3%82%81%E3%81%A6%E3%81%AEnote';
   // 初めてのnote
-  const targetUrl = 'https://note.com/search?q=%E5%88%9D%E3%82%81%E3%81%A6%E3%81%AEnote&context=note&mode=search';
+  // const targetUrl = 'https://note.com/search?q=%E5%88%9D%E3%82%81%E3%81%A6%E3%81%AEnote&context=note&mode=search';
+
+  // 今日のあなたに
+  // const targetUrl = 'https://note.com/recommends/for_you';
+
+  // ママ友
+  const targetUrl = 'https://note.com/search?q=%E3%83%9E%E3%83%9E%E5%8F%8B&context=note&mode=search';
+
+
   console.log('対象ページへ遷移します:', targetUrl);
   await page.goto(targetUrl, { waitUntil: 'networkidle2' });
   console.log('ページ遷移完了');
@@ -46,7 +54,9 @@ const { login } = require('./noteAutoDraftAndSheetUpdate'); // login関数をexp
   console.log('「スキされていない」ハートアイコンを取得し、クリックします');
   const maxLikes = 40;
   const unlikedButtons = await page.$$('i.o-noteLikeV3__icon.a-icon.a-icon--heart.a-icon--size_mediumSmall');
-  for (let i = 0; i < Math.min(maxLikes, unlikedButtons.length); i++) {
+  const likeCount = Math.min(maxLikes, unlikedButtons.length);
+  console.log(`これから${likeCount}件のスキを付けます。`);
+  for (let i = 0; i < likeCount; i++) {
     // ボタンの親要素からタイトルと投稿者名を取得し、クリック
     const info = await unlikedButtons[i].evaluate((btn) => {
       // 記事タイトルを取得
