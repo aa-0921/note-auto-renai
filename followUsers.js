@@ -28,7 +28,7 @@ const { login } = require('./noteAutoDraftAndSheetUpdate');
   console.log('ページ遷移完了');
 
   // 記事一覧ページで5回スクロール
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 10; i++) {
     console.log(`下までスクロールします (${i + 1}/5)`);
     await page.evaluate(() => {
       window.scrollTo(0, document.body.scrollHeight);
@@ -54,17 +54,15 @@ const { login } = require('./noteAutoDraftAndSheetUpdate');
 
     console.log(`記事${i + 1}へ遷移します: ${articleLinks[i]}`);
     await page.goto(articleLinks[i], { waitUntil: 'networkidle2' });
-    await new Promise(resolve => setTimeout(resolve, 2000)); // 待機時間を2秒に延長
+    await new Promise(resolve => setTimeout(resolve, 1000)); // 待機時間を2秒に延長
     
-    // フォローボタン（記事詳細ページのbutton.o-noteContentHeader__actionFollow）を探す
-    let followBtn = null;
-    try {
-      followBtn = await page.waitForSelector('button.o-noteContentHeader__actionFollow', { visible: true, timeout: 5000 });
-    } catch (e) {
-      console.log('フォローボタンが見つかりませんでした（すでにフォロー済みの可能性があります）');
+    // フォローボタン（記事詳細ページのbutton.o-noteContentHeader__actionFollow）を即時取得
+    let followBtn = await page.$('button.o-noteContentHeader__actionFollow');
+    if (!followBtn) {
+      console.log('フォローボタンが見つかりませんでした（すでにフォロー済み、またはボタンが存在しません）');
       // 一覧ページに戻る
       await page.goto(targetUrl, { waitUntil: 'networkidle2' });
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise(resolve => setTimeout(resolve, 1000));
       continue;
     }
     
@@ -72,15 +70,15 @@ const { login } = require('./noteAutoDraftAndSheetUpdate');
       let success = true;
       
       // 1. スクロール処理
-      try {
-        console.log('フォローボタンを画面内に移動します');
-        await followBtn.evaluate(btn => btn.scrollIntoView({ behavior: 'auto', block: 'center' }));
-      } catch (e) {
-        console.log('スクロール処理で失敗しました:', e.message);
-        consecutiveFailures++; // ここは実際のエラーなのでカウント
-        success = false;
-      }
-      
+      // try {
+      //   console.log('フォローボタンを画面内に移動します');
+      //   await followBtn.evaluate(btn => btn.scrollIntoView({ behavior: 'auto', block: 'center' }));
+      // } catch (e) {
+      //   console.log('スクロール処理で失敗しました:', e.message);
+      //   consecutiveFailures++; // ここは実際のエラーなのでカウント
+      //   success = false;
+      // }
+
       // 2. クリック処理（スクロール成功時のみ）
       if (success) {
         try {
@@ -93,7 +91,7 @@ const { login } = require('./noteAutoDraftAndSheetUpdate');
           success = false;
         }
       }
-      
+
       // 3. 記事情報取得（クリック成功時のみ）
       if (success) {
         try {
@@ -106,20 +104,20 @@ const { login } = require('./noteAutoDraftAndSheetUpdate');
             const user = userElem ? userElem.textContent.trim() : '投稿者不明';
             return { title, user };
           });
-          
+
           console.log(`フォローボタンをクリックしました（${followCount + 1}件目）｜ ■ タイトル: ${info.title} ■ 投稿者: ${info.user}`);
           followCount++;
-          await new Promise(resolve => setTimeout(resolve, 2000));
+          await new Promise(resolve => setTimeout(resolve, 1000));
         } catch (e) {
           console.log('記事情報取得で失敗しました:', e.message);
           consecutiveFailures++; // ここは実際のエラーなのでカウント
         }
       }
     }
-    
+
     // 一覧ページに戻る
     await page.goto(targetUrl, { waitUntil: 'networkidle2' });
-    await new Promise(resolve => setTimeout(resolve, 2000)); // 待機時間を2秒に延長
+    await new Promise(resolve => setTimeout(resolve, 1000)); // 待機時間を2秒に延長
   }
   console.log(`フォロー処理が完了しました。合計${followCount}件フォローしました。`);
   await browser.close();
