@@ -68,18 +68,8 @@ const { login } = require('./noteAutoDraftAndSheetUpdate');
     
     if (followBtn) {
       let success = true;
-      
-      // 1. スクロール処理
-      // try {
-      //   console.log('フォローボタンを画面内に移動します');
-      //   await followBtn.evaluate(btn => btn.scrollIntoView({ behavior: 'auto', block: 'center' }));
-      // } catch (e) {
-      //   console.log('スクロール処理で失敗しました:', e.message);
-      //   consecutiveFailures++; // ここは実際のエラーなのでカウント
-      //   success = false;
-      // }
 
-      // 2. クリック処理（スクロール成功時のみ）
+      // 1. クリック処理（スクロール成功時のみ）
       if (success) {
         try {
           console.log('フォローボタンをクリックします');
@@ -92,7 +82,7 @@ const { login } = require('./noteAutoDraftAndSheetUpdate');
         }
       }
 
-      // 3. 記事情報取得（クリック成功時のみ）
+      // 2. 記事情報取得（クリック成功時のみ）
       if (success) {
         try {
           console.log('記事情報を取得します');
