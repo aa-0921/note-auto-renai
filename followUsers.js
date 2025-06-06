@@ -42,42 +42,84 @@ const { login } = require('./noteAutoDraftAndSheetUpdate');
   console.log(`記事リンクを${articleLinks.length}件取得しました`);
 
   let followCount = 0;
+  let consecutiveFailures = 0; // 連続失敗回数
+  const maxConsecutiveFailures = 3; // 最大連続失敗回数
+  
   for (let i = 0; i < articleLinks.length && followCount < 15; i++) {
+    // 連続失敗が上限に達したら停止
+    if (consecutiveFailures >= maxConsecutiveFailures) {
+      console.log(`連続${maxConsecutiveFailures}回失敗したため、処理を停止します。`);
+      break;
+    }
+
     console.log(`記事${i + 1}へ遷移します: ${articleLinks[i]}`);
     await page.goto(articleLinks[i], { waitUntil: 'networkidle2' });
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    await new Promise(resolve => setTimeout(resolve, 2000)); // 待機時間を2秒に延長
+    
     // フォローボタン（記事詳細ページのbutton.o-noteContentHeader__actionFollow）を探す
     let followBtn = null;
     try {
       followBtn = await page.waitForSelector('button.o-noteContentHeader__actionFollow', { visible: true, timeout: 5000 });
     } catch (e) {
-      console.log('フォローボタンが見つかりませんでした（waitForSelectorタイムアウト）');
+      console.log('フォローボタンが見つかりませんでした（すでにフォロー済みの可能性があります）');
+      // 一覧ページに戻る
+      await page.goto(targetUrl, { waitUntil: 'networkidle2' });
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      continue;
     }
+    
     if (followBtn) {
+      let success = true;
+      
+      // 1. スクロール処理
       try {
+        console.log('フォローボタンを画面内に移動します');
         await followBtn.evaluate(btn => btn.scrollIntoView({ behavior: 'auto', block: 'center' }));
-        await followBtn.click();
-        // タイトルと投稿者名を取得
-        await new Promise(resolve => setTimeout(resolve, 1000)); // 1秒待機
-        const info = await page.evaluate(() => {
-          const titleElem = document.querySelector('h1.o-noteContentHeader__title');
-          const title = titleElem ? titleElem.textContent.trim() : 'タイトル不明';
-          const userElem = document.querySelector('.o-noteContentHeader__name a.a-link');
-          const user = userElem ? userElem.textContent.trim() : '投稿者不明';
-          return { title, user };
-        });
-        console.log(`フォローボタンをクリックしました（${followCount + 1}件目）｜ ■ タイトル: ${info.title} ■ 投稿者: ${info.user}`);
-        followCount++;
-        await new Promise(resolve => setTimeout(resolve, 1000));
       } catch (e) {
-        console.log('フォローボタンのクリックに失敗しました:', e.message);
+        console.log('スクロール処理で失敗しました:', e.message);
+        consecutiveFailures++; // ここは実際のエラーなのでカウント
+        success = false;
       }
-    } else {
-      console.log('フォローボタンが見つかりませんでした。');
+      
+      // 2. クリック処理（スクロール成功時のみ）
+      if (success) {
+        try {
+          console.log('フォローボタンをクリックします');
+          await followBtn.click();
+          consecutiveFailures = 0; // 成功時は連続失敗回数をリセット
+        } catch (e) {
+          console.log('クリック処理で失敗しました:', e.message);
+          consecutiveFailures++; // ここは実際のエラーなのでカウント
+          success = false;
+        }
+      }
+      
+      // 3. 記事情報取得（クリック成功時のみ）
+      if (success) {
+        try {
+          console.log('記事情報を取得します');
+          await new Promise(resolve => setTimeout(resolve, 1500));
+          const info = await page.evaluate(() => {
+            const titleElem = document.querySelector('h1.o-noteContentHeader__title');
+            const title = titleElem ? titleElem.textContent.trim() : 'タイトル不明';
+            const userElem = document.querySelector('.o-noteContentHeader__name a.a-link');
+            const user = userElem ? userElem.textContent.trim() : '投稿者不明';
+            return { title, user };
+          });
+          
+          console.log(`フォローボタンをクリックしました（${followCount + 1}件目）｜ ■ タイトル: ${info.title} ■ 投稿者: ${info.user}`);
+          followCount++;
+          await new Promise(resolve => setTimeout(resolve, 2000));
+        } catch (e) {
+          console.log('記事情報取得で失敗しました:', e.message);
+          consecutiveFailures++; // ここは実際のエラーなのでカウント
+        }
+      }
     }
+    
     // 一覧ページに戻る
     await page.goto(targetUrl, { waitUntil: 'networkidle2' });
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise(resolve => setTimeout(resolve, 2000)); // 待機時間を2秒に延長
   }
   console.log(`フォロー処理が完了しました。合計${followCount}件フォローしました。`);
   await browser.close();
