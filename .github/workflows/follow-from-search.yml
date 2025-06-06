@@ -1,0 +1,29 @@
+name: Follow From Search
+
+on:
+  schedule:
+    - cron: '45 22 * * *'   # 毎日7:45(JST)に実行
+    - cron: '45 2 * * *'    # 毎日11:45(JST)に実行
+    - cron: '45 4 * * *'    # 毎日13:45(JST)に実行
+    - cron: '45 9 * * *'    # 毎日18:45(JST)に実行
+    - cron: '45 11 * * *'   # 毎日20:45(JST)に実行
+    - cron: '45 14 * * *'   # 毎日23:45(JST)に実行
+  workflow_dispatch:
+
+jobs:
+  follow-from-search:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.x'
+      - name: Install dependencies
+        run: npm install
+      - name: Run followFromSearch.js
+        env:
+          NOTE_EMAIL: ${{ secrets.NOTE_EMAIL }}
+          NOTE_PASSWORD: ${{ secrets.NOTE_PASSWORD }}
+        run: node followFromSearch.js 
