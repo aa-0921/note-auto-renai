@@ -7,6 +7,7 @@ const { login } = require('./noteAutoDraftAndSheetUpdate');
   const isCI = process.env.CI === 'true';
   const browser = await puppeteer.launch({
     headless: isCI ? 'old' : false,
+    slowMo: 100,
     args: [
       '--no-sandbox',
       '--disable-setuid-sandbox',
@@ -52,11 +53,21 @@ const { login } = require('./noteAutoDraftAndSheetUpdate');
     const text = await btn.evaluate(el => el.innerText.trim());
     if (text === 'フォロー') {
       try {
+        // クリック前にボタンが有効か確認
+        const isDisabled = await btn.evaluate(el => el.disabled);
+        if (isDisabled) {
+          console.log(`フォローボタン${i + 1}は無効化されています。スキップします。`);
+          continue;
+        }
+        // クリック前に画面内に移動
         await btn.evaluate(el => el.scrollIntoView({ behavior: 'auto', block: 'center' }));
-        await btn.click();
+        // クリックイベントを直接発火
+        await btn.evaluate(el => {
+          el.dispatchEvent(new MouseEvent('click', { view: window, bubbles: true, cancelable: true }));
+        });
         clickCount++;
         console.log(`フォローボタン${clickCount}件目をクリックしました`);
-        await new Promise(resolve => setTimeout(resolve, 3000)); // 3秒待機
+        await new Promise(resolve => setTimeout(resolve, 5000)); // 5秒待機
       } catch (e) {
         totalFailures++;
         console.log(`フォローボタン${i + 1}のクリックに失敗しました:`, e.message);
