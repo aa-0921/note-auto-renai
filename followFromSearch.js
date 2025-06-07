@@ -38,10 +38,17 @@ const { login } = require('./noteAutoDraftAndSheetUpdate');
   // フォローボタンを取得
   const followBtns = await page.$$('button.a-button');
   console.log(`フォローボタンを${followBtns.length}件検出しました`);
+
+  const MAX_CLICKS = 15;
   let clickCount = 0;
-  for (let i = 0; i < followBtns.length && clickCount < 13; i++) {
+  let totalFailures = 0;
+  const maxFailures = 2;
+  for (let i = 0; i < followBtns.length && clickCount < MAX_CLICKS; i++) {
+    if (totalFailures >= maxFailures) {
+      console.log(`クリックに累計${maxFailures}回失敗したため、処理を中断します。`);
+      break;
+    }
     const btn = followBtns[i];
-    // ボタンのテキストが「フォロー」か確認
     const text = await btn.evaluate(el => el.innerText.trim());
     if (text === 'フォロー') {
       try {
@@ -49,8 +56,9 @@ const { login } = require('./noteAutoDraftAndSheetUpdate');
         await btn.click();
         clickCount++;
         console.log(`フォローボタン${clickCount}件目をクリックしました`);
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise(resolve => setTimeout(resolve, 3000)); // 3秒待機
       } catch (e) {
+        totalFailures++;
         console.log(`フォローボタン${i + 1}のクリックに失敗しました:`, e.message);
       }
     }
