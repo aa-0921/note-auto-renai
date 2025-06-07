@@ -1,8 +1,9 @@
 name: Follow Users
 
 on:
-  schedule:
-    - cron: '45 2 * * *'   # 毎日11:50(JST)に実行
+  # 実行時間が長くなってしまうのと、検索結果からフォローするほうが効率的と思われるため、コメントアウト
+  # schedule:
+  #   - cron: '45 2 * * *'   # 毎日11:50(JST)に実行
   workflow_dispatch:
 
 jobs:
