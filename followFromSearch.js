@@ -8,6 +8,7 @@ const { login } = require('./noteAutoDraftAndSheetUpdate');
   const browser = await puppeteer.launch({
     headless: isCI ? 'old' : false,
     slowMo: 100,
+    protocolTimeout: 60000,
     args: [
       '--no-sandbox',
       '--disable-setuid-sandbox',
@@ -16,6 +17,7 @@ const { login } = require('./noteAutoDraftAndSheetUpdate');
     ]
   });
   const page = await browser.newPage();
+  page.setDefaultTimeout(60000);
 
   console.log('noteにログインします');
   await login(page, process.env.NOTE_EMAIL, process.env.NOTE_PASSWORD);
@@ -61,16 +63,23 @@ const { login } = require('./noteAutoDraftAndSheetUpdate');
         }
         // クリック前に画面内に移動
         await btn.evaluate(el => el.scrollIntoView({ behavior: 'auto', block: 'center' }));
-        // クリックイベントを直接発火
-        await btn.evaluate(el => {
-          el.dispatchEvent(new MouseEvent('click', { view: window, bubbles: true, cancelable: true }));
-        });
+        // クリックイベントを直接発火（軽量化）
+        await btn.evaluate(el => el.click());
         clickCount++;
         console.log(`フォローボタン${clickCount}件目をクリックしました`);
         await new Promise(resolve => setTimeout(resolve, 5000)); // 5秒待機
       } catch (e) {
-        totalFailures++;
-        console.log(`フォローボタン${i + 1}のクリックに失敗しました:`, e.message);
+        // 失敗時に1回だけリトライ
+        try {
+          console.log(`クリック失敗、リトライします:`, e.message);
+          await btn.evaluate(el => el.click());
+          clickCount++;
+          console.log(`リトライ成功: フォローボタン${clickCount}件目をクリックしました`);
+          await new Promise(resolve => setTimeout(resolve, 5000));
+        } catch (e2) {
+          totalFailures++;
+          console.log(`フォローボタン${i + 1}のクリックに失敗しました（リトライも失敗）:`, e2.message);
+        }
       }
     }
   }
