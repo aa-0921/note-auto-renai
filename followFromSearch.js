@@ -8,7 +8,7 @@ const { login } = require('./noteAutoDraftAndSheetUpdate');
   const browser = await puppeteer.launch({
     headless: isCI ? 'old' : false,
     slowMo: 100,
-    protocolTimeout: 60000,
+    protocolTimeout: 30000,
     args: [
       '--no-sandbox',
       '--disable-setuid-sandbox',
@@ -17,7 +17,7 @@ const { login } = require('./noteAutoDraftAndSheetUpdate');
     ]
   });
   const page = await browser.newPage();
-  page.setDefaultTimeout(60000);
+  // page.setDefaultTimeout(60000);
 
   console.log('noteにログインします');
   await login(page, process.env.NOTE_EMAIL, process.env.NOTE_PASSWORD);
@@ -42,7 +42,7 @@ const { login } = require('./noteAutoDraftAndSheetUpdate');
   const followBtns = await page.$$('button.a-button');
   console.log(`フォローボタンを${followBtns.length}件検出しました`);
 
-  const MAX_CLICKS = 15;
+  const MAX_CLICKS = 13;
   let clickCount = 0;
   let totalFailures = 0;
   const maxFailures = 2;
@@ -66,7 +66,13 @@ const { login } = require('./noteAutoDraftAndSheetUpdate');
         // クリックイベントを直接発火（軽量化）
         await btn.evaluate(el => el.click());
         clickCount++;
-        console.log(`フォローボタン${clickCount}件目をクリックしました`);
+
+        // フォローに成功する場合はフォローしたクリエイター名を表示する
+        const creatorName = await btn.evaluate(el => {
+          const nameElem = el.closest('.m-userListItem')?.querySelector('.m-userListItem__nameLabel');
+          return nameElem ? nameElem.textContent.trim() : 'クリエイター名不明';
+        });
+        console.log(`フォローボタン${clickCount}件目をクリックしました｜クリエイター名: ${creatorName}`);
         await new Promise(resolve => setTimeout(resolve, 5000)); // 5秒待機
       } catch (e) {
         // 失敗時に1回だけリトライ
