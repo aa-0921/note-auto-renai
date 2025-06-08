@@ -64,8 +64,6 @@ const { login } = require('./noteAutoDraftAndSheetUpdate');
     }
     const btn = filteredFollowBtns[i];
     console.log(`ボタン取得: ${i + 1}件目 btn!=null:`, btn != null);
-    const text = await btn.evaluate(el => el.innerText.trim());
-    console.log(`ボタン取得: ${i + 1}件目 text=`, text);
     if (isCI) {
       try {
         console.log('クリック前: waitForSelector開始');
