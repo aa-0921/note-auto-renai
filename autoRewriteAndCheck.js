@@ -1,3 +1,6 @@
+// 記事のセクションの文字数をチェックし、200文字未満のセクションをAIでリライトする
+// 使用方法：node autoRewriteAndCheck.js 37,40,41 等のようにIDだけを指定
+
 require('dotenv').config();
 const fs = require('fs');
 const axios = require('axios');
@@ -106,6 +109,27 @@ async function rewriteSection(heading, body) {
   return res.data.choices[0].message.content.trim();
 }
 
+// 記事末尾にタグを自動付与
+async function generateTagsFromContent(content) {
+  const prompt = `あなたは日本語のnote記事編集者です。以下の記事内容を読み、記事の内容に最も関連するハッシュタグを3～5個、日本語で生成してください。必ず「#引き寄せ #引き寄せの法則 #裏技」を含め、他にも内容に合うタグがあれば追加してください。タグは半角スペース区切りで、本文や説明は一切不要です。\n\n記事内容:\n${content}`;
+  const messages = [
+    { role: 'system', content: 'あなたは日本語のnote記事編集者です。' },
+    { role: 'user', content: prompt }
+  ];
+  const res = await axios.post(API_URL, {
+    model: MODEL,
+    messages,
+    max_tokens: 100,
+    temperature: 0.5
+  }, {
+    headers: {
+      'Authorization': `Bearer ${API_KEY}`,
+      'Content-Type': 'application/json'
+    }
+  });
+  return res.data.choices[0].message.content.trim();
+}
+
 async function processFile(mdPath) {
   let loop = 0;
   while (true) {
@@ -142,6 +166,14 @@ async function processFile(mdPath) {
       break;
     }
   }
+  // ここでタグ自動付与
+  let finalRaw = fs.readFileSync(mdPath, 'utf-8');
+  // 既存タグ行があれば除去
+  finalRaw = finalRaw.replace(/\n#.+$/m, '');
+  const tags = await generateTagsFromContent(finalRaw);
+  finalRaw = finalRaw.trim() + '\n\n\n\n' + tags + '\n';
+  fs.writeFileSync(mdPath, finalRaw, 'utf-8');
+  console.log(`記事末尾にタグを自動付与しました: ${tags}`);
 }
 
 // メイン処理

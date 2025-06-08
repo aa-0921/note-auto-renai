@@ -1,3 +1,5 @@
+// 記事のセクションの文字数をチェックする
+
 const fs = require('fs');
 
 function checkSectionLengths(mdPath, minLength = 200) {
