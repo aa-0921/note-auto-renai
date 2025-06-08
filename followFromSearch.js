@@ -81,13 +81,23 @@ const { login } = require('./noteAutoDraftAndSheetUpdate');
       }
     }
     try {
-      console.log('クリック前: scrollIntoView開始');
-      await targetBtn.evaluate(el => el.scrollIntoView({ behavior: 'auto', block: 'center' }));
-      console.log('クリック前: scrollIntoView完了');
-      console.log('クリック前: clickイベント発火');
-      await targetBtn.evaluate(el => el.click());
+      // クリック前: 画面内に移動
+      const isInView = await targetBtn.isIntersectingViewport();
+      if (!isInView) {
+        await targetBtn.evaluate(el => el.scrollIntoView({ behavior: 'auto', block: 'center' }));
+        console.log('クリック前: scrollIntoView実行（画面外だったため）');
+      } else {
+        console.log('クリック前: すでに画面内にボタンがあります');
+      }
+      console.log('クリック前: clickイベント発火（Puppeteerのclick()使用）');
+      await targetBtn.click();
       console.log('クリック後: clickイベント完了');
       clickCount++;
+
+      // クリック後にボタンのテキスト変化を確認
+      await new Promise(resolve => setTimeout(resolve, 1000)); // 1秒待機してから再取得
+      const afterText = await targetBtn.evaluate(el => el.innerText.trim());
+      console.log(`クリック後のボタンテキスト: ${afterText}`);
 
       // フォローに成功する場合はフォローしたクリエイター名を表示する
       console.log('クリエイター名取得開始');
