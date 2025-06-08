@@ -33,11 +33,11 @@ const { login } = require('./noteAutoDraftAndSheetUpdate');
   console.log('クリエイター検索ページへ遷移します:', targetUrl);
   await page.goto(targetUrl, { waitUntil: 'domcontentloaded', timeout: 60000 });
   // ページ遷移後にランダム待機（10〜30秒）
-  {
-    const waitMs = 10000 + Math.floor(Math.random() * 20000);
-    console.log(`ページ遷移後: ${waitMs / 1000}秒待機します`);
-    await new Promise(resolve => setTimeout(resolve, waitMs));
-  }
+  // {
+  //   const waitMs = 10000 + Math.floor(Math.random() * 20000);
+  //   console.log(`ページ遷移後: ${waitMs / 1000}秒待機します`);
+  //   await new Promise(resolve => setTimeout(resolve, waitMs));
+  // }
   console.log('ページ遷移完了');
 
   const MAX_CLICKS = 13;
@@ -53,12 +53,7 @@ const { login } = require('./noteAutoDraftAndSheetUpdate');
     }
     // 検索ページに遷移
     await page.goto(targetUrl, { waitUntil: 'domcontentloaded', timeout: 60000 });
-    // ページ遷移後にランダム待機（10〜30秒）
-    {
-      const waitMs = 10000 + Math.floor(Math.random() * 20000);
-      console.log(`ページ遷移後: ${waitMs / 1000}秒待機します`);
-      await new Promise(resolve => setTimeout(resolve, waitMs));
-    }
+    // ページ遷移後のランダム待機は削除
 
     let targetBtn = null;
     for (let scroll = 0; scroll < maxScrolls; scroll++) {
@@ -103,8 +98,12 @@ const { login } = require('./noteAutoDraftAndSheetUpdate');
       } else {
         console.log('クリック前: すでに画面内にボタンがあります');
       }
-      console.log('クリック前: clickイベント発火（Puppeteerのclick()使用）');
-      await targetBtn.click();
+      console.log('クリック前: 本当のユーザー操作をエミュレートしてクリック');
+      await page.evaluate(el => {
+        el.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, cancelable: true, view: window }));
+        el.dispatchEvent(new MouseEvent('mouseup', { bubbles: true, cancelable: true, view: window }));
+        el.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
+      }, targetBtn);
       console.log('クリック後: clickイベント完了');
       clickCount++;
 
@@ -121,10 +120,6 @@ const { login } = require('./noteAutoDraftAndSheetUpdate');
       });
       console.log('クリエイター名取得完了');
       console.log(`フォローボタン${clickCount}件目をクリックしました｜クリエイター名: ${creatorName}`);
-      // クリック後のランダム待機（10〜30秒）
-      const waitMs = 10000 + Math.floor(Math.random() * 20000);
-      console.log(`クリック後: ${waitMs / 1000}秒待機します`);
-      await new Promise(resolve => setTimeout(resolve, waitMs));
     } catch (e) {
       // 失敗時に1回だけリトライ
       try {
@@ -140,10 +135,6 @@ const { login } = require('./noteAutoDraftAndSheetUpdate');
         });
         console.log('リトライ: クリエイター名取得完了');
         console.log(`リトライ成功: フォローボタン${clickCount}件目をクリックしました｜クリエイター名: ${creatorName}`);
-        // リトライ後のランダム待機（10〜30秒）
-        const waitMs = 10000 + Math.floor(Math.random() * 20000);
-        console.log(`リトライ後: ${waitMs / 1000}秒待機します`);
-        await new Promise(resolve => setTimeout(resolve, waitMs));
       } catch (e2) {
         totalFailures++;
         console.error(`フォローボタン${i + 1}のクリックに失敗しました（リトライも失敗）:`, e2.message, e2);
