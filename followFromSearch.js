@@ -95,9 +95,9 @@ const { login } = require('./noteAutoDraftAndSheetUpdate');
       clickCount++;
 
       // クリック後にボタンのテキスト変化を確認
-      await new Promise(resolve => setTimeout(resolve, 1000)); // 1秒待機してから再取得
-      const afterText = await targetBtn.evaluate(el => el.innerText.trim());
-      console.log(`クリック後のボタンテキスト: ${afterText}`);
+      // await new Promise(resolve => setTimeout(resolve, 1000)); // 1秒待機してから再取得
+      // const afterText = await targetBtn.evaluate(el => el.innerText.trim());
+      // console.log(`クリック後のボタンテキスト: ${afterText}`);
 
       // フォローに成功する場合はフォローしたクリエイター名を表示する
       console.log('クリエイター名取得開始');
