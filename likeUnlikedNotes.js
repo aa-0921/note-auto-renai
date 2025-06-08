@@ -52,7 +52,7 @@ const { login } = require('./noteAutoDraftAndSheetUpdate'); // login関数をexp
 
   // ページ内で「スキされていない」ハートを最大40件クリック
   console.log('「スキされていない」ハートアイコンを取得し、クリックします');
-  const maxLikes = 40;
+  const maxLikes = 24;
   const unlikedButtons = await page.$$('i.o-noteLikeV3__icon.a-icon.a-icon--heart.a-icon--size_mediumSmall');
   const likeCount = Math.min(maxLikes, unlikedButtons.length);
   console.log(`これから${likeCount}件のスキを付けます。`);
