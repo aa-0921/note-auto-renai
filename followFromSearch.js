@@ -8,7 +8,7 @@ const { login } = require('./noteAutoDraftAndSheetUpdate');
   const browser = await puppeteer.launch({
     headless: isCI ? 'old' : false,
     slowMo: 100,
-    protocolTimeout: 30000,
+    protocolTimeout: 120000,
     args: [
       '--no-sandbox',
       '--disable-setuid-sandbox',
@@ -54,6 +54,16 @@ const { login } = require('./noteAutoDraftAndSheetUpdate');
     const btn = followBtns[i];
     const text = await btn.evaluate(el => el.innerText.trim());
     if (text === 'フォロー') {
+      // 本番環境ではクリック前にボタンが表示されているか明示的に待つ
+      if (isCI) {
+        try {
+          await page.waitForSelector('button.a-button', { visible: true, timeout: 15000 });
+        } catch (e) {
+          console.log('クリック前のwaitForSelectorでタイムアウト:', e.message);
+          totalFailures++;
+          continue;
+        }
+      }
       try {
         // クリック前にボタンが有効か確認
         const isDisabled = await btn.evaluate(el => el.disabled);
@@ -73,18 +83,22 @@ const { login } = require('./noteAutoDraftAndSheetUpdate');
           return nameElem ? nameElem.textContent.trim() : 'クリエイター名不明';
         });
         console.log(`フォローボタン${clickCount}件目をクリックしました｜クリエイター名: ${creatorName}`);
-        await new Promise(resolve => setTimeout(resolve, 5000)); // 5秒待機
+        await new Promise(resolve => setTimeout(resolve, 7000)); // 7秒待機
       } catch (e) {
         // 失敗時に1回だけリトライ
         try {
           console.log(`クリック失敗、リトライします:`, e.message);
           await btn.evaluate(el => el.click());
           clickCount++;
-          console.log(`リトライ成功: フォローボタン${clickCount}件目をクリックしました`);
-          await new Promise(resolve => setTimeout(resolve, 5000));
+          const creatorName = await btn.evaluate(el => {
+            const nameElem = el.closest('.m-userListItem')?.querySelector('.m-userListItem__nameLabel');
+            return nameElem ? nameElem.textContent.trim() : 'クリエイター名不明';
+          });
+          console.log(`リトライ成功: フォローボタン${clickCount}件目をクリックしました｜クリエイター名: ${creatorName}`);
+          await new Promise(resolve => setTimeout(resolve, 7000));
         } catch (e2) {
           totalFailures++;
-          console.log(`フォローボタン${i + 1}のクリックに失敗しました（リトライも失敗）:`, e2.message);
+          console.error(`フォローボタン${i + 1}のクリックに失敗しました（リトライも失敗）:`, e2.message, e2);
         }
       }
     }
