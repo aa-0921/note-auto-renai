@@ -32,35 +32,36 @@ const { login } = require('./noteAutoDraftAndSheetUpdate');
   await page.goto(targetUrl, { waitUntil: 'networkidle2' });
   console.log('ページ遷移完了');
 
-  // 5回下までスクロール
-  for (let i = 0; i < 10; i++) {
-    console.log(`下までスクロールします (${i + 1}/5)`);
-    await page.evaluate(() => {
-      window.scrollTo(0, document.body.scrollHeight);
-    });
-    await new Promise(resolve => setTimeout(resolve, 1500));
-  }
-  console.log('スクロール完了');
-
   const MAX_CLICKS = 13;
   let clickCount = 0;
   let totalFailures = 0;
   const maxFailures = 2;
+  const maxScrolls = 20; // 安全のため最大スクロール回数を設定
   for (let i = 0; i < MAX_CLICKS; i++) {
     console.log(`${i + 1}回目の繰り返しが開始しました`);
     if (totalFailures >= maxFailures) {
       console.log(`クリックに累計${maxFailures}回失敗したため、処理を中断します。`);
       break;
     }
-    // 最新の「フォロー」ボタンを毎回取得
-    const btns = await page.$$('button.a-button');
+    // 検索ページに遷移
+    await page.goto(targetUrl, { waitUntil: 'networkidle2' });
+
     let targetBtn = null;
-    for (const btn of btns) {
-      const text = await btn.evaluate(el => el.innerText.trim());
-      if (text === 'フォロー') {
-        targetBtn = btn;
-        break;
+    for (let scroll = 0; scroll < maxScrolls; scroll++) {
+      // スクロール
+      console.log(`下までスクロールします (${scroll + 1}/${maxScrolls})`);
+      await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      // ボタン検索
+      const btns = await page.$$('button.a-button');
+      for (const btn of btns) {
+        const text = await btn.evaluate(el => el.innerText.trim());
+        if (text === 'フォロー') {
+          targetBtn = btn;
+          break;
+        }
       }
+      if (targetBtn) break;
     }
     if (!targetBtn) {
       console.log('フォロー可能なボタンが見つかりません。');
