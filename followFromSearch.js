@@ -42,90 +42,86 @@ const { login } = require('./noteAutoDraftAndSheetUpdate');
   }
   console.log('スクロール完了');
 
-  // フォローボタンを取得
+  // 「フォロー」ボタンのみを取得
   const followBtns = await page.$$('button.a-button');
-  console.log(`フォローボタンを${followBtns.length}件検出しました`);
+  // テキストが「フォロー」のボタンだけに絞り込む
+  const filteredFollowBtns = [];
+  for (const btn of followBtns) {
+    const text = await btn.evaluate(el => el.innerText.trim());
+    if (text === 'フォロー') filteredFollowBtns.push(btn);
+  }
+  console.log(`「フォロー」ボタンを${filteredFollowBtns.length}件検出しました`);
 
   const MAX_CLICKS = 13;
   let clickCount = 0;
   let totalFailures = 0;
   const maxFailures = 2;
-  for (let i = 0; i < followBtns.length && clickCount < MAX_CLICKS; i++) {
+  for (let i = 0; i < filteredFollowBtns.length && clickCount < MAX_CLICKS; i++) {
     console.log(`${i + 1}回目の繰り返しが開始しました`);
     if (totalFailures >= maxFailures) {
       console.log(`クリックに累計${maxFailures}回失敗したため、処理を中断します。`);
       break;
     }
-    const btn = followBtns[i];
+    const btn = filteredFollowBtns[i];
     console.log(`ボタン取得: ${i + 1}件目 btn!=null:`, btn != null);
     const text = await btn.evaluate(el => el.innerText.trim());
     console.log(`ボタン取得: ${i + 1}件目 text=`, text);
-    if (text === 'フォロー') {
-      // 本番環境ではクリック前にボタンが表示されているか明示的に待つ
-      if (isCI) {
-        try {
-          console.log('クリック前: waitForSelector開始');
-          await page.waitForSelector('button.a-button', { visible: true, timeout: 15000 });
-          console.log('クリック前: waitForSelector成功');
-        } catch (e) {
-          console.log('クリック前のwaitForSelectorでタイムアウト:', e.message);
-          totalFailures++;
-          continue;
-        }
-      }
+    if (isCI) {
       try {
-        console.log('クリック前: ボタン有効判定開始');
-        const isDisabled = await btn.evaluate(el => el.disabled);
-        console.log('クリック前: ボタン有効判定完了');
-        if (isDisabled) {
-          console.log(`フォローボタン${i + 1}は無効化されています。スキップします。`);
-          continue;
-        }
-        console.log('クリック前: scrollIntoView開始');
-        await btn.evaluate(el => el.scrollIntoView({ behavior: 'auto', block: 'center' }));
-        console.log('クリック前: scrollIntoView完了');
-        console.log('クリック前: clickイベント発火');
-        await btn.evaluate(el => el.click());
-        console.log('クリック後: clickイベント完了');
-        clickCount++;
+        console.log('クリック前: waitForSelector開始');
+        await page.waitForSelector('button.a-button', { visible: true, timeout: 15000 });
+        console.log('クリック前: waitForSelector成功');
+      } catch (e) {
+        console.log('クリック前のwaitForSelectorでタイムアウト:', e.message);
+        totalFailures++;
+        continue;
+      }
+    }
+    try {
+      console.log('クリック前: scrollIntoView開始');
+      await btn.evaluate(el => el.scrollIntoView({ behavior: 'auto', block: 'center' }));
+      console.log('クリック前: scrollIntoView完了');
+      console.log('クリック前: clickイベント発火');
+      await btn.evaluate(el => el.click());
+      console.log('クリック後: clickイベント完了');
+      clickCount++;
 
-        // フォローに成功する場合はフォローしたクリエイター名を表示する
-        console.log('クリエイター名取得開始');
+      // フォローに成功する場合はフォローしたクリエイター名を表示する
+      console.log('クリエイター名取得開始');
+      const creatorName = await btn.evaluate(el => {
+        const nameElem = el.closest('.m-userListItem')?.querySelector('.m-userListItem__nameLabel');
+        return nameElem ? nameElem.textContent.trim() : 'クリエイター名不明';
+      });
+      console.log('クリエイター名取得完了');
+      console.log(`フォローボタン${clickCount}件目をクリックしました｜クリエイター名: ${creatorName}`);
+      console.log('クリック後: 7秒待機開始');
+      await new Promise(resolve => setTimeout(resolve, 7000)); // 7秒待機
+      console.log('クリック後: 7秒待機完了');
+    } catch (e) {
+      // 失敗時に1回だけリトライ
+      try {
+        console.log(`クリック失敗、リトライします:`, e.message);
+        console.log('リトライ: clickイベント発火');
+        await btn.evaluate(el => el.click());
+        console.log('リトライ: clickイベント完了');
+        clickCount++;
+        console.log('リトライ: クリエイター名取得開始');
         const creatorName = await btn.evaluate(el => {
           const nameElem = el.closest('.m-userListItem')?.querySelector('.m-userListItem__nameLabel');
           return nameElem ? nameElem.textContent.trim() : 'クリエイター名不明';
         });
-        console.log('クリエイター名取得完了');
-        console.log(`フォローボタン${clickCount}件目をクリックしました｜クリエイター名: ${creatorName}`);
-        console.log('クリック後: 7秒待機開始');
-        await new Promise(resolve => setTimeout(resolve, 7000)); // 7秒待機
-        console.log('クリック後: 7秒待機完了');
-      } catch (e) {
-        // 失敗時に1回だけリトライ
-        try {
-          console.log(`クリック失敗、リトライします:`, e.message);
-          console.log('リトライ: clickイベント発火');
-          await btn.evaluate(el => el.click());
-          console.log('リトライ: clickイベント完了');
-          clickCount++;
-          console.log('リトライ: クリエイター名取得開始');
-          const creatorName = await btn.evaluate(el => {
-            const nameElem = el.closest('.m-userListItem')?.querySelector('.m-userListItem__nameLabel');
-            return nameElem ? nameElem.textContent.trim() : 'クリエイター名不明';
-          });
-          console.log('リトライ: クリエイター名取得完了');
-          console.log(`リトライ成功: フォローボタン${clickCount}件目をクリックしました｜クリエイター名: ${creatorName}`);
-          console.log('リトライ: 7秒待機開始');
-          await new Promise(resolve => setTimeout(resolve, 7000));
-          console.log('リトライ: 7秒待機完了');
-        } catch (e2) {
-          totalFailures++;
-          console.error(`フォローボタン${i + 1}のクリックに失敗しました（リトライも失敗）:`, e2.message, e2);
-        }
+        console.log('リトライ: クリエイター名取得完了');
+        console.log(`リトライ成功: フォローボタン${clickCount}件目をクリックしました｜クリエイター名: ${creatorName}`);
+        console.log('リトライ: 7秒待機開始');
+        await new Promise(resolve => setTimeout(resolve, 7000));
+        console.log('リトライ: 7秒待機完了');
+      } catch (e2) {
+        totalFailures++;
+        console.error(`フォローボタン${i + 1}のクリックに失敗しました（リトライも失敗）:`, e2.message, e2);
       }
     }
   }
   console.log(`フォロー処理が完了しました。合計${clickCount}件フォローしました。`);
   await browser.close();
   console.log('ブラウザを閉じました');
-})(); 
+})();
