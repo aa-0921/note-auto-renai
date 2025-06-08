@@ -51,12 +51,15 @@ const { login } = require('./noteAutoDraftAndSheetUpdate');
   let totalFailures = 0;
   const maxFailures = 2;
   for (let i = 0; i < followBtns.length && clickCount < MAX_CLICKS; i++) {
+    console.log(`${i + 1}回目の繰り返しが開始しました`);
     if (totalFailures >= maxFailures) {
       console.log(`クリックに累計${maxFailures}回失敗したため、処理を中断します。`);
       break;
     }
     const btn = followBtns[i];
+    console.log(`ボタン取得: ${i + 1}件目 btn!=null:`, btn != null);
     const text = await btn.evaluate(el => el.innerText.trim());
+    console.log(`ボタン取得: ${i + 1}件目 text=`, text);
     if (text === 'フォロー') {
       // 本番環境ではクリック前にボタンが表示されているか明示的に待つ
       if (isCI) {
