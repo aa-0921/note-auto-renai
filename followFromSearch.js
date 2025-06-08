@@ -33,7 +33,7 @@ const { login } = require('./noteAutoDraftAndSheetUpdate');
   console.log('ページ遷移完了');
 
   // 5回下までスクロール
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 10; i++) {
     console.log(`下までスクロールします (${i + 1}/5)`);
     await page.evaluate(() => {
       window.scrollTo(0, document.body.scrollHeight);
