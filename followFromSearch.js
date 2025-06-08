@@ -107,9 +107,9 @@ const { login } = require('./noteAutoDraftAndSheetUpdate');
       });
       console.log('クリエイター名取得完了');
       console.log(`フォローボタン${clickCount}件目をクリックしました｜クリエイター名: ${creatorName}`);
-      console.log('クリック後: 7秒待機開始');
-      await new Promise(resolve => setTimeout(resolve, 7000)); // 7秒待機
-      console.log('クリック後: 7秒待機完了');
+      // console.log('クリック後: 7秒待機開始');
+      // await new Promise(resolve => setTimeout(resolve, 7000)); // 7秒待機
+      // console.log('クリック後: 7秒待機完了');
     } catch (e) {
       // 失敗時に1回だけリトライ
       try {
@@ -125,9 +125,9 @@ const { login } = require('./noteAutoDraftAndSheetUpdate');
         });
         console.log('リトライ: クリエイター名取得完了');
         console.log(`リトライ成功: フォローボタン${clickCount}件目をクリックしました｜クリエイター名: ${creatorName}`);
-        console.log('リトライ: 7秒待機開始');
-        await new Promise(resolve => setTimeout(resolve, 7000));
-        console.log('リトライ: 7秒待機完了');
+        // console.log('リトライ: 7秒待機開始');
+        // await new Promise(resolve => setTimeout(resolve, 7000));
+        // console.log('リトライ: 7秒待機完了');
       } catch (e2) {
         totalFailures++;
         console.error(`フォローボタン${i + 1}のクリックに失敗しました（リトライも失敗）:`, e2.message, e2);
