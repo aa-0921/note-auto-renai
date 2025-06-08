@@ -7,7 +7,11 @@ const { login } = require('./noteAutoDraftAndSheetUpdate');
   const isCI = process.env.CI === 'true';
   const browser = await puppeteer.launch({
     headless: isCI ? 'old' : false,
-    slowMo: 100,
+    // 各操作（クリック・入力・ページ遷移など）ごとに、指定したミリ秒だけ「わざと遅延」を入れるための設定です。
+    // たとえば slowMo: 100 とすると、すべてのPuppeteerの操作の間に100ミリ秒（0.1秒）ずつ待つようになります。
+    
+    // 一旦コメントアウト
+    // slowMo: 100,
     protocolTimeout: 120000,
     args: [
       '--no-sandbox',
