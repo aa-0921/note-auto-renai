@@ -68,8 +68,10 @@ const { login } = require('./noteAutoDraftAndSheetUpdate');
     await detailPage.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36');
     try {
       await detailPage.goto(link, { waitUntil: 'domcontentloaded', timeout: 60000 });
-      // ボタンを取得（テキストで判定）
-      const btns = await detailPage.$$('button');
+      // ボタンが出現するまで待機
+      await detailPage.waitForSelector('button', { visible: true, timeout: 10000 });
+      // ボタン取得
+      let btns = await detailPage.$$('button');
       let btn = null;
       for (const b of btns) {
         const text = await b.evaluate(el => el.innerText.trim());
@@ -83,6 +85,18 @@ const { login } = require('./noteAutoDraftAndSheetUpdate');
         await detailPage.close();
         continue;
       }
+      // 取得直後に100ms待機し、再取得
+      // await new Promise(resolve => setTimeout(resolve, 100));
+      // btns = await detailPage.$$('button');
+      // let btn2 = null;
+      // for (const b of btns) {
+      //   const text = await b.evaluate(el => el.innerText.trim());
+      //   if (text === 'フォロー') {
+      //     btn2 = b;
+      //     break;
+      //   }
+      // }
+      // if (btn2) btn = btn2;
       // 画面内に移動
       const isInView = await btn.isIntersectingViewport();
       if (!isInView) {
@@ -95,10 +109,10 @@ const { login } = require('./noteAutoDraftAndSheetUpdate');
         el.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
       }, btn);
       clickCount++;
-      // クリエイター名取得
+      // クリエイター名取得（h1.break-all.font-bold.text-text-primary.md\:text-lg）
       const creatorName = await detailPage.evaluate(() => {
-        const nameElem = document.querySelector('.m-creatorHeader__userName, .m-userHeader__userName, .m-userHeader__nameLabel');
-        return nameElem ? nameElem.textContent.trim() : 'クリエイター名不明';
+        const h1 = document.querySelector('h1.break-all.font-bold.text-text-primary.md\\:text-lg');
+        return h1 ? h1.textContent.trim() : 'クリエイター名不明';
       });
       console.log(`フォローボタン${clickCount}件目をクリックしました｜クリエイター名: ${creatorName}`);
     } catch (e) {
