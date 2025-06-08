@@ -42,28 +42,32 @@ const { login } = require('./noteAutoDraftAndSheetUpdate');
   }
   console.log('スクロール完了');
 
-  // 「フォロー」ボタンのみを取得
-  const followBtns = await page.$$('button.a-button');
-  // テキストが「フォロー」のボタンだけに絞り込む
-  const filteredFollowBtns = [];
-  for (const btn of followBtns) {
-    const text = await btn.evaluate(el => el.innerText.trim());
-    if (text === 'フォロー') filteredFollowBtns.push(btn);
-  }
-  console.log(`「フォロー」ボタンを${filteredFollowBtns.length}件検出しました`);
-
   const MAX_CLICKS = 13;
   let clickCount = 0;
   let totalFailures = 0;
   const maxFailures = 2;
-  for (let i = 0; i < filteredFollowBtns.length && clickCount < MAX_CLICKS; i++) {
+  for (let i = 0; i < MAX_CLICKS; i++) {
     console.log(`${i + 1}回目の繰り返しが開始しました`);
     if (totalFailures >= maxFailures) {
       console.log(`クリックに累計${maxFailures}回失敗したため、処理を中断します。`);
       break;
     }
-    const btn = filteredFollowBtns[i];
-    console.log(`ボタン取得: ${i + 1}件目 btn!=null:`, btn != null);
+    // 最新の「フォロー」ボタンを毎回取得
+    const btns = await page.$$('button.a-button');
+    let targetBtn = null;
+    for (const btn of btns) {
+      const text = await btn.evaluate(el => el.innerText.trim());
+      if (text === 'フォロー') {
+        targetBtn = btn;
+        break;
+      }
+    }
+    if (!targetBtn) {
+      console.log('フォロー可能なボタンが見つかりません。');
+      break;
+    }
+    console.log(`ボタン取得: ${i + 1}件目 btn!=null:`, targetBtn != null);
+    // 本番環境ではクリック前にボタンが表示されているか明示的に待つ
     if (isCI) {
       try {
         console.log('クリック前: waitForSelector開始');
@@ -77,16 +81,16 @@ const { login } = require('./noteAutoDraftAndSheetUpdate');
     }
     try {
       console.log('クリック前: scrollIntoView開始');
-      await btn.evaluate(el => el.scrollIntoView({ behavior: 'auto', block: 'center' }));
+      await targetBtn.evaluate(el => el.scrollIntoView({ behavior: 'auto', block: 'center' }));
       console.log('クリック前: scrollIntoView完了');
       console.log('クリック前: clickイベント発火');
-      await btn.evaluate(el => el.click());
+      await targetBtn.evaluate(el => el.click());
       console.log('クリック後: clickイベント完了');
       clickCount++;
 
       // フォローに成功する場合はフォローしたクリエイター名を表示する
       console.log('クリエイター名取得開始');
-      const creatorName = await btn.evaluate(el => {
+      const creatorName = await targetBtn.evaluate(el => {
         const nameElem = el.closest('.m-userListItem')?.querySelector('.m-userListItem__nameLabel');
         return nameElem ? nameElem.textContent.trim() : 'クリエイター名不明';
       });
@@ -100,11 +104,11 @@ const { login } = require('./noteAutoDraftAndSheetUpdate');
       try {
         console.log(`クリック失敗、リトライします:`, e.message);
         console.log('リトライ: clickイベント発火');
-        await btn.evaluate(el => el.click());
+        await targetBtn.evaluate(el => el.click());
         console.log('リトライ: clickイベント完了');
         clickCount++;
         console.log('リトライ: クリエイター名取得開始');
-        const creatorName = await btn.evaluate(el => {
+        const creatorName = await targetBtn.evaluate(el => {
           const nameElem = el.closest('.m-userListItem')?.querySelector('.m-userListItem__nameLabel');
           return nameElem ? nameElem.textContent.trim() : 'クリエイター名不明';
         });
