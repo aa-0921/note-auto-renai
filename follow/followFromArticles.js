@@ -1,3 +1,8 @@
+// はじめてのnoteページの記事一覧から、クリックして遷移
+// フォローする、という流れ
+// アクティブで、フォロバしてくれそうなユーザーをフォローする上ではこの形が良さそう
+
+
 require('dotenv').config();
 const puppeteer = require('puppeteer');
 const { login } = require('../noteAutoDraftAndSheetUpdate');
@@ -22,6 +27,7 @@ const { login } = require('../noteAutoDraftAndSheetUpdate');
   await login(page, process.env.NOTE_EMAIL, process.env.NOTE_PASSWORD);
   console.log('ログイン完了');
 
+  // はじめてのnoteのページ
   const targetUrl = 'https://note.com/interests/%E3%81%AF%E3%81%98%E3%82%81%E3%81%A6%E3%81%AEnote';
   console.log('対象ページへ遷移します:', targetUrl);
   await page.goto(targetUrl, { waitUntil: 'networkidle2' });
