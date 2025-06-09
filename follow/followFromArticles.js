@@ -90,25 +90,41 @@ const { login } = require('../noteAutoDraftAndSheetUpdate');
           let consecutiveFailures = 0;
 
           // 1. クリック処理（スクロール成功時のみ）
+          console.log('クリック処理開始');
           if (success) {
             try {
-              console.log('フォローボタンをクリックします');
-              await followBtn.click();
+              console.log('クリック前: フォローボタンが画面内か確認');
+              const isInView = await followBtn.isIntersectingViewport();
+              if (!isInView) {
+                console.log('クリック前: scrollIntoView実行');
+                await followBtn.evaluate(el => el.scrollIntoView({ behavior: 'auto', block: 'center' }));
+              } else {
+                console.log('クリック前: すでに画面内');
+              }
+              console.log('クリック前: clickイベント発火');
+              await page.evaluate(el => {
+                el.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, cancelable: true, view: window }));
+                el.dispatchEvent(new MouseEvent('mouseup', { bubbles: true, cancelable: true, view: window }));
+                el.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
+              }, followBtn);
+              console.log('クリック後: clickイベント完了');
               consecutiveFailures = 0; // 成功時は連続失敗回数をリセット
             } catch (e) {
-              console.log('クリック処理で失敗しました:', e.message);
-              consecutiveFailures++; // ここは実際のエラーなのでカウント
+              console.log('クリック処理で失敗:', e.message);
+              consecutiveFailures++;
               success = false;
             }
           }
 
           // 2. 記事情報取得（クリック成功時のみ）
+          console.log('記事情報取得処理開始');
           if (success) {
             try {
-              console.log('記事情報を取得します');
-              // タイトル要素が現れるまで最大10秒待機
+              console.log('記事情報取得: タイトル要素待機開始');
               await page.waitForSelector('h1.o-noteContentHeader__title', { timeout: 10000 });
+              console.log('記事情報取得: タイトル要素出現');
               await new Promise(resolve => setTimeout(resolve, 500)); // 追加で少し待機
+              console.log('記事情報取得: page.evaluate実行');
               const info = await page.evaluate(() => {
                 const titleElem = document.querySelector('h1.o-noteContentHeader__title');
                 const title = titleElem ? titleElem.textContent.trim() : 'タイトル不明';
@@ -116,15 +132,18 @@ const { login } = require('../noteAutoDraftAndSheetUpdate');
                 const user = userElem ? userElem.textContent.trim() : '投稿者不明';
                 return { title, user };
               });
+              console.log('記事情報取得: page.evaluate完了');
               console.log(`フォローボタンをクリックしました（${followCount + 1}件目）｜ ■ タイトル: ${info.title} ■ 投稿者: ${info.user}`);
               followCount++;
+              console.log('記事情報取得: 1秒待機開始');
               await new Promise(resolve => setTimeout(resolve, 1000));
+              console.log('記事情報取得: 1秒待機完了');
             } catch (e) {
-              console.log('記事情報取得で失敗しました:', e.message);
+              console.log('記事情報取得で失敗:', e.message);
               // 必要ならHTMLの一部を出力してデバッグ
               // const html = await page.content();
               // console.log(html.slice(0, 1000));
-              consecutiveFailures++; // ここは実際のエラーなのでカウント
+              consecutiveFailures++;
             }
           }
         })(), 60000); // 1記事ごとに1分タイムアウト
