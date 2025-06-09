@@ -27,21 +27,24 @@ const { login } = require('../noteAutoDraftAndSheetUpdate');
   await login(page, process.env.NOTE_EMAIL, process.env.NOTE_PASSWORD);
   console.log('ログイン完了');
 
+
   // はじめてのnoteのページ
   const targetUrl = 'https://note.com/interests/%E3%81%AF%E3%81%98%E3%82%81%E3%81%A6%E3%81%AEnote';
   console.log('対象ページへ遷移します:', targetUrl);
   await page.goto(targetUrl, { waitUntil: 'networkidle2' });
   console.log('ページ遷移完了');
 
+
   // 記事一覧ページで5回スクロール
   for (let i = 0; i < 10; i++) {
-    console.log(`下までスクロールします (${i + 1}/5)`);
+    console.log(`下までスクロールします (${i + 1}/10)`);
     await page.evaluate(() => {
       window.scrollTo(0, document.body.scrollHeight);
     });
     await new Promise(resolve => setTimeout(resolve, 1500));
   }
   console.log('スクロール完了');
+
 
   // 記事リンクを取得
   const articleLinks = await page.$$eval('a.m-largeNoteWrapper__link', links => links.map(a => a.href));
@@ -50,7 +53,7 @@ const { login } = require('../noteAutoDraftAndSheetUpdate');
   let followCount = 0;
   let consecutiveFailures = 0; // 連続失敗回数
   const maxConsecutiveFailures = 3; // 最大連続失敗回数
-  
+
   for (let i = 0; i < articleLinks.length && followCount < 15; i++) {
     // 連続失敗が上限に達したら停止
     if (consecutiveFailures >= maxConsecutiveFailures) {
@@ -61,7 +64,7 @@ const { login } = require('../noteAutoDraftAndSheetUpdate');
     console.log(`記事${i + 1}へ遷移します: ${articleLinks[i]}`);
     await page.goto(articleLinks[i], { waitUntil: 'networkidle2' });
     await new Promise(resolve => setTimeout(resolve, 1000)); // 待機時間を2秒に延長
-    
+
     // フォローボタン（記事詳細ページのbutton.o-noteContentHeader__actionFollow）を即時取得
     let followBtn = await page.$('button.o-noteContentHeader__actionFollow');
     if (!followBtn) {
@@ -71,7 +74,7 @@ const { login } = require('../noteAutoDraftAndSheetUpdate');
       await new Promise(resolve => setTimeout(resolve, 1000));
       continue;
     }
-    
+
     if (followBtn) {
       let success = true;
 
@@ -92,7 +95,9 @@ const { login } = require('../noteAutoDraftAndSheetUpdate');
       if (success) {
         try {
           console.log('記事情報を取得します');
-          await new Promise(resolve => setTimeout(resolve, 1500));
+          // タイトル要素が現れるまで最大10秒待機
+          await page.waitForSelector('h1.o-noteContentHeader__title', { timeout: 10000 });
+          await new Promise(resolve => setTimeout(resolve, 500)); // 追加で少し待機
           const info = await page.evaluate(() => {
             const titleElem = document.querySelector('h1.o-noteContentHeader__title');
             const title = titleElem ? titleElem.textContent.trim() : 'タイトル不明';
@@ -100,16 +105,20 @@ const { login } = require('../noteAutoDraftAndSheetUpdate');
             const user = userElem ? userElem.textContent.trim() : '投稿者不明';
             return { title, user };
           });
-
           console.log(`フォローボタンをクリックしました（${followCount + 1}件目）｜ ■ タイトル: ${info.title} ■ 投稿者: ${info.user}`);
           followCount++;
           await new Promise(resolve => setTimeout(resolve, 1000));
         } catch (e) {
           console.log('記事情報取得で失敗しました:', e.message);
+          // 必要ならHTMLの一部を出力してデバッグ
+          // const html = await page.content();
+          // console.log(html.slice(0, 1000));
           consecutiveFailures++; // ここは実際のエラーなのでカウント
         }
       }
     }
+    
+    
 
     // 一覧ページに戻る
     await page.goto(targetUrl, { waitUntil: 'networkidle2' });
