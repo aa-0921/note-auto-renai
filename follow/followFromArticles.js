@@ -63,109 +63,92 @@ const { login } = require('../noteAutoDraftAndSheetUpdate');
   }
 
   for (let i = 0; i < articleLinks.length && followCount < 15; i++) {
-    // 連続失敗が上限に達したら停止
-    if (consecutiveFailures >= maxConsecutiveFailures) {
-      console.log(`連続${maxConsecutiveFailures}回失敗したため、処理を停止します。`);
-      break;
-    }
-
-    console.log(`記事${i + 1}へ遷移します: ${articleLinks[i]}`);
-    await page.goto(articleLinks[i], { waitUntil: 'networkidle2' });
-    await new Promise(resolve => setTimeout(resolve, 1000)); // 待機時間を2秒に延長
-
-    // フォローボタン（記事詳細ページのbutton.o-noteContentHeader__actionFollow）を即時取得
-    let followBtn = await page.$('button.o-noteContentHeader__actionFollow');
-    if (!followBtn) {
-      console.log('フォローボタンが見つかりませんでした（すでにフォロー済み、またはボタンが存在しません）');
-      // 一覧ページに戻る
-      await page.goto(targetUrl, { waitUntil: 'networkidle2' });
-      await new Promise(resolve => setTimeout(resolve, 1000));
+    const link = articleLinks[i];
+    console.log(`記事${i + 1}へ遷移します: ${link}`);
+    let followBtn = null;
+    try {
+      await withTimeout((async () => {
+        // 新しいタブ（ページ）を開く
+        const detailPage = await browser.newPage();
+        await detailPage.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36');
+        console.log('新しいタブで記事詳細ページへ遷移します');
+        await detailPage.goto(link, { waitUntil: 'domcontentloaded', timeout: 60000 });
+        // フォローボタンが出現するまで待機
+        await detailPage.waitForSelector('button', { visible: true, timeout: 10000 });
+        // ボタン取得
+        const btns = await detailPage.$$('button');
+        for (const b of btns) {
+          const text = await b.evaluate(el => el.innerText.trim());
+          if (text === 'フォロー') {
+            followBtn = b;
+            break;
+          }
+        }
+        if (followBtn) {
+          // クリック処理
+          console.log('クリック処理開始');
+          try {
+            console.log('クリック前: フォローボタンが画面内か確認');
+            const isInView = await followBtn.isIntersectingViewport();
+            if (!isInView) {
+              console.log('クリック前: scrollIntoView実行');
+              await followBtn.evaluate(el => el.scrollIntoView({ behavior: 'auto', block: 'center' }));
+            } else {
+              console.log('クリック前: すでに画面内');
+            }
+            console.log('クリック前: clickイベント発火');
+            await detailPage.evaluate(el => {
+              el.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, cancelable: true, view: window }));
+              el.dispatchEvent(new MouseEvent('mouseup', { bubbles: true, cancelable: true, view: window }));
+              el.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
+            }, followBtn);
+            console.log('クリック後: clickイベント完了');
+            consecutiveFailures = 0;
+          } catch (e) {
+            console.log('クリック処理で失敗:', e.message);
+            consecutiveFailures++;
+            success = false;
+          }
+          // 記事情報取得
+          console.log('記事情報取得処理開始');
+          try {
+            console.log('記事情報取得: タイトル要素待機開始');
+            await detailPage.waitForSelector('h1.o-noteContentHeader__title', { timeout: 10000 });
+            console.log('記事情報取得: タイトル要素出現');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            console.log('記事情報取得: page.evaluate実行');
+            const info = await detailPage.evaluate(() => {
+              let debug = {};
+              const titleElem = document.querySelector('h1.o-noteContentHeader__title');
+              debug.titleElemFound = !!titleElem;
+              const title = titleElem ? titleElem.textContent.trim() : 'タイトル不明';
+              debug.title = title;
+              const userElem = document.querySelector('.o-noteContentHeader__name a.a-link');
+              debug.userElemFound = !!userElem;
+              const user = userElem ? userElem.textContent.trim() : '投稿者不明';
+              debug.user = user;
+              return { title, user, debug };
+            });
+            console.log('記事情報取得: page.evaluate内デバッグ:', info.debug);
+            console.log('記事情報取得: page.evaluate完了');
+            console.log(`フォローボタンをクリックしました（${followCount + 1}件目）｜ ■ タイトル: ${info.title} ■ 投稿者: ${info.user}`);
+            followCount++;
+            console.log('記事情報取得: 1秒待機開始');
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            console.log('記事情報取得: 1秒待機完了');
+          } catch (e) {
+            console.log('記事情報取得で失敗:', e.message);
+            consecutiveFailures++;
+          }
+        } else {
+          console.log('フォローボタンが見つかりません');
+        }
+        await detailPage.close();
+      })(), 60000);
+    } catch (e) {
+      console.log('記事処理でタイムアウトまたはエラー:', e.message);
       continue;
     }
-
-    if (followBtn) {
-      try {
-        await withTimeout((async () => {
-          let success = true;
-          let consecutiveFailures = 0;
-
-          // 1. クリック処理（スクロール成功時のみ）
-          console.log('クリック処理開始');
-          if (success) {
-            try {
-              console.log('クリック前: フォローボタンが画面内か確認');
-              const isInView = await followBtn.isIntersectingViewport();
-              if (!isInView) {
-                console.log('クリック前: scrollIntoView実行');
-                await followBtn.evaluate(el => el.scrollIntoView({ behavior: 'auto', block: 'center' }));
-              } else {
-                console.log('クリック前: すでに画面内');
-              }
-              console.log('クリック前: clickイベント発火');
-              await page.evaluate(el => {
-                el.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, cancelable: true, view: window }));
-                el.dispatchEvent(new MouseEvent('mouseup', { bubbles: true, cancelable: true, view: window }));
-                el.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
-              }, followBtn);
-              console.log('クリック後: clickイベント完了');
-              consecutiveFailures = 0; // 成功時は連続失敗回数をリセット
-            } catch (e) {
-              console.log('クリック処理で失敗:', e.message);
-              consecutiveFailures++;
-              success = false;
-            }
-          }
-
-          // 2. 記事情報取得（クリック成功時のみ）
-          console.log('記事情報取得処理開始');
-          if (success) {
-            try {
-              console.log('記事情報取得: タイトル要素待機開始');
-              await page.waitForSelector('h1.o-noteContentHeader__title', { timeout: 10000 });
-              console.log('記事情報取得: タイトル要素出現');
-              await new Promise(resolve => setTimeout(resolve, 500)); // 追加で少し待機
-              console.log('記事情報取得: page.evaluate実行');
-              const info = await page.evaluate(() => {
-                // デバッグ用: 各ステップの値を一時変数に格納
-                let debug = {};
-                const titleElem = document.querySelector('h1.o-noteContentHeader__title');
-                debug.titleElemFound = !!titleElem;
-                const title = titleElem ? titleElem.textContent.trim() : 'タイトル不明';
-                debug.title = title;
-                const userElem = document.querySelector('.o-noteContentHeader__name a.a-link');
-                debug.userElemFound = !!userElem;
-                const user = userElem ? userElem.textContent.trim() : '投稿者不明';
-                debug.user = user;
-                return { title, user, debug };
-              });
-              // デバッグ情報を出力
-              console.log('記事情報取得: page.evaluate内デバッグ:', info.debug);
-              console.log('記事情報取得: page.evaluate完了');
-              console.log(`フォローボタンをクリックしました（${followCount + 1}件目）｜ ■ タイトル: ${info.title} ■ 投稿者: ${info.user}`);
-              followCount++;
-              console.log('記事情報取得: 1秒待機開始');
-              await new Promise(resolve => setTimeout(resolve, 1000));
-              console.log('記事情報取得: 1秒待機完了');
-            } catch (e) {
-              console.log('記事情報取得で失敗:', e.message);
-              // 必要ならHTMLの一部を出力してデバッグ
-              // const html = await page.content();
-              // console.log(html.slice(0, 1000));
-              consecutiveFailures++;
-            }
-          }
-        })(), 60000); // 1記事ごとに1分タイムアウト
-      } catch (e) {
-        console.log('記事処理でタイムアウトまたはエラー:', e.message);
-        continue; // 次の記事へ
-      }
-    }
-    
-    
-
-    // 一覧ページに戻る
-    await page.goto(targetUrl, { waitUntil: 'networkidle2' });
-    await new Promise(resolve => setTimeout(resolve, 1000)); // 待機時間を2秒に延長
   }
   console.log(`フォロー処理が完了しました。合計${followCount}件フォローしました。`);
   await browser.close();
