@@ -1,4 +1,4 @@
-name: Follow Users
+name: followFromArticles
 
 on:
   # 実行時間が長くなってしまうのと、検索結果からフォローするほうが効率的と思われるため、コメントアウト
