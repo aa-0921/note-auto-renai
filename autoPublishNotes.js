@@ -104,7 +104,7 @@ const { login } = require('./noteAutoDraftAndSheetUpdate');
     console.log('「投稿する」ボタンを探します');
 // デバッグ用なので一旦コメントアウト
     // // デバッグ用: 全ボタンのテキストを出力
-    // const postBtns = await page.$$('button');
+    const postBtns = await page.$$('button');
     // for (const btn of postBtns) {
     //   const text = await btn.evaluate(el => el.innerText.trim());
     //   console.log('ボタンテキスト:', text);
