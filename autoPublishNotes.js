@@ -95,7 +95,12 @@ const { login } = require('./noteAutoDraftAndSheetUpdate');
     await page.waitForSelector('button', {timeout: 10000});
     // 「投稿する」ボタンを探してクリック
     console.log('「投稿する」ボタンを探します');
+    // デバッグ用: 全ボタンのテキストを出力
     const postBtns = await page.$$('button');
+    for (const btn of postBtns) {
+      const text = await btn.evaluate(el => el.innerText.trim());
+      console.log('ボタンテキスト:', text);
+    }
     let postBtn = null;
     for (const btn of postBtns) {
       const text = await btn.evaluate(el => el.innerText.trim());
