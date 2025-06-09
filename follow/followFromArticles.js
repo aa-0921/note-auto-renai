@@ -1,6 +1,6 @@
 require('dotenv').config();
 const puppeteer = require('puppeteer');
-const { login } = require('./noteAutoDraftAndSheetUpdate');
+const { login } = require('../noteAutoDraftAndSheetUpdate');
 
 (async () => {
   console.log('Puppeteer起動オプションを取得します');
