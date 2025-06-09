@@ -59,15 +59,31 @@ const { login } = require('./noteAutoDraftAndSheetUpdate');
     await new Promise(resolve => setTimeout(resolve, 1000));
     await page.waitForSelector('button', {timeout: 10000});
 
-    // 「公開に進む」ボタンをクリック
+    // 「公開に進む」ボタンを探してクリック
     console.log('「公開に進む」ボタンを探します');
-    const publishBtnHandle = await page.evaluateHandle(() => {
-      const buttons = Array.from(document.querySelectorAll('button'));
-      return buttons.find(btn => btn.textContent && btn.textContent.includes('公開に進む')) || null;
-    });
-    if (publishBtnHandle) {
+    await page.waitForSelector('button', {timeout: 10000});
+    const publishBtns = await page.$$('button');
+    let publishBtn = null;
+    for (const btn of publishBtns) {
+      const text = await btn.evaluate(el => el.innerText.trim());
+      if (text && text.includes('公開に進む')) {
+        publishBtn = btn;
+        break;
+      }
+    }
+    if (publishBtn) {
       console.log('「公開に進む」ボタンをクリックします');
-      await publishBtnHandle.click();
+      // 画面内に移動
+      const isInView = await publishBtn.isIntersectingViewport();
+      if (!isInView) {
+        await publishBtn.evaluate(el => el.scrollIntoView({ behavior: 'auto', block: 'center' }));
+      }
+      // 本当のユーザー操作をエミュレートしてクリック
+      await page.evaluate(el => {
+        el.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, cancelable: true, view: window }));
+        el.dispatchEvent(new MouseEvent('mouseup', { bubbles: true, cancelable: true, view: window }));
+        el.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
+      }, publishBtn);
       await new Promise(resolve => setTimeout(resolve, 1000));
     } else {
       console.log('「公開に進む」ボタンが見つかりません');
@@ -77,15 +93,28 @@ const { login } = require('./noteAutoDraftAndSheetUpdate');
     }
 
     await page.waitForSelector('button', {timeout: 10000});
-    // 「投稿する」ボタンをクリック
+    // 「投稿する」ボタンを探してクリック
     console.log('「投稿する」ボタンを探します');
-    const postBtnHandle = await page.evaluateHandle(() => {
-      const buttons = Array.from(document.querySelectorAll('button'));
-      return buttons.find(btn => btn.textContent && btn.textContent.includes('投稿する')) || null;
-    });
-    if (postBtnHandle) {
+    const postBtns = await page.$$('button');
+    let postBtn = null;
+    for (const btn of postBtns) {
+      const text = await btn.evaluate(el => el.innerText.trim());
+      if (text && text.includes('投稿する')) {
+        postBtn = btn;
+        break;
+      }
+    }
+    if (postBtn) {
       console.log('「投稿する」ボタンをクリックします');
-      await postBtnHandle.click();
+      const isInView = await postBtn.isIntersectingViewport();
+      if (!isInView) {
+        await postBtn.evaluate(el => el.scrollIntoView({ behavior: 'auto', block: 'center' }));
+      }
+      await page.evaluate(el => {
+        el.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, cancelable: true, view: window }));
+        el.dispatchEvent(new MouseEvent('mouseup', { bubbles: true, cancelable: true, view: window }));
+        el.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
+      }, postBtn);
       // 投稿完了ダイアログの「閉じる」ボタンを待機してクリック
       try {
         console.log('投稿完了ダイアログの「閉じる」ボタンを待機します');
