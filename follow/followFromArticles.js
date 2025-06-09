@@ -96,13 +96,22 @@ const { login } = require('../noteAutoDraftAndSheetUpdate');
             } else {
               console.log('クリック前: すでに画面内');
             }
-            console.log('クリック前: clickイベント発火');
-            await detailPage.evaluate(el => {
-              el.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, cancelable: true, view: window }));
-              el.dispatchEvent(new MouseEvent('mouseup', { bubbles: true, cancelable: true, view: window }));
-              el.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
-            }, followBtn);
-            console.log('クリック後: clickイベント完了');
+            // // クリック前の状態確認
+            // const isDisabled = await followBtn.evaluate(el => el.disabled);
+            // console.log('クリック前: isDisabled:', isDisabled);
+            // if (isDisabled) {
+            //   throw new Error('フォローボタンが無効化されています');
+            // }
+            // // Puppeteerの標準clickでクリック
+            console.log('クリック前: ElementHandle.click()実行');
+            await followBtn.click({ delay: 100 });
+            // クリック後、ボタンのテキストが変わるまで待機
+            // await detailPage.waitForFunction(
+            //   el => el.innerText.trim() !== 'フォロー',
+            //   { timeout: 5000 },
+            //   followBtn
+            // );
+            console.log('クリック後: clickイベント完了＆状態変化確認');
             consecutiveFailures = 0;
           } catch (e) {
             console.log('クリック処理で失敗:', e.message);
