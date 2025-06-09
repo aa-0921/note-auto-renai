@@ -46,9 +46,15 @@ const { login } = require('../noteAutoDraftAndSheetUpdate');
   console.log('スクロール完了');
 
 
-  // 記事リンクを取得
-  const articleLinks = await page.$$eval('a.m-largeNoteWrapper__link', links => links.map(a => a.href));
-  console.log(`記事リンクを${articleLinks.length}件取得しました`);
+  // 記事一覧ページでクリエイターリンクを取得
+  const creatorLinks = await page.$$eval('span.o-noteItem__userText', spans =>
+    spans.map(span => {
+      // クリエイター名の親要素（または近く）にaタグがある場合
+      let a = span.closest('a') || span.parentElement.querySelector('a');
+      return a ? a.href : null;
+    }).filter(Boolean)
+  );
+  console.log('クリエイターリンクを', creatorLinks.length, '件取得しました');
 
   let followCount = 0;
   let consecutiveFailures = 0; // 連続失敗回数
@@ -62,16 +68,16 @@ const { login } = require('../noteAutoDraftAndSheetUpdate');
     ]);
   }
 
-  for (let i = 0; i < articleLinks.length && followCount < 15; i++) {
-    const link = articleLinks[i];
-    console.log(`記事${i + 1}へ遷移します: ${link}`);
+  for (let i = 0; i < creatorLinks.length && followCount < 15; i++) {
+    const link = creatorLinks[i];
+    console.log(`クリエイターページ${i + 1}へ遷移します: ${link}`);
     let followBtn = null;
     try {
       await withTimeout((async () => {
         // 新しいタブ（ページ）を開く
         const detailPage = await browser.newPage();
         await detailPage.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36');
-        console.log('新しいタブで記事詳細ページへ遷移します');
+        console.log('新しいタブでクリエイターページへ遷移します');
         await detailPage.goto(link, { waitUntil: 'domcontentloaded', timeout: 60000 });
         // フォローボタンが出現するまで待機
         await detailPage.waitForSelector('button', { visible: true, timeout: 10000 });
@@ -85,75 +91,27 @@ const { login } = require('../noteAutoDraftAndSheetUpdate');
           }
         }
         if (followBtn) {
-          // クリック処理
-          console.log('クリック処理開始');
-          try {
-            console.log('クリック前: フォローボタンが画面内か確認');
-            const isInView = await followBtn.isIntersectingViewport();
-            if (!isInView) {
-              console.log('クリック前: scrollIntoView実行');
-              await followBtn.evaluate(el => el.scrollIntoView({ behavior: 'auto', block: 'center' }));
-            } else {
-              console.log('クリック前: すでに画面内');
-            }
-            // // クリック前の状態確認
-            // const isDisabled = await followBtn.evaluate(el => el.disabled);
-            // console.log('クリック前: isDisabled:', isDisabled);
-            // if (isDisabled) {
-            //   throw new Error('フォローボタンが無効化されています');
-            // }
-            // Puppeteerの標準clickの代わりにMouseEventで手動クリック
-            console.log('クリック前: MouseEventで手動クリック実行');
-            await detailPage.evaluate(el => {
-              el.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, cancelable: true, view: window }));
-              el.dispatchEvent(new MouseEvent('mouseup', { bubbles: true, cancelable: true, view: window }));
-              el.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
-            }, followBtn);
-            console.log('クリック後: MouseEvent手動クリック完了');
-            consecutiveFailures = 0;
-          } catch (e) {
-            console.log('クリック処理で失敗:', e.message);
-            consecutiveFailures++;
-            success = false;
+          // 画面内に移動
+          const isInView = await followBtn.isIntersectingViewport();
+          if (!isInView) {
+            await followBtn.evaluate(el => el.scrollIntoView({ behavior: 'auto', block: 'center' }));
           }
-          // 記事情報取得
-          console.log('記事情報取得処理開始');
-          try {
-            console.log('記事情報取得: タイトル要素待機開始');
-            await detailPage.waitForSelector('h1.o-noteContentHeader__title', { timeout: 10000 });
-            console.log('記事情報取得: タイトル要素出現');
-            await new Promise(resolve => setTimeout(resolve, 500));
-            console.log('記事情報取得: page.evaluate実行');
-            const info = await detailPage.evaluate(() => {
-              let debug = {};
-              const titleElem = document.querySelector('h1.o-noteContentHeader__title');
-              debug.titleElemFound = !!titleElem;
-              const title = titleElem ? titleElem.textContent.trim() : 'タイトル不明';
-              debug.title = title;
-              const userElem = document.querySelector('.o-noteContentHeader__name a.a-link');
-              debug.userElemFound = !!userElem;
-              const user = userElem ? userElem.textContent.trim() : '投稿者不明';
-              debug.user = user;
-              return { title, user, debug };
-            });
-            console.log('記事情報取得: page.evaluate内デバッグ:', info.debug);
-            console.log('記事情報取得: page.evaluate完了');
-            console.log(`フォローボタンをクリックしました（${followCount + 1}件目）｜ ■ タイトル: ${info.title} ■ 投稿者: ${info.user}`);
-            followCount++;
-            console.log('記事情報取得: 1秒待機開始');
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            console.log('記事情報取得: 1秒待機完了');
-          } catch (e) {
-            console.log('記事情報取得で失敗:', e.message);
-            consecutiveFailures++;
-          }
+          // 本当のユーザー操作をエミュレートしてクリック
+          await detailPage.evaluate(el => {
+            el.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, cancelable: true, view: window }));
+            el.dispatchEvent(new MouseEvent('mouseup', { bubbles: true, cancelable: true, view: window }));
+            el.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
+          }, followBtn);
+          console.log(`フォローボタンをクリックしました（${followCount + 1}件目）｜クリエイター: ${link}`);
+          followCount++;
+          await new Promise(resolve => setTimeout(resolve, 1000));
         } else {
           console.log('フォローボタンが見つかりません');
         }
         await detailPage.close();
       })(), 60000);
     } catch (e) {
-      console.log('記事処理でタイムアウトまたはエラー:', e.message);
+      console.log('クリエイターページ処理でタイムアウトまたはエラー:', e.message);
       continue;
     }
   }
