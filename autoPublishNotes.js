@@ -84,7 +84,14 @@ const { login } = require('./noteAutoDraftAndSheetUpdate');
         el.dispatchEvent(new MouseEvent('mouseup', { bubbles: true, cancelable: true, view: window }));
         el.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
       }, publishBtn);
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // クリック後に2秒待機
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      // 「投稿する」ボタンが現れるまで最大10秒待機
+      await page.waitForFunction(
+        () => Array.from(document.querySelectorAll('button')).some(btn => btn.textContent && btn.textContent.includes('投稿する')),
+        { timeout: 10000 }
+      );
+      await new Promise(resolve => setTimeout(resolve, 300)); // 追加で少し待機
     } else {
       console.log('「公開に進む」ボタンが見つかりません');
       console.log('下書き一覧ページに戻ります');
