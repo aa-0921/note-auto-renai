@@ -54,6 +54,14 @@ const { login } = require('../noteAutoDraftAndSheetUpdate');
   let consecutiveFailures = 0; // 連続失敗回数
   const maxConsecutiveFailures = 3; // 最大連続失敗回数
 
+  // タイムアウト付きPromiseラッパー関数
+  async function withTimeout(promise, ms) {
+    return Promise.race([
+      promise,
+      new Promise((_, reject) => setTimeout(() => reject(new Error(`タイムアウト: ${ms/1000}秒経過`)), ms))
+    ]);
+  }
+
   for (let i = 0; i < articleLinks.length && followCount < 15; i++) {
     // 連続失敗が上限に達したら停止
     if (consecutiveFailures >= maxConsecutiveFailures) {
@@ -76,45 +84,53 @@ const { login } = require('../noteAutoDraftAndSheetUpdate');
     }
 
     if (followBtn) {
-      let success = true;
+      try {
+        await withTimeout((async () => {
+          let success = true;
+          let consecutiveFailures = 0;
 
-      // 1. クリック処理（スクロール成功時のみ）
-      if (success) {
-        try {
-          console.log('フォローボタンをクリックします');
-          await followBtn.click();
-          consecutiveFailures = 0; // 成功時は連続失敗回数をリセット
-        } catch (e) {
-          console.log('クリック処理で失敗しました:', e.message);
-          consecutiveFailures++; // ここは実際のエラーなのでカウント
-          success = false;
-        }
-      }
+          // 1. クリック処理（スクロール成功時のみ）
+          if (success) {
+            try {
+              console.log('フォローボタンをクリックします');
+              await followBtn.click();
+              consecutiveFailures = 0; // 成功時は連続失敗回数をリセット
+            } catch (e) {
+              console.log('クリック処理で失敗しました:', e.message);
+              consecutiveFailures++; // ここは実際のエラーなのでカウント
+              success = false;
+            }
+          }
 
-      // 2. 記事情報取得（クリック成功時のみ）
-      if (success) {
-        try {
-          console.log('記事情報を取得します');
-          // タイトル要素が現れるまで最大10秒待機
-          await page.waitForSelector('h1.o-noteContentHeader__title', { timeout: 10000 });
-          await new Promise(resolve => setTimeout(resolve, 500)); // 追加で少し待機
-          const info = await page.evaluate(() => {
-            const titleElem = document.querySelector('h1.o-noteContentHeader__title');
-            const title = titleElem ? titleElem.textContent.trim() : 'タイトル不明';
-            const userElem = document.querySelector('.o-noteContentHeader__name a.a-link');
-            const user = userElem ? userElem.textContent.trim() : '投稿者不明';
-            return { title, user };
-          });
-          console.log(`フォローボタンをクリックしました（${followCount + 1}件目）｜ ■ タイトル: ${info.title} ■ 投稿者: ${info.user}`);
-          followCount++;
-          await new Promise(resolve => setTimeout(resolve, 1000));
-        } catch (e) {
-          console.log('記事情報取得で失敗しました:', e.message);
-          // 必要ならHTMLの一部を出力してデバッグ
-          // const html = await page.content();
-          // console.log(html.slice(0, 1000));
-          consecutiveFailures++; // ここは実際のエラーなのでカウント
-        }
+          // 2. 記事情報取得（クリック成功時のみ）
+          if (success) {
+            try {
+              console.log('記事情報を取得します');
+              // タイトル要素が現れるまで最大10秒待機
+              await page.waitForSelector('h1.o-noteContentHeader__title', { timeout: 10000 });
+              await new Promise(resolve => setTimeout(resolve, 500)); // 追加で少し待機
+              const info = await page.evaluate(() => {
+                const titleElem = document.querySelector('h1.o-noteContentHeader__title');
+                const title = titleElem ? titleElem.textContent.trim() : 'タイトル不明';
+                const userElem = document.querySelector('.o-noteContentHeader__name a.a-link');
+                const user = userElem ? userElem.textContent.trim() : '投稿者不明';
+                return { title, user };
+              });
+              console.log(`フォローボタンをクリックしました（${followCount + 1}件目）｜ ■ タイトル: ${info.title} ■ 投稿者: ${info.user}`);
+              followCount++;
+              await new Promise(resolve => setTimeout(resolve, 1000));
+            } catch (e) {
+              console.log('記事情報取得で失敗しました:', e.message);
+              // 必要ならHTMLの一部を出力してデバッグ
+              // const html = await page.content();
+              // console.log(html.slice(0, 1000));
+              consecutiveFailures++; // ここは実際のエラーなのでカウント
+            }
+          }
+        })(), 60000); // 1記事ごとに1分タイムアウト
+      } catch (e) {
+        console.log('記事処理でタイムアウトまたはエラー:', e.message);
+        continue; // 次の記事へ
       }
     }
     
