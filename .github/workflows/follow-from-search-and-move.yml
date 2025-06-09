@@ -1,15 +1,19 @@
 name: Follow From Search And Move
 
 on:
-  schedule:
+  # schedule:
     # cron 設定は、すべて「UTC（協定世界時）」 で記述されています。
     # GitHub Actions の cron は JST（日本時間）より9時間遅れです。
-    - cron: '45 16 * * *'   # 毎日1:45(JST)に実行
-    - cron: '45 19 * * *'   # 毎日4:45(JST)に実行
-    - cron: '45 22 * * *'   # 毎日7:45(JST)に実行
-    - cron: '45 2 * * *'    # 毎日11:45(JST)に実行
-    - cron: '45 9 * * *'    # 毎日18:45(JST)に実行
-    - cron: '45 14 * * *'   # 毎日23:45(JST)に実行
+
+    # 2025/06/10
+    # .github/workflows/follow-from-articles.yml
+    # を優先するため、コメントアウト
+    # - cron: '45 16 * * *'   # 毎日1:45(JST)に実行
+    # - cron: '45 19 * * *'   # 毎日4:45(JST)に実行
+    # - cron: '45 22 * * *'   # 毎日7:45(JST)に実行
+    # - cron: '45 2 * * *'    # 毎日11:45(JST)に実行
+    # - cron: '45 9 * * *'    # 毎日18:45(JST)に実行
+    # - cron: '45 14 * * *'   # 毎日23:45(JST)に実行
   workflow_dispatch:
 
 jobs:
