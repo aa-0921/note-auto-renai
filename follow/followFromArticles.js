@@ -126,12 +126,20 @@ const { login } = require('../noteAutoDraftAndSheetUpdate');
               await new Promise(resolve => setTimeout(resolve, 500)); // 追加で少し待機
               console.log('記事情報取得: page.evaluate実行');
               const info = await page.evaluate(() => {
+                // デバッグ用: 各ステップの値を一時変数に格納
+                let debug = {};
                 const titleElem = document.querySelector('h1.o-noteContentHeader__title');
+                debug.titleElemFound = !!titleElem;
                 const title = titleElem ? titleElem.textContent.trim() : 'タイトル不明';
+                debug.title = title;
                 const userElem = document.querySelector('.o-noteContentHeader__name a.a-link');
+                debug.userElemFound = !!userElem;
                 const user = userElem ? userElem.textContent.trim() : '投稿者不明';
-                return { title, user };
+                debug.user = user;
+                return { title, user, debug };
               });
+              // デバッグ情報を出力
+              console.log('記事情報取得: page.evaluate内デバッグ:', info.debug);
               console.log('記事情報取得: page.evaluate完了');
               console.log(`フォローボタンをクリックしました（${followCount + 1}件目）｜ ■ タイトル: ${info.title} ■ 投稿者: ${info.user}`);
               followCount++;
