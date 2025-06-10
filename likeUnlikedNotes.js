@@ -24,8 +24,11 @@ const { login } = require('./noteAutoDraftAndSheetUpdate'); // login関数をexp
   console.log('ログイン完了');
 
   // 対象ページへ遷移
+  // （ページによってコードを調整する必要がありそう）
+
   // はじめてのnote
   // const targetUrl = 'https://note.com/interests/%E3%81%AF%E3%81%98%E3%82%81%E3%81%A6%E3%81%AEnote';
+
   // 初めてのnote
   // const targetUrl = 'https://note.com/search?q=%E5%88%9D%E3%82%81%E3%81%A6%E3%81%AEnote&context=note&mode=search';
 
