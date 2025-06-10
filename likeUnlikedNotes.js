@@ -86,17 +86,16 @@ const { login } = require('./noteAutoDraftAndSheetUpdate'); // login関数をexp
       return { title, user };
     });
     console.log(`タイトル: ${info.title}｜投稿者: ${info.user}`);
-    // クリック（MouseEventで本当のユーザー操作をエミュレート）
-    console.log('クリック実行: MouseEventでスキを付けます');
-    await btn.evaluate(el => {
-      el.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, cancelable: true, view: window }));
-      el.dispatchEvent(new MouseEvent('mouseup', { bubbles: true, cancelable: true, view: window }));
-      el.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
-    });
-    // クリック後の状態
-    const afterAriaPressed = await btn.evaluate(el => el.getAttribute('aria-pressed'));
-    console.log('クリック後: aria-pressed:', afterAriaPressed);
-    await new Promise(resolve => setTimeout(resolve, 1000)); // 1秒待機
+    // クリック（ElementHandle.click()で本当のユーザー操作をエミュレート）
+    console.log('クリック前: ElementHandle.click()実行');
+    await btn.click({ delay: 100 });
+    // クリック後、aria-pressedがtrueになるまで待機
+    await page.waitForFunction(
+      el => el.getAttribute('aria-pressed') === 'true',
+      { timeout: 5000 },
+      btn
+    );
+    console.log('クリック後: aria-pressedがtrueになったことを確認');
   }
   console.log('クリック処理が全て完了しました');
 
