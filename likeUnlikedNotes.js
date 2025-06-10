@@ -76,7 +76,9 @@ const { login } = require('./noteAutoDraftAndSheetUpdate'); // login関数をexp
         }
       }
       // クリック
-      btn.dispatchEvent(new MouseEvent('click', { view: window, bubbles: true, cancelable: true }));
+      btn.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, cancelable: true, view: window }));
+      btn.dispatchEvent(new MouseEvent('mouseup', { bubbles: true, cancelable: true, view: window }));
+      btn.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
       return { title, user };
     });
     console.log(`ボタン${i + 1}をクリックしました｜タイトル: ${info.title}｜投稿者: ${info.user}`);
