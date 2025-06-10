@@ -25,7 +25,7 @@ const { login } = require('./noteAutoDraftAndSheetUpdate'); // login関数をexp
 
   // 対象ページへ遷移
   // はじめてのnote
-  const targetUrl = 'https://note.com/interests/%E3%81%AF%E3%81%98%E3%82%81%E3%81%A6%E3%81%AEnote';
+  // const targetUrl = 'https://note.com/interests/%E3%81%AF%E3%81%98%E3%82%81%E3%81%A6%E3%81%AEnote';
   // 初めてのnote
   // const targetUrl = 'https://note.com/search?q=%E5%88%9D%E3%82%81%E3%81%A6%E3%81%AEnote&context=note&mode=search';
 
@@ -33,7 +33,7 @@ const { login } = require('./noteAutoDraftAndSheetUpdate'); // login関数をexp
   // const targetUrl = 'https://note.com/recommends/for_you';
 
   // ママ友
-  // const targetUrl = 'https://note.com/search?q=%E3%83%9E%E3%83%9E%E5%8F%8B&context=note&mode=search';
+  const targetUrl = 'https://note.com/search?q=%E3%83%9E%E3%83%9E%E5%8F%8B&context=note&mode=search';
 
 
   console.log('対象ページへ遷移します:', targetUrl);
@@ -41,7 +41,7 @@ const { login } = require('./noteAutoDraftAndSheetUpdate'); // login関数をexp
   console.log('ページ遷移完了');
 
   // 10回下までスクロール
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 20; i++) {
     console.log(`下までスクロールします (${i + 1}/10)`);
     await page.evaluate(() => {
       window.scrollTo(0, document.body.scrollHeight);
