@@ -50,16 +50,25 @@ const { login } = require('./noteAutoDraftAndSheetUpdate'); // login関数をexp
   }
   console.log('スクロール完了');
 
-  // ページ内で「スキされていない」ハートを最大40件クリック
-  console.log('「スキされていない」ハートアイコンを取得し、クリックします');
+  // 「スキ」ボタン（button要素）をすべて取得
+  const likeButtons = await page.$$('button[aria-label="スキ"]');
+  console.log('取得した「スキ」ボタン数:', likeButtons.length);
+
   const maxLikes = 24;
-  const unlikedButtons = await page.$$('i.o-noteLikeV3__icon.a-icon.a-icon--heart.a-icon--size_mediumSmall');
-  const likeCount = Math.min(maxLikes, unlikedButtons.length);
+  const likeCount = Math.min(maxLikes, likeButtons.length);
   console.log(`これから${likeCount}件のスキを付けます。`);
+
   for (let i = 0; i < likeCount; i++) {
-    // ボタンの親要素からタイトルと投稿者名を取得し、クリック
-    const info = await unlikedButtons[i].evaluate((btn) => {
-      // 記事タイトルを取得
+    console.log(`--- ${i + 1}件目 ---`);
+    const btn = likeButtons[i];
+    // ボタンのclass名
+    const className = await btn.evaluate(el => el.className);
+    console.log('ボタンのclassName:', className);
+    // クリック前の状態
+    const ariaPressed = await btn.evaluate(el => el.getAttribute('aria-pressed'));
+    console.log('クリック前: aria-pressed:', ariaPressed);
+    // ボタンの親要素からタイトルと投稿者名を取得
+    const info = await btn.evaluate((btn) => {
       let title = 'タイトル不明';
       let user = '投稿者不明';
       // .m-largeNoteWrapper__body からタイトルを探す
@@ -69,19 +78,24 @@ const { login } = require('./noteAutoDraftAndSheetUpdate'); // login関数をexp
         if (titleElem) {
           title = titleElem.textContent.trim();
         }
-        // .m-largeNoteWrapper__body の親要素からユーザー名を探す
         const infoElem = body.parentElement?.querySelector('.o-largeNoteSummary__userName');
         if (infoElem) {
           user = infoElem.textContent.trim();
         }
       }
-      // クリック
-      btn.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, cancelable: true, view: window }));
-      btn.dispatchEvent(new MouseEvent('mouseup', { bubbles: true, cancelable: true, view: window }));
-      btn.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
       return { title, user };
     });
-    console.log(`ボタン${i + 1}をクリックしました｜タイトル: ${info.title}｜投稿者: ${info.user}`);
+    console.log(`タイトル: ${info.title}｜投稿者: ${info.user}`);
+    // クリック（MouseEventで本当のユーザー操作をエミュレート）
+    console.log('クリック実行: MouseEventでスキを付けます');
+    await btn.evaluate(el => {
+      el.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, cancelable: true, view: window }));
+      el.dispatchEvent(new MouseEvent('mouseup', { bubbles: true, cancelable: true, view: window }));
+      el.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
+    });
+    // クリック後の状態
+    const afterAriaPressed = await btn.evaluate(el => el.getAttribute('aria-pressed'));
+    console.log('クリック後: aria-pressed:', afterAriaPressed);
     await new Promise(resolve => setTimeout(resolve, 1000)); // 1秒待機
   }
   console.log('クリック処理が全て完了しました');
