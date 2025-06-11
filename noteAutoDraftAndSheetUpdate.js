@@ -253,7 +253,7 @@ async function main() {
   const unsubmitted = parseUnsubmittedArticles(tablePath);
   if (unsubmitted.length === 0) {
     console.log('下書き保存待ちの記事はありません');
-    return { status: 'no-article' };
+    process.exit(0);
   }
 
   // ログインは1回だけ
