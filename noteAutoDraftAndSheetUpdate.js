@@ -1,4 +1,4 @@
-投稿一覧管理表.md で下書き保存日がからのものをNoteに下書き保存する
+// 投稿一覧管理表.md で下書き保存日がからのものをNoteに下書き保存する
 
 // Lambda本番用 + ローカルテスト両対応のnote自動投稿スクリプト
 const isLambda = !!process.env.AWS_LAMBDA_FUNCTION_NAME;
