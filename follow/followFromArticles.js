@@ -28,8 +28,18 @@ const { login } = require('../noteAutoDraftAndSheetUpdate');
   console.log('ログイン完了');
 
 
+  // ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
   // はじめてのnoteのページ
-  const targetUrl = 'https://note.com/interests/%E3%81%AF%E3%81%98%E3%82%81%E3%81%A6%E3%81%AEnote';
+  // const targetUrl = 'https://note.com/interests/%E3%81%AF%E3%81%98%E3%82%81%E3%81%A6%E3%81%AEnote';
+
+  // 注目のページ
+  // const targetUrl = 'https://note.com/notemagazine/m/mf2e92ffd6658'
+
+  // 検索：日記
+  const targetUrl = 'https://note.com/search?q=%E6%97%A5%E8%A8%98&context=note&mode=search'
+
+  // ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+
   console.log('対象ページへ遷移します:', targetUrl);
   await page.goto(targetUrl, { waitUntil: 'networkidle2' });
   console.log('ページ遷移完了');
@@ -45,12 +55,21 @@ const { login } = require('../noteAutoDraftAndSheetUpdate');
   }
   console.log('スクロール完了');
 
+  // クリエイターリンクの取得セレクターを指定
+  let creatorLinkTargetSelector
+
+  // 検索ページの場合、div
+  if (targetUrl.includes('search')) {
+    creatorLinkTargetSelector = 'div.o-largeNoteSummary__userName';
+  } else {
+    creatorLinkTargetSelector = 'span.o-noteItem__userText';
+  }
 
   // 記事一覧ページでクリエイターリンクを取得
-  const creatorLinks = await page.$$eval('span.o-noteItem__userText', spans =>
-    spans.map(span => {
+  const creatorLinks = await page.$$eval(creatorLinkTargetSelector, elements =>
+    elements.map(element => {
       // クリエイター名の親要素（または近く）にaタグがある場合
-      let a = span.closest('a') || span.parentElement.querySelector('a');
+      let a = element.closest('a') || element.parentElement.querySelector('a');
       return a ? a.href : null;
     }).filter(Boolean)
   );
