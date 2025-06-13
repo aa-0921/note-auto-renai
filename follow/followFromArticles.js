@@ -74,39 +74,65 @@ const { login } = require('../noteAutoDraftAndSheetUpdate');
     let followBtn = null;
     try {
       await withTimeout((async () => {
+        console.log(`[DEBUG] クリエイターページへの遷移開始: ${link}`);
         // 新しいタブ（ページ）を開く
         const detailPage = await browser.newPage();
+        console.log('[DEBUG] 新しいタブを作成しました');
+        
         await detailPage.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36');
-        console.log('新しいタブでクリエイターページへ遷移します');
+        console.log('[DEBUG] UserAgentを設定しました');
+        
+        console.log('[DEBUG] ページ遷移を開始します...');
         await detailPage.goto(link, { waitUntil: 'domcontentloaded', timeout: 60000 });
+        console.log('[DEBUG] ページ遷移が完了しました');
+        
         // フォローボタンが出現するまで待機
+        console.log('[DEBUG] フォローボタンの待機を開始します...');
         await detailPage.waitForSelector('button', { visible: true, timeout: 10000 });
+        console.log('[DEBUG] ボタン要素の検出が完了しました');
+        
         // ボタン取得
+        console.log('[DEBUG] ボタン要素の検索を開始します...');
         const btns = await detailPage.$$('button');
+        console.log(`[DEBUG] 検出されたボタン数: ${btns.length}`);
+        
+        let followBtn = null;
         for (const b of btns) {
           const text = await b.evaluate(el => el.innerText.trim());
+          console.log(`[DEBUG] ボタンテキスト: "${text}"`);
           if (text === 'フォロー') {
             followBtn = b;
+            console.log('[DEBUG] フォローボタンを特定しました');
             break;
           }
         }
+        
         if (followBtn) {
+          console.log('[DEBUG] フォローボタンの可視性チェックを開始します...');
           // 画面内に移動
           const isInView = await followBtn.isIntersectingViewport();
+          console.log(`[DEBUG] ボタンの可視状態: ${isInView ? '表示中' : '非表示'}`);
+          
           if (!isInView) {
+            console.log('[DEBUG] ボタンを画面内にスクロールします...');
             await followBtn.evaluate(el => el.scrollIntoView({ behavior: 'auto', block: 'center' }));
+            console.log('[DEBUG] スクロール完了');
           }
+          
           // 本当のユーザー操作をエミュレートしてクリック
+          console.log('[DEBUG] クリックイベントの発火を開始します...');
           await detailPage.evaluate(el => {
+            console.log('[DEBUG] mousedownイベントを発火');
             el.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, cancelable: true, view: window }));
+            console.log('[DEBUG] mouseupイベントを発火');
             el.dispatchEvent(new MouseEvent('mouseup', { bubbles: true, cancelable: true, view: window }));
+            console.log('[DEBUG] clickイベントを発火');
             el.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
           }, followBtn);
-          console.log(`フォローボタンをクリックしました（${followCount + 1}件目）｜クリエイター: ${link}`);
+          console.log(`[DEBUG] クリックイベントの発火が完了しました（${followCount + 1}件目）｜クリエイター: ${link}`);
           followCount++;
-          await new Promise(resolve => setTimeout(resolve, 1000));
         } else {
-          console.log('フォローボタンが見つかりません');
+          console.log('[DEBUG] フォローボタンが見つかりませんでした');
         }
         await detailPage.close();
       })(), 60000);
