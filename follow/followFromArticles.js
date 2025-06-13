@@ -129,8 +129,33 @@ const { login } = require('../noteAutoDraftAndSheetUpdate');
             console.log('[DEBUG] clickイベントを発火');
             el.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
           }, followBtn);
-          console.log(`[DEBUG] クリックイベントの発火が完了しました（${followCount + 1}件目）｜クリエイター: ${link}`);
-          followCount++;
+          
+          // フォロー状態の変更を待機
+          console.log('[DEBUG] フォロー状態の変更を待機します...');
+          try {
+            await detailPage.waitForFunction(
+              () => {
+                const buttons = document.querySelectorAll('button');
+                for (const btn of buttons) {
+                  if (btn.innerText.trim() === 'フォロー中') {
+                    return true;
+                  }
+                }
+                return false;
+              },
+              { timeout: 5000 }
+            );
+            console.log('[DEBUG] フォロー状態の変更を確認しました');
+            followCount++;
+            console.log(`[DEBUG] フォロー成功（${followCount}件目）｜クリエイター: ${link}`);
+          } catch (error) {
+            console.log('[DEBUG] フォロー状態の変更を確認できませんでした');
+            console.log('[DEBUG] エラー詳細:', error.message);
+          }
+          
+          // フォロー処理の完了を待機
+          console.log('[DEBUG] フォロー処理の完了を待機します...');
+          await new Promise(resolve => setTimeout(resolve, 2000));
         } else {
           console.log('[DEBUG] フォローボタンが見つかりませんでした');
         }
