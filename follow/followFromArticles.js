@@ -28,6 +28,7 @@ const { login } = require('../noteAutoDraftAndSheetUpdate');
   console.log('ログイン完了');
 
 
+
   // ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
   // はじめてのnoteのページ
   // const targetUrl = 'https://note.com/interests/%E3%81%AF%E3%81%98%E3%82%81%E3%81%A6%E3%81%AEnote';
@@ -97,6 +98,16 @@ const { login } = require('../noteAutoDraftAndSheetUpdate');
         // 新しいタブ（ページ）を開く
         const detailPage = await browser.newPage();
         console.log('[DEBUG] 新しいタブを作成しました');
+
+
+        // ----------------------------------        // 
+        // ダイアログ（alert等）検知時に即座に処理を停止
+        detailPage.on('dialog', async dialog => {
+          console.log('[ERROR] ダイアログ検知:', dialog.message());
+          await dialog.dismiss(); // OKボタンを押す
+          throw new Error('上限エラー検知のため処理を停止します');
+        });
+        // ----------------------------------        // 
         
         await detailPage.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36');
         console.log('[DEBUG] UserAgentを設定しました');
