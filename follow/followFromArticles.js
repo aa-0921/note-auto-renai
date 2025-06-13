@@ -82,6 +82,9 @@ const { login } = require('../noteAutoDraftAndSheetUpdate');
         await detailPage.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36');
         console.log('[DEBUG] UserAgentを設定しました');
         
+        // ページ遷移の完了を待機
+        // 注意: networkidle0を指定することで、すべてのネットワークリクエストが完了するまで待機
+        // タイムアウトは30秒に設定（ページの読み込みに十分な時間を確保）
         console.log('[DEBUG] ページ遷移を開始します...');
         await detailPage.goto(link, { 
           waitUntil: 'networkidle0',
@@ -90,15 +93,24 @@ const { login } = require('../noteAutoDraftAndSheetUpdate');
         console.log('[DEBUG] ページ遷移が完了しました');
         
         // ページの完全な読み込みを待機
+        // 注意: networkidle0の後も、JavaScriptの実行やDOMの更新が続く可能性があるため
+        // 追加で3秒の待機を設定（これにより、動的な要素の読み込みを確実に待機）
         console.log('[DEBUG] ページの完全な読み込みを待機します...');
         await new Promise(resolve => setTimeout(resolve, 3000));
         
         // ボタン要素の検索を開始
+        // 注意: data-name="ToggleButton"属性を持つボタンを検索
+        // このセレクタはnoteのフォローボタンに特有の属性
         console.log('[DEBUG] ボタン要素の検索を開始します...');
         const btns = await detailPage.$$('button[data-name="ToggleButton"]');
         console.log(`[DEBUG] 検出されたボタン数: ${btns.length}`);
         
         // 各ボタンの情報を表示
+        // 注意: ボタンの状態を詳細に確認（テキスト、アイコン、可視性、有効性）
+        // 可視性チェックは以下の3つのCSSプロパティを考慮:
+        // - display: none でないこと
+        // - visibility: hidden でないこと
+        // - opacity: 0 でないこと
         for (const btn of btns) {
           const text = await btn.evaluate(el => el.innerText.trim());
           const hasIcon = await btn.evaluate(el => el.querySelector('svg') !== null);
@@ -114,7 +126,12 @@ const { login } = require('../noteAutoDraftAndSheetUpdate');
           console.log(`[DEBUG] ボタン情報: テキスト="${text}", アイコン有無=${hasIcon}, 可視性=${isVisible}, 有効=${isEnabled}`);
         }
         
-        // フォローボタンを特定（条件を緩和）
+        // フォローボタンを特定
+        // 注意: 以下の条件でボタンを特定
+        // 1. テキストが"フォロー"であること
+        // 2. 可視性がtrueであること（display, visibility, opacityの条件を満たす）
+        // 3. ボタンが有効であること（disabledでない）
+        // 重要: アイコンの有無は条件から除外（実際のUIでは、クリック可能なボタンは必ずしもアイコンを持たない）
         let followBtn = null;
         for (const btn of btns) {
           const text = await btn.evaluate(el => el.innerText.trim());
@@ -136,6 +153,9 @@ const { login } = require('../noteAutoDraftAndSheetUpdate');
         }
         
         if (followBtn) {
+          // フォローボタンの詳細情報を取得
+          // 注意: クリック前にボタンの状態を詳細に確認
+          // 位置情報、スタイル情報、有効状態などを記録
           console.log('[DEBUG] フォローボタンの詳細情報を取得します...');
           const btnInfo = await followBtn.evaluate(el => {
             const rect = el.getBoundingClientRect();
@@ -165,11 +185,13 @@ const { login } = require('../noteAutoDraftAndSheetUpdate');
           });
           console.log('[DEBUG] フォローボタン情報:', JSON.stringify(btnInfo, null, 2));
           
-          // クリック前に待機
+          // クリック前の待機
+          // 注意: 2秒の待機を設定（ボタンの状態が安定するのを待つ）
           console.log('[DEBUG] クリック前の待機を開始（2秒）...');
           await new Promise(resolve => setTimeout(resolve, 2000));
           
           // ボタンが表示されるまでスクロール
+          // 注意: ボタンを画面の中央に配置（より確実なクリックのため）
           console.log('[DEBUG] ボタンを画面内にスクロールします...');
           await followBtn.evaluate(el => {
             const rect = el.getBoundingClientRect();
@@ -182,20 +204,24 @@ const { login } = require('../noteAutoDraftAndSheetUpdate');
           await new Promise(resolve => setTimeout(resolve, 1000));
           
           // クリック処理
+          // 注意: 2段階のクリック処理を実装
+          // 1. 通常のクリックを試みる（より自然な操作）
+          // 2. 失敗した場合、マウスイベントを手動で発火（フォールバック）
           console.log('[DEBUG] クリック処理を開始します...');
           try {
-            // まず通常のクリックを試みる
+            // まず通常のクリックを試みる（200msの遅延を設定）
             await followBtn.click({ delay: 200 });
             console.log('[DEBUG] 通常クリックを実行しました');
           } catch (error) {
             console.log('[DEBUG] 通常クリックが失敗したため、イベント発火方式に切り替えます');
             // クリックが失敗した場合、イベント発火方式にフォールバック
+            // 注意: マウスイベントを順番に発火（mouseover → mousedown → mouseup → click）
+            // 各イベント間に200msの遅延を設定（より自然な操作をシミュレート）
             await followBtn.evaluate(el => {
               const rect = el.getBoundingClientRect();
               const x = rect.left + (rect.width / 2);
               const y = rect.top + (rect.height / 2);
               
-              // マウスイベントを発火
               const events = ['mouseover', 'mousedown', 'mouseup', 'click'];
               events.forEach((eventType, index) => {
                 setTimeout(() => {
@@ -216,10 +242,15 @@ const { login } = require('../noteAutoDraftAndSheetUpdate');
           console.log('[DEBUG] クリックイベントを発火しました');
           
           // クリック後の待機
+          // 注意: 3秒の待機を設定（フォロー状態の変更を待つ）
           console.log('[DEBUG] クリック後の待機を開始（3秒）...');
           await new Promise(resolve => setTimeout(resolve, 3000));
           
           // フォロー状態の変更を待機
+          // 注意: 以下の条件でフォロー状態の変更を確認
+          // 1. ボタンのテキストが"フォロー中"に変更されていること
+          // 2. ボタンが可視状態であること
+          // タイムアウトは15秒に設定（ネットワーク遅延などを考慮）
           console.log('[DEBUG] フォロー状態の変更を待機します...');
           try {
             const followStateChange = await detailPage.waitForFunction(
@@ -279,6 +310,7 @@ const { login } = require('../noteAutoDraftAndSheetUpdate');
               console.log(`[DEBUG] フォロー成功（${followCount}件目）｜クリエイター: ${link}`);
               
               // フォロー成功後の待機
+              // 注意: 3秒の待機を設定（次のページ遷移前に状態を安定させる）
               console.log('[DEBUG] フォロー成功後の待機を開始（3秒）...');
               await new Promise(resolve => setTimeout(resolve, 3000));
             } else {
