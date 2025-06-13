@@ -96,7 +96,7 @@ const { login } = require('../noteAutoDraftAndSheetUpdate');
         const btns = await detailPage.$$('button');
         console.log(`[DEBUG] 検出されたボタン数: ${btns.length}`);
         
-        let ろ = null;
+        let followBtn = null;
         for (const b of btns) {
           const text = await b.evaluate(el => el.innerText.trim());
           console.log(`[DEBUG] ボタンテキスト: "${text}"`);
