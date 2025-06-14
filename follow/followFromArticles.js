@@ -66,15 +66,31 @@ const { login } = require('../noteAutoDraftAndSheetUpdate');
     creatorLinkTargetSelector = 'span.o-noteItem__userText';
   }
 
-  // 記事一覧ページでクリエイターリンクを取得
-  const creatorLinks = await page.$$eval(creatorLinkTargetSelector, elements =>
+  // クリエイターリンクとクリエイター名を取得
+  const creatorLinkAndNames = await page.$$eval(creatorLinkTargetSelector, elements =>
     elements.map(element => {
+      // クリエイター名を取得
+      const creatorName = element.textContent.trim();
+
+      // ↓必要かわからないので一旦コメントアウト
       // クリエイター名の親要素（または近く）にaタグがある場合
       let a = element.closest('a') || element.parentElement.querySelector('a');
-      return a ? a.href : null;
+      return a ? { url: a.href, name: creatorName } : null;
+
     }).filter(Boolean)
   );
-  console.log('クリエイターリンクを', creatorLinks.length, '件取得しました');
+
+  // クリエイター名で重複を除外
+  const uniqueCreators = [];
+  const seenNames = new Set();
+  for (const item of creatorLinkAndNames) {
+    if (!seenNames.has(item.name)) {
+      uniqueCreators.push(item);
+      seenNames.add(item.name);
+    }
+  }
+
+  console.log('ユニークなクリエイターを', uniqueCreators.length, '件取得しました');
 
   let followCount = 0;
   let consecutiveFailures = 0; // 連続失敗回数
@@ -88,9 +104,10 @@ const { login } = require('../noteAutoDraftAndSheetUpdate');
     ]);
   }
 
-  for (let i = 0; i < creatorLinks.length && followCount < 15; i++) {
-    const link = creatorLinks[i];
-    console.log(`クリエイターページ${i + 1}へ遷移します: ${link}`);
+  for (let i = 0; i < uniqueCreators.length && followCount < 15; i++) {
+    const link = uniqueCreators[i].url;
+    const name = uniqueCreators[i].name;
+    console.log(`クリエイターページ${i + 1}へ遷移します: ${link}（${name}）`);
     let followBtn = null;
     try {
       await withTimeout((async () => {
@@ -337,7 +354,7 @@ const { login } = require('../noteAutoDraftAndSheetUpdate');
             if (followState.success) {
               console.log('[DEBUG] フォロー状態の変更を確認しました');
               followCount++;
-              console.log(`[DEBUG] フォロー成功（${followCount}件目）｜クリエイター: ${link}`);
+              console.log(`[DEBUG] フォロー成功（${followCount}件目）｜クリエイター: ${link}（${name}）`);
               
               // フォロー成功後の待機
               // 注意: 3秒の待機を設定（次のページ遷移前に状態を安定させる）
