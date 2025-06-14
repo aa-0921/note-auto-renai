@@ -93,8 +93,8 @@ const { login } = require('../noteAutoDraftAndSheetUpdate');
   console.log('ユニークなクリエイターを', uniqueCreators.length, '件取得しました');
 
   let followCount = 0;
-  let consecutiveFailures = 0; // 連続失敗回数
-  const maxConsecutiveFailures = 3; // 最大連続失敗回数
+  // let consecutiveFailures = 0; // 連続失敗回数
+  // const maxConsecutiveFailures = 3; // 最大連続失敗回数
 
   // タイムアウト付きPromiseラッパー関数
   async function withTimeout(promise, ms) {
