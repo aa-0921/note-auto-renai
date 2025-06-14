@@ -2,6 +2,8 @@
 // フォローする、という流れ
 // アクティブで、フォロバしてくれそうなユーザーをフォローする上ではこの形が良さそう
 
+// github actions 使用時間累積確認ページ
+// https://github.com/settings/billing/usage?period=3&group=1&customer=5978784
 
 require('dotenv').config();
 const puppeteer = require('puppeteer');
