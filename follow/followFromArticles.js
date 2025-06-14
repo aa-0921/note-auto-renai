@@ -107,7 +107,7 @@ const { login } = require('../noteAutoDraftAndSheetUpdate');
   for (let i = 0; i < uniqueCreators.length && followCount < 15; i++) {
     const link = uniqueCreators[i].url;
     const name = uniqueCreators[i].name;
-    console.log(`クリエイターページ${i + 1}へ遷移します: ${link}（${name}）`);
+    console.log(`クリエイターページ${i + 1}へ遷移します:（${name}）| ${link}`);
     let followBtn = null;
     try {
       await withTimeout((async () => {
@@ -354,7 +354,7 @@ const { login } = require('../noteAutoDraftAndSheetUpdate');
             if (followState.success) {
               console.log('[DEBUG] フォロー状態の変更を確認しました');
               followCount++;
-              console.log(`[DEBUG] フォロー成功（${followCount}件目）｜クリエイター: ${link}（${name}）`);
+              console.log(`[DEBUG] フォロー成功（${followCount}件目）｜（${name}）｜クリエイター: ${link}`);
               
               // フォロー成功後の待機
               // 注意: 3秒の待機を設定（次のページ遷移前に状態を安定させる）
