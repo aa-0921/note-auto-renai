@@ -94,10 +94,19 @@ async function goToNewPost(page) {
     console.error('表示されている投稿ボタンが見つかりませんでした。HTMLの一部:', html.slice(0, 1000));
     throw new Error('表示されている投稿ボタンが見つかりませんでした');
   }
-  // テキストメニュー
-  console.log('テキストメニューを探します...');
-  await page.waitForSelector('a[href="/notes/new"]');
-  await page.click('a[href="/notes/new"]');
+
+  // 投稿ボタンクリック後、新しく記事を書くボタンが表示されるかどうかを確認
+  console.log('投稿ボタンクリック後、新しく記事を書くボタンが表示されるか確認します...');
+  const newNoteButton = await page.$('a[href="/notes/new"]');
+  if (newNoteButton) {
+    console.log('新しく記事を書くボタンが表示されました。クリックします。');
+    await newNoteButton.click();
+  } else {
+    // 従来のテキストメニューを探す
+    console.log('新しく記事を書くボタンが表示されませんでした。従来のテキストメニューを探します...');
+    await page.waitForSelector('a[href="/notes/new"]');
+    await page.click('a[href="/notes/new"]');
+  }
   await page.waitForNavigation();
   console.log('新規投稿画面に遷移しました');
 }
