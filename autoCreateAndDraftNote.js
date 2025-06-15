@@ -62,8 +62,12 @@ function getNextId() {
   return maxId + 1;
 }
 
-// TODO:記事作成時に 投稿一覧管理表.md に追加
-
+// 投稿一覧管理表.mdに新しい行を追加
+function appendToSheet(id, fileName, title, date) {
+  const row = `| ${id} | ${fileName} | ${title} | ${date} |  |  |  |  |\n`;
+  fs.appendFileSync(SHEET_PATH, row, 'utf-8');
+  console.log('投稿一覧管理表.mdに行を追加:', row.trim());
+}
 
 // AIで記事生成
 async function generateArticle(topic, pattern) {
@@ -72,18 +76,23 @@ async function generateArticle(topic, pattern) {
     { role: 'system', content: 'あなたは日本語のnote記事編集者です。' },
     { role: 'user', content: prompt }
   ];
-  const res = await axios.post(API_URL, {
-    model: MODEL,
-    messages,
-    max_tokens: 1200,
-    temperature: 0.7
-  }, {
-    headers: {
-      'Authorization': `Bearer ${API_KEY}`,
-      'Content-Type': 'application/json'
-    }
-  });
-  return res.data.choices[0].message.content.trim();
+  try {
+    const res = await axios.post(API_URL, {
+      model: MODEL,
+      messages,
+      max_tokens: 1200,
+      temperature: 0.7
+    }, {
+      headers: {
+        'Authorization': `Bearer ${API_KEY}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    return res.data.choices[0].message.content.trim();
+  } catch (e) {
+    console.error('AI記事生成APIエラー:', e.message);
+    return '';
+  }
 }
 
 // ファイル名生成
@@ -105,11 +114,21 @@ function makeFileName(id, title) {
 
   // 3. AIで記事生成
   const article = await generateArticle(topic, pattern);
-  console.log('AI生成記事サンプル:\n', article.slice(0, 200), '...');
+  console.log('AI生成記事全文:\n', article);
+  if (!article || article.length < 30) {
+    console.error('AI記事生成に失敗、または内容が不十分です。処理を中断します。');
+    return;
+  }
 
-  // 4. タイトル抽出
+  // 4. タイトル抽出（# タイトル 形式を強化）
+  let title = '無題';
   const titleMatch = article.match(/^#\s*(.+)$/m);
-  const title = titleMatch ? titleMatch[1].trim() : '無題';
+  if (titleMatch && titleMatch[1].trim().length > 0) {
+    title = titleMatch[1].trim();
+  } else {
+    // 先頭行がタイトルでない場合、最初の10文字を仮タイトルに
+    title = article.split('\n').find(line => line.trim().length > 0)?.slice(0, 10) || '無題';
+  }
 
   // 5. ID採番
   const id = getNextId();
@@ -121,6 +140,10 @@ function makeFileName(id, title) {
   // 7. 記事ファイル作成
   fs.writeFileSync(filePath, article, 'utf-8');
   console.log('記事ファイルを作成:', filePath);
+
+  // 8. 投稿一覧管理表.mdに行を追加
+  const date = new Date().toISOString().slice(0, 10);
+  appendToSheet(id, fileName, title, date);
 
   // --- ここから下はアップロードやnote.com下書き保存のための処理例 ---
   // Puppeteerの起動やnote.comへの自動入力などは今はコメントアウト
