@@ -94,6 +94,71 @@ async function dragAndDropToAddButton(page) {
       dropArea.dispatchEvent(dropEvent);
     }, dropSelector, fileName, fileBase64);
     console.log('ドラッグ＆ドロップによる画像アップロードを実行しました:', filePath);
+
+    // 画像アップロード後の「保存」ボタンをモーダル内で探して複合マウスイベントでクリック
+    try {
+      // --- 画像アップロード後の保存処理を安定化するための待機処理 ---
+      // 1. 画像プレビュー(imgタグ)がモーダル内に表示されるまで待機
+      //    これにより、画像アップロードが完了してから保存ボタンを押すことができる
+      console.log('画像プレビュー(imgタグ)がモーダル内に表示されるのを待機します...');
+      await page.waitForSelector('.ReactModal__Content img', { timeout: 15000 });
+      console.log('画像プレビュー(imgタグ)が表示されました');
+
+      // 2. 「保存」ボタンが有効（disabled属性やaria-disabledがfalse）になるまで待機
+      //    これにより、ボタンが押せる状態になるまで確実に待つことができる
+      console.log('「保存」ボタンが有効になるのを待機します...');
+      await page.waitForFunction(() => {
+        const modal = document.querySelector('.ReactModal__Content');
+        if (!modal) return false;
+        const btns = Array.from(modal.querySelectorAll('button'));
+        return btns.some(btn => btn.innerText.trim() === '保存' && !btn.disabled && btn.getAttribute('aria-disabled') !== 'true');
+      }, { timeout: 15000 });
+      console.log('「保存」ボタンが有効になりました');
+
+      // 3. モーダル内の全ボタンを取得し、デバッグ出力
+      const modalButtons = await page.$$('.ReactModal__Content button');
+      console.log('モーダル内のボタン数:', modalButtons.length);
+      for (let i = 0; i < modalButtons.length; i++) {
+        const html = await modalButtons[i].evaluate(el => el.outerHTML);
+        console.log(`モーダル内ボタン[${i}] outerHTML:`, html);
+      }
+      let clicked = false;
+      for (const btn of modalButtons) {
+        // ボタンのinnerTextをデバッグ出力
+        const text = await btn.evaluate(el => el.innerText.trim());
+        console.log('モーダル内ボタンテキスト:', text);
+        if (text === '保存') {
+          // クリック前に画面内にスクロール
+          await btn.evaluate(el => el.scrollIntoView({ behavior: 'auto', block: 'center' }));
+          // ボタンの有効状態を再確認
+          const isDisabled = await btn.evaluate(el => el.disabled || el.getAttribute('aria-disabled') === 'true');
+          console.log('保存ボタンのdisabled状態:', isDisabled);
+          if (isDisabled) {
+            console.error('保存ボタンが無効化されています');
+            continue;
+          }
+          // PuppeteerのElementHandle.click()でクリック（delay付き）
+          // これにより、実際のユーザー操作に近い形でクリックイベントが発火する
+          await btn.click({ delay: 100 });
+          clicked = true;
+          break;
+        }
+      }
+      if (clicked) {
+        console.log('画像アップロード後の「保存」ボタン（モーダル内）をElementHandle.click()でクリックしました');
+        // クリック後、モーダルが消える/非表示になるまで待機
+        // これにより、保存処理が完了し次の処理に進めることを保証する
+        await page.waitForFunction(() => {
+          const modal = document.querySelector('.ReactModal__Content');
+          return !modal || modal.offsetParent === null || window.getComputedStyle(modal).display === 'none' || window.getComputedStyle(modal).opacity === '0';
+        }, { timeout: 15000 });
+        console.log('画像アップロード後のモーダルが閉じました');
+      } else {
+        console.error('画像アップロード後の「保存」ボタン（モーダル内）が見つかりませんでした');
+      }
+    } catch (e) {
+      console.error('画像アップロード後の「保存」ボタン（モーダル内）のクリック処理中にエラー:', e);
+    }
   } catch (e) {
     console.error('ドラッグ＆ドロップ画像アップロード中にエラー:', e);
   }
