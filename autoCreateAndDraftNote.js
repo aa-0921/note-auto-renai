@@ -40,13 +40,6 @@ const patterns = [
   '成功例・失敗例から学ぶ'
 ];
 
-// 記事データの読み込み（例：JSONファイルから）
-function loadArticleData(filePath) {
-  // TODO: 実際のデータ形式に合わせて実装
-  const data = fs.readFileSync(filePath, 'utf-8');
-  return JSON.parse(data);
-}
-
 // 投稿一覧管理表.mdから最新IDを取得
 function getNextId() {
   const text = fs.readFileSync(SHEET_PATH, 'utf-8');
@@ -66,12 +59,14 @@ function getNextId() {
 function appendToSheet(id, fileName, title, date) {
   const row = `| ${id} | ${fileName} | ${title} | ${date} |  |  |  |  |\n`;
   let sheet = fs.readFileSync(SHEET_PATH, 'utf-8');
+
   // ファイル末尾が改行で終わっていなければ改行を追加
   if (!sheet.endsWith('\n')) {
     fs.appendFileSync(SHEET_PATH, '\n' + row, 'utf-8');
   } else {
     fs.appendFileSync(SHEET_PATH, row, 'utf-8');
   }
+
   console.log('投稿一覧管理表.mdに行を追加:', row.trim());
 }
 
