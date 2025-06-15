@@ -25,6 +25,21 @@ const topics = [
   '引き寄せの法則'
 ];
 
+// 切り口リスト
+const patterns = [
+  '一歩踏み込んだ理解',
+  '具体的な活用方法',
+  '楽にする方法',
+  'ランキング',
+  'まつわるQ&Aまとめ',
+  'やってはいけないNG行動',
+  '初心者が最初の1週間でやることリスト',
+  '専門家に聞いた極意',
+  '続けるためのモチベーション維持法',
+  'ありがちな勘違いと正しいやり方',
+  '成功例・失敗例から学ぶ'
+];
+
 // 記事データの読み込み（例：JSONファイルから）
 function loadArticleData(filePath) {
   // TODO: 実際のデータ形式に合わせて実装
@@ -47,9 +62,12 @@ function getNextId() {
   return maxId + 1;
 }
 
+// TODO:記事作成時に 投稿一覧管理表.md に追加
+
+
 // AIで記事生成
-async function generateArticle(topic) {
-  const prompt = `あなたは日本語のnote記事編集者です。以下の題材でnote記事を1本作成してください。\n\n題材: ${topic}\n\n【条件】\n- タイトル、本文、ハッシュタグ（#から始まるもの）を含めてください。\n- タイトルは1行目に「# タイトル」として記載してください。\n- 本文は見出しや箇条書きも交えて1000文字程度で丁寧にまとめてください。\n- ハッシュタグは記事末尾に「#〇〇 #〇〇 ...」の形式でまとめてください。\n- すべて日本語で出力してください。`;
+async function generateArticle(topic, pattern) {
+  const prompt = `あなたは日本語のnote記事編集者です。以下の題材と切り口でnote記事を1本作成してください。\n\n題材: ${topic}\n切り口: ${pattern}\n\n【条件】\n- タイトル、本文、ハッシュタグ（#から始まるもの）を含めてください。\n- タイトルは1行目に「# タイトル」として記載してください。\n- 本文は見出しや箇条書きも交えて1000文字程度で丁寧にまとめてください。\n- ハッシュタグは記事末尾に「#〇〇 #〇〇 ...」の形式でまとめてください。\n- すべて日本語で出力してください。\n- 切り口に沿った内容になるようにしてください。`;
   const messages = [
     { role: 'system', content: 'あなたは日本語のnote記事編集者です。' },
     { role: 'user', content: prompt }
@@ -80,24 +98,27 @@ function makeFileName(id, title) {
 (async () => {
   // 1. 題材ランダム選択
   const topic = topics[Math.floor(Math.random() * topics.length)];
+  // 2. 切り口ランダム選択
+  const pattern = patterns[Math.floor(Math.random() * patterns.length)];
   console.log('選ばれた題材:', topic);
+  console.log('選ばれた切り口:', pattern);
 
-  // 2. AIで記事生成
-  const article = await generateArticle(topic);
+  // 3. AIで記事生成
+  const article = await generateArticle(topic, pattern);
   console.log('AI生成記事サンプル:\n', article.slice(0, 200), '...');
 
-  // 3. タイトル抽出
+  // 4. タイトル抽出
   const titleMatch = article.match(/^#\s*(.+)$/m);
   const title = titleMatch ? titleMatch[1].trim() : '無題';
 
-  // 4. ID採番
+  // 5. ID採番
   const id = getNextId();
 
-  // 5. ファイル名生成
+  // 6. ファイル名生成
   const fileName = makeFileName(id, title);
   const filePath = path.join(POSTS_DIR, fileName);
 
-  // 6. 記事ファイル作成
+  // 7. 記事ファイル作成
   fs.writeFileSync(filePath, article, 'utf-8');
   console.log('記事ファイルを作成:', filePath);
 
