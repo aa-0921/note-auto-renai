@@ -10,11 +10,11 @@ function checkSectionLengths(mdPath, minLength = 200) {
     console.error(`ファイルが存在しないか読み込めません: ${mdPath}`);
     return;
   }
-  // ## 見出しごとに分割
-  const sections = raw.split(/^## /m).slice(1); // 先頭のはじまり部分を除外
+  // ## または ### 見出しごとに分割
+  const sections = raw.split(/^##+ /m).slice(1); // 2個以上の#で分割
   console.log(`検出されたセクション数: ${sections.length}`);
   if (sections.length === 0) {
-    console.warn('## 見出しが検出されませんでした。見出しの書式やスペースを確認してください。');
+    console.warn('##/### 見出しが検出されませんでした。見出しの書式やスペースを確認してください。');
     return;
   }
   for (const section of sections) {
@@ -23,7 +23,8 @@ function checkSectionLengths(mdPath, minLength = 200) {
     // 本文は見出しの次の行から、空行や次の見出し・---まで
     let body = '';
     for (let i = 1; i < lines.length; i++) {
-      if (lines[i].startsWith('##') || lines[i].startsWith('---')) break;
+      // 2個以上の#で始まる行や---で区切る
+      if (/^##+ /.test(lines[i]) || lines[i].startsWith('---')) break;
       body += lines[i].trim();
     }
     const len = body.length;

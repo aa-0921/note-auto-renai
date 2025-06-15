@@ -7,6 +7,7 @@ const puppeteer = require('puppeteer');
 const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
+const { execSync } = require('child_process');
 require('dotenv').config();
 
 const API_KEY = process.env.OPENROUTER_API_KEY;
@@ -142,7 +143,19 @@ function makeFileName(id, title) {
   fs.writeFileSync(filePath, article, 'utf-8');
   console.log('記事ファイルを作成:', filePath);
 
-  // 8. 投稿一覧管理表.mdに行を追加
+  // 8. 記事リライト・チェック（autoRewriteAndCheck.jsを呼び出し）
+  // ここで記事IDを使って、作成直後に自動でリライト・追記処理を行う
+  try {
+    console.log(`記事ID ${id} でautoRewriteAndCheck.jsを実行します...`);
+    // execSyncで同期的に実行し、リライト処理が完了するまで待つ
+    // stdio: 'inherit' でリライト処理中のログもそのまま表示
+    execSync(`node autoRewriteAndCheck.js ${id}`, { stdio: 'inherit' });
+    console.log('記事リライト・チェックが完了しました');
+  } catch (e) {
+    console.error('記事リライト・チェック中にエラー:', e);
+  }
+
+  // 9. 投稿一覧管理表.mdに行を追加
   const date = new Date().toISOString().slice(0, 10);
   appendToSheet(id, fileName, title, date);
 

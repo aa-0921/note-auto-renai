@@ -40,9 +40,10 @@ function findFileById(id) {
 
 // セクションごとに分割
 function splitSections(raw) {
-  // 先頭の「##」の前も含めて分割
+  // 先頭の「##」または「###」の前も含めて分割
+  // ^##+ で2個以上の#で始まる見出しをすべて対象にする
   console.log('[DEBUG] splitSections: raw start:', JSON.stringify(raw.slice(0, 300)));
-  const parts = raw.split(/^## /m);
+  const parts = raw.split(/^##+ /m); // 2個以上の#で分割
   console.log('[DEBUG] splitSections: parts.length:', parts.length);
   parts.forEach((p, i) => console.log(`[DEBUG] splitSections: parts[${i}] start:`, JSON.stringify(p.slice(0, 100))));
   const firstPart = parts[0];
@@ -52,7 +53,8 @@ function splitSections(raw) {
     const heading = lines[0].trim();
     let body = '';
     for (let i = 1; i < lines.length; i++) {
-      if (lines[i].startsWith('##') || lines[i].startsWith('---')) break;
+      // 2個以上の#で始まる行や---で区切る
+      if (/^##+ /.test(lines[i]) || lines[i].startsWith('---')) break;
       body += lines[i].trim();
     }
     console.log(`[DEBUG] splitSections: section[${idx}] heading:`, heading);
