@@ -45,6 +45,60 @@ function getArticleData(articlePath) {
   return { title, body };
 }
 
+// サムネイル画像をランダム選択
+function getRandomThumbnail() {
+  const dir = path.join(__dirname, 'thumbnails');
+  const files = fs.readdirSync(dir).filter(f => /\.(jpg|jpeg|png|gif)$/i.test(f));
+  if (files.length === 0) throw new Error('サムネイル画像がありません');
+  const file = files[Math.floor(Math.random() * files.length)];
+  return path.join(dir, file);
+}
+
+// Puppeteerで画像ドラッグ＆ドロップ（画像を追加ボタンに対して）
+async function dragAndDropToAddButton(page) {
+  try {
+    const dropSelector = 'button[aria-label="画像を追加"]';
+    await page.waitForSelector(dropSelector, { timeout: 5000 });
+
+    const filePath = getRandomThumbnail();
+    const fileName = path.basename(filePath);
+    const fileData = fs.readFileSync(filePath);
+    const fileBase64 = fileData.toString('base64');
+    console.log('ドラッグ＆ドロップでアップロードする画像ファイル:', filePath);
+
+    await page.evaluate(async (dropSelector, fileName, fileBase64) => {
+      const dropArea = document.querySelector(dropSelector);
+      if (!dropArea) {
+        throw new Error('ドロップエリアが見つかりません');
+      }
+      const bstr = atob(fileBase64);
+      let n = bstr.length;
+      const u8arr = new Uint8Array(n);
+      while(n--) u8arr[n] = bstr.charCodeAt(n);
+      const file = new File([u8arr], fileName, { type: "image/jpeg" });
+      const dataTransfer = new DataTransfer();
+      dataTransfer.items.add(file);
+      // dragover
+      const dragOverEvent = new DragEvent('dragover', {
+        dataTransfer,
+        bubbles: true,
+        cancelable: true
+      });
+      dropArea.dispatchEvent(dragOverEvent);
+      // drop
+      const dropEvent = new DragEvent('drop', {
+        dataTransfer,
+        bubbles: true,
+        cancelable: true
+      });
+      dropArea.dispatchEvent(dropEvent);
+    }, dropSelector, fileName, fileBase64);
+    console.log('ドラッグ＆ドロップによる画像アップロードを実行しました:', filePath);
+  } catch (e) {
+    console.error('ドラッグ＆ドロップ画像アップロード中にエラー:', e);
+  }
+}
+
 // ログイン処理
 async function login(page, email, password) {
   console.log('noteログインページへ遷移します');
@@ -288,6 +342,7 @@ async function main() {
           }
         }
         await goToNewPost(page);
+        await dragAndDropToAddButton(page);
         await fillArticle(page, title, body);
         await saveDraft(page);
         await closeDialogs(page);
