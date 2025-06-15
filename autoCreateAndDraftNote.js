@@ -65,7 +65,13 @@ function getNextId() {
 // 投稿一覧管理表.mdに新しい行を追加
 function appendToSheet(id, fileName, title, date) {
   const row = `| ${id} | ${fileName} | ${title} | ${date} |  |  |  |  |\n`;
-  fs.appendFileSync(SHEET_PATH, row, 'utf-8');
+  let sheet = fs.readFileSync(SHEET_PATH, 'utf-8');
+  // ファイル末尾が改行で終わっていなければ改行を追加
+  if (!sheet.endsWith('\n')) {
+    fs.appendFileSync(SHEET_PATH, '\n' + row, 'utf-8');
+  } else {
+    fs.appendFileSync(SHEET_PATH, row, 'utf-8');
+  }
   console.log('投稿一覧管理表.mdに行を追加:', row.trim());
 }
 
