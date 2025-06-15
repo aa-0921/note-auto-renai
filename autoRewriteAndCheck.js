@@ -40,8 +40,14 @@ function findFileById(id) {
 
 // セクションごとに分割
 function splitSections(raw) {
-  const sections = raw.split(/^## /m).slice(1);
-  return sections.map(section => {
+  // 先頭の「##」の前も含めて分割
+  console.log('[DEBUG] splitSections: raw start:', JSON.stringify(raw.slice(0, 300)));
+  const parts = raw.split(/^## /m);
+  console.log('[DEBUG] splitSections: parts.length:', parts.length);
+  parts.forEach((p, i) => console.log(`[DEBUG] splitSections: parts[${i}] start:`, JSON.stringify(p.slice(0, 100))));
+  const firstPart = parts[0];
+  console.log('[DEBUG] splitSections: firstPart:', JSON.stringify(firstPart));
+  const sections = parts.slice(1).map((section, idx) => {
     const lines = section.split('\n');
     const heading = lines[0].trim();
     let body = '';
@@ -49,8 +55,13 @@ function splitSections(raw) {
       if (lines[i].startsWith('##') || lines[i].startsWith('---')) break;
       body += lines[i].trim();
     }
+    console.log(`[DEBUG] splitSections: section[${idx}] heading:`, heading);
+    console.log(`[DEBUG] splitSections: section[${idx}] body start:`, JSON.stringify(body.slice(0, 100)));
     return { heading, body, raw: section };
   });
+  console.log('[DEBUG] splitSections: sections.length:', sections.length);
+  sections.forEach((s, i) => console.log(`[DEBUG] splitSections: sections[${i}] heading:`, s.heading));
+  return { firstPart, sections };
 }
 
 // checkSectionLengths.jsを呼び出してNGセクション名を抽出
@@ -142,7 +153,15 @@ async function processFile(mdPath) {
     }
     console.log(`NGセクション: ${ngSections.join(', ')}（${mdPath}）`);
     let raw = fs.readFileSync(mdPath, 'utf-8');
-    let sections = splitSections(raw);
+    console.log('[DEBUG] processFile: raw file start:', JSON.stringify(raw.slice(0, 300)));
+    console.log('[DEBUG] processFile: raw file end:', JSON.stringify(raw.slice(-300)));
+    let { firstPart, sections } = splitSections(raw);
+    console.log('[DEBUG] processFile: firstPart:', JSON.stringify(firstPart));
+    console.log('[DEBUG] processFile: sections:', sections.map(s => s.heading));
+    sections.forEach((s, i) => {
+      console.log(`[DEBUG] processFile: section[${i}] heading:`, s.heading);
+      console.log(`[DEBUG] processFile: section[${i}] body start:`, JSON.stringify(s.body.slice(0, 100)));
+    });
     let updated = false;
     for (let i = 0; i < sections.length; i++) {
       const { heading, body, raw: sectionRaw } = sections[i];
@@ -155,11 +174,15 @@ async function processFile(mdPath) {
         lines.splice(1, lines.length - 1, newBodyWithExtraLine);
         sections[i].raw = lines.join('\n');
         updated = true;
+        console.log(`[DEBUG] processFile: section[${i}] after rewrite, raw:`, JSON.stringify(sections[i].raw.slice(0, 100)));
       }
     }
     if (updated) {
-      const firstPart = raw.split(/^## /m)[0];
-      const newRaw = firstPart + sections.map(s => '## ' + s.raw).join('\n');
+      // firstPartの末尾に必ず改行を追加
+      const safeFirstPart = firstPart.endsWith('\n') ? firstPart : firstPart + '\n';
+      const newRaw = safeFirstPart + sections.map(s => '## ' + s.raw).join('\n');
+      console.log('[DEBUG] processFile: newRaw start:', JSON.stringify(newRaw.slice(0, 300)));
+      console.log('[DEBUG] processFile: newRaw end:', JSON.stringify(newRaw.slice(-300)));
       fs.writeFileSync(mdPath, newRaw, 'utf-8');
       console.log(`リライト・追記が完了しました: ${mdPath}（${loop}回目）`);
     } else {
@@ -168,10 +191,14 @@ async function processFile(mdPath) {
   }
   // ここでタグ自動付与
   let finalRaw = fs.readFileSync(mdPath, 'utf-8');
+  console.log('[DEBUG] processFile: finalRaw before tag:', JSON.stringify(finalRaw.slice(0, 300)));
   // 既存タグ行があれば除去
-  finalRaw = finalRaw.replace(/\n#.+$/m, '');
+  finalRaw = finalRaw.replace(/\n# .+$/gm, '');
+  console.log('[DEBUG] processFile: finalRaw after tag removal:', JSON.stringify(finalRaw.slice(0, 300)));
   const tags = await generateTagsFromContent(finalRaw);
+  console.log('[DEBUG] processFile: generated tags:', tags);
   finalRaw = finalRaw.trim() + '\n\n\n\n' + tags + '\n';
+  console.log('[DEBUG] processFile: finalRaw before write:', JSON.stringify(finalRaw.slice(0, 300)));
   fs.writeFileSync(mdPath, finalRaw, 'utf-8');
   console.log(`記事末尾にタグを自動付与しました: ${tags}`);
 }
