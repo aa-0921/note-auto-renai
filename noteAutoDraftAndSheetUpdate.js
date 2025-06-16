@@ -163,6 +163,7 @@ async function dragAndDropToAddButton(page) {
     console.error('ドラッグ＆ドロップ画像アップロード中にエラー:', e);
   }
 }
+exports.dragAndDropToAddButton = dragAndDropToAddButton;
 
 // ログイン処理
 async function login(page, email, password) {
@@ -229,6 +230,7 @@ async function goToNewPost(page) {
   await page.waitForNavigation();
   console.log('新規投稿画面に遷移しました');
 }
+exports.goToNewPost = goToNewPost;
 
 // 記事入力
 async function fillArticle(page, title, body) {
@@ -257,6 +259,7 @@ async function fillArticle(page, title, body) {
     throw new Error('本文入力欄が見つかりませんでした');
   }
 }
+exports.fillArticle = fillArticle;
 
 // 下書き保存
 async function saveDraft(page) {
@@ -277,6 +280,7 @@ async function saveDraft(page) {
     throw new Error('「下書き保存」ボタンが見つかりませんでした');
   }
 }
+exports.saveDraft = saveDraft;
 
 // 閉じる処理
 async function closeDialogs(page) {
@@ -313,6 +317,7 @@ async function closeDialogs(page) {
   if (!closed2) throw new Error('「閉じる」ボタン（2回目/モーダル内）が見つかりませんでした');
   await new Promise(resolve => setTimeout(resolve, 500));
 }
+exports.closeDialogs = closeDialogs;
 
 // 投稿一覧管理表.mdをパースし、下書き保存日が空欄の行のファイル名リストを返す
 function parseUnsubmittedArticles(tablePath) {

@@ -103,8 +103,8 @@ async function generateArticle(topic, pattern) {
         'Content-Type': 'application/json'
       }
     });
-    console.log("res", res)
-    console.log("res.data", res.data)
+    // console.log("res", res)
+    // console.log("res.data", res.data)
     
     return res.data.choices[0].message.content.trim();
   } catch (e) {
@@ -130,6 +130,16 @@ function makeFileName(id, title) {
   const safeTitle = title.replace(/[\s#\/:*?"<>|\\]/g, '').slice(0, 30);
   return `${id}__${date}-${safeTitle}.md`;
 }
+
+// note.com下書き保存用の関数をインポート
+const {
+  login,
+  goToNewPost,
+  dragAndDropToAddButton,
+  fillArticle,
+  saveDraft,
+  closeDialogs
+} = require('./noteAutoDraftAndSheetUpdate');
 
 // メイン処理
 (async () => {
@@ -185,12 +195,27 @@ function makeFileName(id, title) {
   const date = new Date().toISOString().slice(0, 10);
   appendToSheet(id, fileName, title, date);
 
-  // --- ここから下はアップロードやnote.com下書き保存のための処理例 ---
-  // Puppeteerの起動やnote.comへの自動入力などは今はコメントアウト
-  // const browser = await puppeteer.launch({ headless: false });
-  // const page = await browser.newPage();
-  // ...
-  // await browser.close();
-  
-  // TODO:自動で下書き保存まで行うように処理を追加
+  // 10. note.comに下書き保存（Puppeteerで自動化）
+  // ここからnoteAutoDraftAndSheetUpdate.jsの関数を使って下書き保存まで自動実行
+  try {
+    console.log('note.comに下書き保存処理を開始します...');
+    const browser = await puppeteer.launch({ headless: false }); // 本番は headless: 'old' などに調整可
+    const page = await browser.newPage();
+    // noteにログイン
+    await login(page, process.env.NOTE_EMAIL, process.env.NOTE_PASSWORD);
+    // 新規投稿画面へ遷移
+    await goToNewPost(page);
+    // サムネイル画像アップロード
+    await dragAndDropToAddButton(page);
+    // 記事タイトル・本文を入力
+    await fillArticle(page, title, article); // articleはAI生成・リライト済み本文
+    // 下書き保存
+    await saveDraft(page);
+    // ダイアログを閉じる
+    await closeDialogs(page);
+    await browser.close();
+    console.log('note.comへの下書き保存が完了しました');
+  } catch (e) {
+    console.error('note.com下書き保存処理中にエラー:', e);
+  }
 })(); 
