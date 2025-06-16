@@ -370,7 +370,7 @@ async function closeDialogs(page) {
   console.log('「閉じる」ボタン（2回目/モーダル内）を探します...');
   let closed2 = false;
   for (let retry = 0; retry < 5; retry++) {
-    await page.waitForTimeout(1000);
+    await new Promise(resolve => setTimeout(resolve, 1000));
     const closeButtons2 = await page.$$('.ReactModal__Content button');
     for (const btn of closeButtons2) {
       const text = await (await btn.getProperty('innerText')).jsonValue();
