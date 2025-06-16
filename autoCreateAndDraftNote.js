@@ -154,6 +154,93 @@ const {
   closeDialogs
 } = require('./noteAutoDraftAndSheetUpdate');
 
+// セクションごとに分割
+function splitSections(raw) {
+  const parts = raw.split(/^##+ /m); // 2個以上の#で分割
+  const firstPart = parts[0];
+  const sections = parts.slice(1).map((section) => {
+    const lines = section.split('\n');
+    const heading = lines[0].trim();
+    let body = '';
+    for (let i = 1; i < lines.length; i++) {
+      if (/^##+ /.test(lines[i]) || lines[i].startsWith('---')) break;
+      body += lines[i].trim();
+    }
+    return { heading, body, raw: section };
+  });
+  return { firstPart, sections };
+}
+
+// 200字未満のセクションをリライト
+async function rewriteSection(heading, body, API_URL, API_KEY, MODEL) {
+  const prompt = `\nあなたは女性の心理カウンセラーです。以下のnote記事の「${heading}」という見出しの本文が${body.length}文字しかありません。200文字以上になるように、実体験や具体例、アドバイスを交えて厚くリライト・追記してください。\n\n【注意】\n- タイトルや見出しは出力せず、本文のみを返してください。\n- 「追加した要素」や「文字数」などのメタ情報は一切出力しないでください。\n- 「CRIPTION:」「】」などの記号や不要な文字列は一切出力しないでください。\n- 文章は話し言葉やカジュアルな表現を避け、できるだけ丁寧な敬語でまとめてください。\n- です。ます。で統一してください。\n- 文章のみを返してください。\n- 文章は日本語で返してください。acency等の英語が混じらないようにしてください。\n\n元の本文: ${body}\n  `.trim();
+  const messages = [
+    { role: 'system', content: 'あなたは日本語のnote記事編集者です。' },
+    { role: 'user', content: prompt }
+  ];
+  const res = await axios.post(API_URL, {
+    model: MODEL,
+    messages,
+    max_tokens: 600,
+    temperature: 0.7
+  }, {
+    headers: {
+      'Authorization': `Bearer ${API_KEY}`,
+      'Content-Type': 'application/json'
+    }
+  });
+  return res.data.choices[0].message.content.trim();
+}
+
+// 記事末尾にタグを自動付与
+async function generateTagsFromContent(content, API_URL, API_KEY, MODEL) {
+  const prompt = `あなたは日本語のnote記事編集者です。以下の記事内容を読み、記事の内容に最も関連するハッシュタグを3～5個、日本語で生成してください。必ず「#引き寄せ #引き寄せの法則 #裏技」を含め、他にも内容に合うタグがあれば追加してください。タグは半角スペース区切りで、本文や説明は一切不要です。\n\n記事内容:\n${content}`;
+  const messages = [
+    { role: 'system', content: 'あなたは日本語のnote記事編集者です。' },
+    { role: 'user', content: prompt }
+  ];
+  const res = await axios.post(API_URL, {
+    model: MODEL,
+    messages,
+    max_tokens: 100,
+    temperature: 0.5
+  }, {
+    headers: {
+      'Authorization': `Bearer ${API_KEY}`,
+      'Content-Type': 'application/json'
+    }
+  });
+  return res.data.choices[0].message.content.trim();
+}
+
+// 200字未満のセクションをリライトし、タグを付与して返す
+async function rewriteAndTagArticle(raw, API_URL, API_KEY, MODEL) {
+  let { firstPart, sections } = splitSections(raw);
+  let updated = false;
+  // 200字未満のセクションをリライト
+  for (let i = 0; i < sections.length; i++) {
+    const { heading, body, raw: sectionRaw } = sections[i];
+    if (body.length < 200) {
+      console.log(`「${heading}」の本文が${body.length}文字と少なめです。AIでリライトします...`);
+      const newBody = await rewriteSection(heading, body, API_URL, API_KEY, MODEL);
+      const newBodyWithExtraLine = newBody + '\n';
+      const lines = sectionRaw.split('\n');
+      lines.splice(1, lines.length - 1, newBodyWithExtraLine);
+      sections[i].raw = lines.join('\n');
+      updated = true;
+    }
+  }
+  // firstPartの末尾に必ず改行を追加
+  const safeFirstPart = firstPart.endsWith('\n') ? firstPart : firstPart + '\n';
+  let newRaw = safeFirstPart + sections.map(s => '## ' + s.raw).join('\n');
+  // 既存タグ行があれば除去
+  newRaw = newRaw.replace(/\n# .+$/gm, '');
+  // タグ生成
+  const tags = await generateTagsFromContent(newRaw, API_URL, API_KEY, MODEL);
+  newRaw = newRaw.trim() + '\n\n\n\n' + tags + '\n';
+  return newRaw;
+}
+
 // メイン処理
 (async () => {
   // 1. 題材ランダム選択
@@ -181,35 +268,11 @@ const {
     title = article.split('\n').find(line => line.trim().length > 0)?.slice(0, 10) || '無題';
   }
 
-  // 5. ID採番
-  const id = getNextId();
+  // 5. 記事リライト・チェック（直接関数で処理）
+  let rewrittenArticle = await rewriteAndTagArticle(article, API_URL, API_KEY, MODEL);
+  console.log('記事リライト・チェックが完了しました');
 
-  // 6. ファイル名生成
-  const fileName = makeFileName(id, title);
-  const filePath = path.join(POSTS_DIR, fileName);
-
-  // 7. 記事ファイル作成
-  fs.writeFileSync(filePath, article, 'utf-8');
-  console.log('記事ファイルを作成:', filePath);
-
-  // 8. 記事リライト・チェック（autoRewriteAndCheck.jsを呼び出し）
-  // ここで記事IDを使って、作成直後に自動でリライト・追記処理を行う
-  try {
-    console.log(`記事ID ${id} でautoRewriteAndCheck.jsを実行します...`);
-    // execSyncで同期的に実行し、リライト処理が完了するまで待つ
-    // stdio: 'inherit' でリライト処理中のログもそのまま表示
-    execSync(`node autoRewriteAndCheck.js ${id}`, { stdio: 'inherit' });
-    console.log('記事リライト・チェックが完了しました');
-  } catch (e) {
-    console.error('記事リライト・チェック中にエラー:', e);
-  }
-
-  // 9. 投稿一覧管理表.mdに行を追加
-  const date = new Date().toISOString().slice(0, 10);
-  appendToSheet(id, fileName, title, date);
-
-  // 10. note.comに下書き保存（Puppeteerで自動化）
-  // ここからnoteAutoDraftAndSheetUpdate.jsの関数を使って下書き保存まで自動実行
+  // 6. note.comに下書き保存（Puppeteerで自動化）
   try {
     console.log('note.comに下書き保存処理を開始します...');
     // CI環境（GitHub Actions等）ではheadless:'new'、ローカルではheadless:falseで切り替え
@@ -231,7 +294,7 @@ const {
     // サムネイル画像アップロード
     await dragAndDropToAddButton(page);
     // 記事タイトル・本文を入力
-    await fillArticle(page, title, article); // articleはAI生成・リライト済み本文
+    await fillArticle(page, title, rewrittenArticle); // リライト・タグ付与済み本文
     // 下書き保存
     await saveDraft(page);
     // ダイアログを閉じる

@@ -198,6 +198,18 @@ async function login(page, email, password) {
     console.error('ユーザーアイコンが見つかりません。ログインに失敗した可能性があります。');
     process.exit(1);
   }
+  // ログイン直後にユーザーポップアップがあれば閉じる
+  const popupCloseBtn = await page.$('button.o-userPopup__close[aria-label="閉じる"]');
+  if (popupCloseBtn) {
+    console.log('ユーザーポップアップが表示されているため閉じます');
+    await popupCloseBtn.click();
+    await new Promise(resolve => setTimeout(resolve, 500));
+    console.log('ユーザーポップアップを閉じました');
+  } else {
+    console.log('ユーザーポップアップは表示されていません');
+  }
+  // ポップアップの有無にかかわらず2秒待機してから次の処理へ
+  await new Promise(resolve => setTimeout(resolve, 2000));
 }
 exports.login = login;
 
