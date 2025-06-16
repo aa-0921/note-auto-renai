@@ -39,7 +39,10 @@ const { login } = require('../noteAutoDraftAndSheetUpdate');
   // const targetUrl = 'https://note.com/notemagazine/m/mf2e92ffd6658'
 
   // 検索：日記
-  const targetUrl = 'https://note.com/search?q=%E6%97%A5%E8%A8%98&context=note&mode=search'
+  // const targetUrl = 'https://note.com/search?q=%E6%97%A5%E8%A8%98&context=note&mode=search'
+
+  // 検索：フォロバ
+  const targetUrl = 'https://note.com/search?q=%E3%83%95%E3%82%A9%E3%83%AD%E3%83%90&context=note&mode=search'
 
   // ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
 
