@@ -215,13 +215,41 @@ async function goToNewPost(page) {
   const postButtons = await page.$$('button[aria-label="投稿"]');
   let clicked = false;
   for (const btn of postButtons) {
+    // ボタンのinnerTextとouterHTMLをデバッグ出力
+    const innerText = await btn.evaluate(el => el.innerText);
+    const outerHTML = await btn.evaluate(el => el.outerHTML);
+    console.log('投稿ボタンinnerText:', innerText);
+    console.log('投稿ボタンouterHTML:', outerHTML);
     if (await btn.isIntersectingViewport()) {
-      console.log('表示されている投稿ボタンをクリックします。');
+      console.log('表示されている投稿ボタンをhover→クリックします。');
+      await btn.hover();
+      await new Promise(resolve => setTimeout(resolve, 500));
       await btn.click();
       clicked = true;
       // 投稿ボタンクリック後のURLとタイトルを出力
       console.log('投稿ボタンクリック後のURL:', await page.url());
       console.log('投稿ボタンクリック後のタイトル:', await page.title());
+      // 投稿ボタンクリック直後にスクリーンショットを保存
+      try {
+        await page.screenshot({ path: 'after_post_btn.png' });
+        console.log('投稿ボタンクリック後のスクリーンショットを保存しました（after_post_btn.png）');
+      } catch (e) {
+        console.error('スクリーンショット保存に失敗:', e);
+      }
+      // 全リンクを出力
+      try {
+        const links = await page.$$eval('a', as => as.map(a => ({href: a.getAttribute('href'), text: a.textContent.trim()})));
+        console.log('投稿ボタンクリック後の全リンク:', links);
+      } catch (e) {
+        console.error('全リンク出力に失敗:', e);
+      }
+      // page.contentの一部を出力
+      try {
+        const html = await page.content();
+        console.log('投稿ボタンクリック後のHTMLの一部:', html.slice(0, 1000));
+      } catch (e) {
+        console.error('HTML出力に失敗:', e);
+      }
       break;
     }
   }
