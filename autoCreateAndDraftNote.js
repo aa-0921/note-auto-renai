@@ -103,6 +103,9 @@ async function generateArticle(topic, pattern) {
         'Content-Type': 'application/json'
       }
     });
+    console.log("res", res)
+    console.log("res.data", res.data)
+    
     return res.data.choices[0].message.content.trim();
   } catch (e) {
     // エラー詳細を多めに出力
