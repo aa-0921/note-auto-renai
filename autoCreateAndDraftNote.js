@@ -212,9 +212,10 @@ const {
   // ここからnoteAutoDraftAndSheetUpdate.jsの関数を使って下書き保存まで自動実行
   try {
     console.log('note.comに下書き保存処理を開始します...');
-    // GitHub Actions等のLinux環境ではサンドボックスが使えないため、--no-sandbox等のオプションを付与
+    // CI環境（GitHub Actions等）ではheadless:'new'、ローカルではheadless:falseで切り替え
+    const isCI = process.env.CI === 'true';
     const browser = await puppeteer.launch({
-      headless: false, // 本番は headless: 'old' などに調整可
+      headless: isCI ? 'new' : false,
       args: [
         '--no-sandbox',
         '--disable-setuid-sandbox',
