@@ -212,7 +212,16 @@ const {
   // ここからnoteAutoDraftAndSheetUpdate.jsの関数を使って下書き保存まで自動実行
   try {
     console.log('note.comに下書き保存処理を開始します...');
-    const browser = await puppeteer.launch({ headless: false }); // 本番は headless: 'old' などに調整可
+    // GitHub Actions等のLinux環境ではサンドボックスが使えないため、--no-sandbox等のオプションを付与
+    const browser = await puppeteer.launch({
+      headless: false, // 本番は headless: 'old' などに調整可
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-gpu',
+        '--disable-dev-shm-usage'
+      ]
+    });
     const page = await browser.newPage();
     // noteにログイン
     await login(page, process.env.NOTE_EMAIL, process.env.NOTE_PASSWORD);
