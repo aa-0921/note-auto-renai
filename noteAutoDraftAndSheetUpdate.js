@@ -368,19 +368,24 @@ async function closeDialogs(page) {
   await new Promise(resolve => setTimeout(resolve, 500));
   // 2回目（モーダル内）
   console.log('「閉じる」ボタン（2回目/モーダル内）を探します...');
-  await page.waitForSelector('.ReactModal__Content button');
-  const closeButtons2 = await page.$$('.ReactModal__Content button');
   let closed2 = false;
-  for (const btn of closeButtons2) {
-    const text = await (await btn.getProperty('innerText')).jsonValue();
-    if (text && text.trim() === '閉じる') {
-      await btn.click();
-      closed2 = true;
-      console.log('「閉じる」ボタン（2回目/モーダル内）をクリックしました');
-      break;
+  for (let retry = 0; retry < 5; retry++) {
+    await page.waitForTimeout(1000);
+    const closeButtons2 = await page.$$('.ReactModal__Content button');
+    for (const btn of closeButtons2) {
+      const text = await (await btn.getProperty('innerText')).jsonValue();
+      if (text && text.trim() === '閉じる') {
+        await btn.click();
+        closed2 = true;
+        console.log('「閉じる」ボタン（2回目/モーダル内）をクリックしました');
+        break;
+      }
     }
+    if (closed2) break;
   }
-  if (!closed2) throw new Error('「閉じる」ボタン（2回目/モーダル内）が見つかりませんでした');
+  if (!closed2) {
+    console.warn('「閉じる」ボタン（2回目/モーダル内）が見つかりませんでしたが、処理を続行します');
+  }
   await new Promise(resolve => setTimeout(resolve, 500));
 }
 exports.closeDialogs = closeDialogs;
