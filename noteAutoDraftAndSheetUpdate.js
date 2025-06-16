@@ -185,6 +185,9 @@ async function login(page, email, password) {
   }
   await page.waitForNavigation();
   console.log('ログイン完了');
+  // ログイン後のURLとタイトルを出力
+  console.log('ログイン後の現在のURL:', await page.url());
+  console.log('ログイン後の現在のタイトル:', await page.title());
 }
 exports.login = login;
 
@@ -206,6 +209,9 @@ async function goToNewPost(page) {
       console.log('表示されている投稿ボタンをクリックします。');
       await btn.click();
       clicked = true;
+      // 投稿ボタンクリック後のURLとタイトルを出力
+      console.log('投稿ボタンクリック後のURL:', await page.url());
+      console.log('投稿ボタンクリック後のタイトル:', await page.title());
       break;
     }
   }
