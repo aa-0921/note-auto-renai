@@ -240,5 +240,7 @@ const {
     console.log('note.comへの下書き保存が完了しました');
   } catch (e) {
     console.error('note.com下書き保存処理中にエラー:', e);
+    // エラー発生時はCIを即終了
+    process.exit(1);
   }
 })(); 

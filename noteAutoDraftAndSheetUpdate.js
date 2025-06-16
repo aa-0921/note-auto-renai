@@ -188,6 +188,14 @@ async function login(page, email, password) {
   // ログイン後のURLとタイトルを出力
   console.log('ログイン後の現在のURL:', await page.url());
   console.log('ログイン後の現在のタイトル:', await page.title());
+  // ユーザーアイコンが表示されているかチェック（ログイン判定）
+  const userIcon = await page.$('img.a-userIcon--medium');
+  if (userIcon) {
+    console.log('ユーザーアイコンが検出されました。ログイン成功です。');
+  } else {
+    console.error('ユーザーアイコンが見つかりません。ログインに失敗した可能性があります。');
+    process.exit(1);
+  }
 }
 exports.login = login;
 
