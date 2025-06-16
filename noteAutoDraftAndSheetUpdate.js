@@ -191,7 +191,9 @@ async function login(page, email, password) {
   // ユーザーアイコンが表示されているかチェック（ログイン判定）
   const userIcon = await page.$('img.a-userIcon--medium');
   if (userIcon) {
-    console.log('ユーザーアイコンが検出されました。ログイン成功です。');
+    // ユーザーアイコンの画像URLを取得してログ出力
+    const iconUrl = await userIcon.evaluate(el => el.src);
+    console.log('ユーザーアイコンが検出されました。ログイン成功です。画像URL:', iconUrl);
   } else {
     console.error('ユーザーアイコンが見つかりません。ログインに失敗した可能性があります。');
     process.exit(1);
