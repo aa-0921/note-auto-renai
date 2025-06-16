@@ -301,6 +301,8 @@ async function rewriteAndTagArticle(raw, API_URL, API_KEY, MODEL) {
     await closeDialogs(page);
     await browser.close();
     console.log('note.comへの下書き保存が完了しました');
+    // 成功時に記事タイトルを表示
+    console.log('下書き保存した記事タイトル:', title);
   } catch (e) {
     console.error('note.com下書き保存処理中にエラー:', e);
     // エラー発生時はCIを即終了
