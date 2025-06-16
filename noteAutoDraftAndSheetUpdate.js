@@ -217,15 +217,37 @@ async function goToNewPost(page) {
 
   // 投稿ボタンクリック後、新しく記事を書くボタンが表示されるかどうかを確認
   console.log('投稿ボタンクリック後、新しく記事を書くボタンが表示されるか確認します...');
-  const newNoteButton = await page.$('a[href="/notes/new"]');
+  // クリック直後に1.5秒待機
+  await new Promise(resolve => setTimeout(resolve, 1500));
+
+  let newNoteButton = null;
+  for (let i = 0; i < 5; i++) { // 最大5回リトライ（1秒ごと）
+    newNoteButton = await page.$('a[href="/notes/new"]');
+    if (newNoteButton) break;
+    await new Promise(resolve => setTimeout(resolve, 1000));
+  }
   if (newNoteButton) {
     console.log('新しく記事を書くボタンが表示されました。クリックします。');
     await newNoteButton.click();
   } else {
     // 従来のテキストメニューを探す
-    console.log('新しく記事を書くボタンが表示されませんでした。従来のテキストメニューを探します...');
-    await page.waitForSelector('a[href="/notes/new"]');
-    await page.click('a[href="/notes/new"]');
+    console.log('新しく記事を書くボタンが表示されませんでした。従来のテキストメニューをリトライで探します...');
+    let found = false;
+    for (let i = 0; i < 5; i++) {
+      try {
+        await page.waitForSelector('a[href="/notes/new"]', { timeout: 1000 });
+        await page.click('a[href="/notes/new"]');
+        found = true;
+        break;
+      } catch (e) {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
+    }
+    if (!found) {
+      const html = await page.content();
+      console.error('従来のテキストメニューが見つかりませんでした。HTMLの一部:', html.slice(0, 1000));
+      throw new Error('新規投稿画面への遷移に失敗しました');
+    }
   }
   await page.waitForNavigation();
   console.log('新規投稿画面に遷移しました');
