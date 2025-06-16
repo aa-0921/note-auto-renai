@@ -242,12 +242,12 @@ async function goToNewPost(page) {
       console.log('投稿ボタンクリック後のURL:', await page.url());
       console.log('投稿ボタンクリック後のタイトル:', await page.title());
       // 投稿ボタンクリック直後にスクリーンショットを保存
-      try {
-        await page.screenshot({ path: 'after_post_btn.png' });
-        console.log('投稿ボタンクリック後のスクリーンショットを保存しました（after_post_btn.png）');
-      } catch (e) {
-        console.error('スクリーンショット保存に失敗:', e);
-      }
+      // try {
+      //   await page.screenshot({ path: 'after_post_btn.png' });
+      //   console.log('投稿ボタンクリック後のスクリーンショットを保存しました（after_post_btn.png）');
+      // } catch (e) {
+      //   console.error('スクリーンショット保存に失敗:', e);
+      // }
       // 全リンクを出力
       try {
         const links = await page.$$eval('a', as => as.map(a => ({href: a.getAttribute('href'), text: a.textContent.trim()})));
