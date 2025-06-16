@@ -79,6 +79,19 @@ async function generateArticle(topic, pattern) {
     { role: 'user', content: prompt }
   ];
   try {
+    // APIリクエスト内容を詳細にログ出力
+    console.log('AI記事生成APIリクエスト先:', API_URL);
+    console.log('AI記事生成APIリクエストヘッダー:', {
+      'Authorization': `Bearer ${API_KEY}`,
+      'Content-Type': 'application/json'
+    });
+    console.log('AI記事生成APIリクエストモデル:', MODEL);
+    // APIキーの一部だけ（セキュリティのため）
+    if (API_KEY) {
+      console.log('API_KEYの先頭6文字:', API_KEY.slice(0, 6), '...（省略）');
+    } else {
+      console.log('API_KEYが未設定です');
+    }
     const res = await axios.post(API_URL, {
       model: MODEL,
       messages,
@@ -90,9 +103,22 @@ async function generateArticle(topic, pattern) {
         'Content-Type': 'application/json'
       }
     });
+    console.log("res", res)
+    console.log("res.data", res.data)
+    
     return res.data.choices[0].message.content.trim();
   } catch (e) {
+    // エラー詳細を多めに出力
     console.error('AI記事生成APIエラー:', e.message);
+    if (e.response) {
+      console.error('APIレスポンスstatus:', e.response.status);
+      console.error('APIレスポンスdata:', JSON.stringify(e.response.data));
+      console.error('APIレスポンスheaders:', JSON.stringify(e.response.headers));
+    } else if (e.request) {
+      console.error('APIリクエスト自体が失敗:', e.request);
+    } else {
+      console.error('APIリクエスト前のエラー:', e);
+    }
     return '';
   }
 }
