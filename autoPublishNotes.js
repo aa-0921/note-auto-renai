@@ -39,7 +39,8 @@ const { login } = require('./noteAutoDraftAndSheetUpdate');
 
   const POST_LIMIT = 1; // 投稿数の上限（必要に応じて変更）
   let postCount = 0;
-  for (let i = 0; i < articles.length; i++) {
+  // 下書き記事リストの一番最後（最新）から投稿するよう逆順ループに変更
+  for (let i = articles.length - 1; i >= 0; i--) {
     if (postCount >= POST_LIMIT) break;
     const li = articles[i];
     console.log(`${i + 1}件目の記事タイトルを取得します`);
