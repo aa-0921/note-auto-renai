@@ -9,6 +9,12 @@ require('dotenv').config();
 const puppeteer = require('puppeteer');
 const { login } = require('../noteAutoDraftAndSheetUpdate');
 
+// logTime関数を必ず先頭で定義
+function logTime(label) {
+  const now = new Date();
+  console.log(`[${now.toISOString()}] ${label}`);
+}
+
 (async () => {
   console.log('Puppeteer起動オプションを取得します');
   const isCI = process.env.CI === 'true';
@@ -20,11 +26,30 @@ const { login } = require('../noteAutoDraftAndSheetUpdate');
       '--no-sandbox',
       '--disable-setuid-sandbox',
       '--disable-gpu',
-      '--disable-dev-shm-usage'
-    ]
+      '--disable-dev-shm-usage',
+      '--disable-extensions',
+      '--window-size=1280,900'    
+    ],
+    defaultViewport: null
   });
   const page = await browser.newPage();
 
+  // ダイアログ（alert等）検知時に即座に処理を停止
+  page.on('dialog', async dialog => {
+    const msg = dialog.message();
+    console.log('[ALERT検知]', msg);
+    if (msg.includes('上限に達したためご利用できません')) {
+      await dialog.dismiss(); // OKボタンを押す
+      console.log('【noteフォロー上限に達したため、処理を中断します】');
+      await browser.close(); // ブラウザを閉じる
+      process.exit(1); // スクリプトを即時終了
+    } else {
+      await dialog.dismiss();
+    }
+  });
+  
+  
+  
   console.log('noteにログインします');
   await login(page, process.env.NOTE_EMAIL, process.env.NOTE_PASSWORD);
   console.log('ログイン完了');
@@ -139,277 +164,55 @@ const { login } = require('../noteAutoDraftAndSheetUpdate');
     ]);
   }
 
+  // 検索結果ページ上でポップアップのフォローボタンをクリックする方式に変更
   for (let i = 0; i < uniqueCreators.length && followCount < 15; i++) {
-    const link = uniqueCreators[i].url;
     const name = uniqueCreators[i].name;
-    console.log(`クリエイターページ${i + 1}へ遷移します:（${name}）| ${link}`);
-    let followBtn = null;
+    logTime(`クリエイター${i + 1}のホバー＆ポップアップフォロー処理開始:（${name}）`);
     try {
-      await withTimeout((async () => {
-        console.log(`[DEBUG] クリエイターページへの遷移開始: ${link}`);
-        // 新しいタブ（ページ）を開く
-        const detailPage = await browser.newPage();
-        console.log('[DEBUG] 新しいタブを作成しました');
-
-
-        // ----------------------------------        // 
-        // ダイアログ（alert等）検知時に即座に処理を停止
-        detailPage.on('dialog', async dialog => {
-          console.log('[ERROR] ダイアログ検知:', dialog.message());
-          await dialog.dismiss(); // OKボタンを押す
-          throw new Error('上限エラー検知のため処理を停止します');
-        });
-        // ----------------------------------        // 
-        
-        await detailPage.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36');
-        console.log('[DEBUG] UserAgentを設定しました');
-        
-        // ページ遷移の完了を待機
-        // 注意: networkidle0を指定することで、すべてのネットワークリクエストが完了するまで待機
-        // タイムアウトは30秒に設定（ページの読み込みに十分な時間を確保）
-        console.log('[DEBUG] ページ遷移を開始します...');
-        await detailPage.goto(link, { 
-          waitUntil: 'networkidle0',
-          timeout: 30000 
-        });
-        console.log('[DEBUG] ページ遷移が完了しました');
-        
-        // ページの完全な読み込みを待機
-        // 注意: networkidle0の後も、JavaScriptの実行やDOMの更新が続く可能性があるため
-        // 追加で3秒の待機を設定（これにより、動的な要素の読み込みを確実に待機）
-        console.log('[DEBUG] ページの完全な読み込みを待機します...');
-        await new Promise(resolve => setTimeout(resolve, 3000));
-        
-        // ボタン要素の検索を開始
-        // 注意: data-name="ToggleButton"属性を持つボタンを検索
-        // このセレクタはnoteのフォローボタンに特有の属性
-        console.log('[DEBUG] ボタン要素の検索を開始します...');
-        const btns = await detailPage.$$('button[data-name="ToggleButton"]');
-        console.log(`[DEBUG] 検出されたボタン数: ${btns.length}`);
-        
-        // 各ボタンの情報を表示
-        // 注意: ボタンの状態を詳細に確認（テキスト、アイコン、可視性、有効性）
-        // 可視性チェックは以下の3つのCSSプロパティを考慮:
-        // - display: none でないこと
-        // - visibility: hidden でないこと
-        // - opacity: 0 でないこと
-        for (const btn of btns) {
-          const text = await btn.evaluate(el => el.innerText.trim());
-          const hasIcon = await btn.evaluate(el => el.querySelector('svg') !== null);
-          const isVisible = await btn.evaluate(el => {
-            const rect = el.getBoundingClientRect();
-            const style = window.getComputedStyle(el);
-            return rect.width > 0 && rect.height > 0 && 
-                   style.display !== 'none' && 
-                   style.visibility !== 'hidden' && 
-                   style.opacity !== '0';
-          });
-          const isEnabled = await btn.evaluate(el => !el.disabled);
-          console.log(`[DEBUG] ボタン情報: テキスト="${text}", アイコン有無=${hasIcon}, 可視性=${isVisible}, 有効=${isEnabled}`);
-        }
-        
-        // フォローボタンを特定
-        // 注意: 以下の条件でボタンを特定
-        // 1. テキストが"フォロー"であること
-        // 2. 可視性がtrueであること（display, visibility, opacityの条件を満たす）
-        // 3. ボタンが有効であること（disabledでない）
-        // 重要: アイコンの有無は条件から除外（実際のUIでは、クリック可能なボタンは必ずしもアイコンを持たない）
-        let followBtn = null;
-        for (const btn of btns) {
-          const text = await btn.evaluate(el => el.innerText.trim());
-          const isVisible = await btn.evaluate(el => {
-            const rect = el.getBoundingClientRect();
-            const style = window.getComputedStyle(el);
-            return rect.width > 0 && rect.height > 0 && 
-                   style.display !== 'none' && 
-                   style.visibility !== 'hidden' && 
-                   style.opacity !== '0';
-          });
-          const isEnabled = await btn.evaluate(el => !el.disabled);
-          
-          if (text === 'フォロー' && isVisible && isEnabled) {
-            followBtn = btn;
-            console.log('[DEBUG] フォローボタンを特定しました（条件: テキスト="フォロー", 可視, 有効）');
-            break;
-          }
-        }
-        
-        if (followBtn) {
-          // フォローボタンの詳細情報を取得
-          // 注意: クリック前にボタンの状態を詳細に確認
-          // 位置情報、スタイル情報、有効状態などを記録
-          console.log('[DEBUG] フォローボタンの詳細情報を取得します...');
-          const btnInfo = await followBtn.evaluate(el => {
-            const rect = el.getBoundingClientRect();
-            const style = window.getComputedStyle(el);
-            return {
-              text: el.innerText.trim(),
-              isVisible: rect.width > 0 && rect.height > 0 && 
-                        style.display !== 'none' && 
-                        style.visibility !== 'hidden' && 
-                        style.opacity !== '0',
-              position: {
-                x: rect.left,
-                y: rect.top,
-                width: rect.width,
-                height: rect.height
-              },
-              isEnabled: !el.disabled,
-              classes: el.className,
-              hasIcon: el.querySelector('svg') !== null,
-              style: {
-                display: style.display,
-                visibility: style.visibility,
-                opacity: style.opacity,
-                pointerEvents: style.pointerEvents
-              }
-            };
-          });
-          console.log('[DEBUG] フォローボタン情報:', JSON.stringify(btnInfo, null, 2));
-          
-          // クリック前の待機
-          // 注意: 2秒の待機を設定（ボタンの状態が安定するのを待つ）
-          console.log('[DEBUG] クリック前の待機を開始（2秒）...');
-          await new Promise(resolve => setTimeout(resolve, 2000));
-          
-          // ボタンが表示されるまでスクロール
-          // 注意: ボタンを画面の中央に配置（より確実なクリックのため）
-          console.log('[DEBUG] ボタンを画面内にスクロールします...');
-          await followBtn.evaluate(el => {
-            const rect = el.getBoundingClientRect();
-            const scrollY = window.scrollY + rect.top - (window.innerHeight / 2);
-            window.scrollTo({
-              top: scrollY,
-              behavior: 'smooth'
-            });
-          });
-          await new Promise(resolve => setTimeout(resolve, 1000));
-          
-          // クリック処理
-          // 注意: 2段階のクリック処理を実装
-          // 1. 通常のクリックを試みる（より自然な操作）
-          // 2. 失敗した場合、マウスイベントを手動で発火（フォールバック）
-          console.log('[DEBUG] クリック処理を開始します...');
-          try {
-            // まず通常のクリックを試みる（200msの遅延を設定）
-            await followBtn.click({ delay: 200 });
-            console.log('[DEBUG] 通常クリックを実行しました');
-          } catch (error) {
-            console.log('[DEBUG] 通常クリックが失敗したため、イベント発火方式に切り替えます');
-            // クリックが失敗した場合、イベント発火方式にフォールバック
-            // 注意: マウスイベントを順番に発火（mouseover → mousedown → mouseup → click）
-            // 各イベント間に200msの遅延を設定（より自然な操作をシミュレート）
-            await followBtn.evaluate(el => {
-              const rect = el.getBoundingClientRect();
-              const x = rect.left + (rect.width / 2);
-              const y = rect.top + (rect.height / 2);
-              
-              const events = ['mouseover', 'mousedown', 'mouseup', 'click'];
-              events.forEach((eventType, index) => {
-                setTimeout(() => {
-                  const event = new MouseEvent(eventType, {
-                    bubbles: true,
-                    cancelable: true,
-                    view: window,
-                    clientX: x,
-                    clientY: y
-                  });
-                  el.dispatchEvent(event);
-                  console.log(`[DEBUG] ${eventType}イベントを発火しました`);
-                }, index * 200);
-              });
-            });
-          }
-          
-          console.log('[DEBUG] クリックイベントを発火しました');
-          
-          // クリック後の待機
-          // 注意: 3秒の待機を設定（フォロー状態の変更を待つ）
-          console.log('[DEBUG] クリック後の待機を開始（3秒）...');
-          await new Promise(resolve => setTimeout(resolve, 3000));
-          
-          // フォロー状態の変更を待機
-          // 注意: 以下の条件でフォロー状態の変更を確認
-          // 1. ボタンのテキストが"フォロー中"に変更されていること
-          // 2. ボタンが可視状態であること
-          // タイムアウトは15秒に設定（ネットワーク遅延などを考慮）
-          console.log('[DEBUG] フォロー状態の変更を待機します...');
-          try {
-            const followStateChange = await detailPage.waitForFunction(
-              () => {
-                const buttons = Array.from(document.querySelectorAll('button[data-name="ToggleButton"]'));
-                const followButton = buttons.find(btn => {
-                  const text = btn.innerText.trim();
-                  const isVisible = (() => {
-                    const rect = btn.getBoundingClientRect();
-                    const style = window.getComputedStyle(btn);
-                    return rect.width > 0 && rect.height > 0 && 
-                           style.display !== 'none' && 
-                           style.visibility !== 'hidden' && 
-                           style.opacity !== '0';
-                  })();
-                  return text === 'フォロー中' && isVisible;
-                });
-                
-                if (followButton) {
-                  return {
-                    success: true,
-                    buttonText: followButton.innerText.trim(),
-                    buttonClasses: followButton.className,
-                    buttonStyle: {
-                      display: window.getComputedStyle(followButton).display,
-                      visibility: window.getComputedStyle(followButton).visibility,
-                      opacity: window.getComputedStyle(followButton).opacity
-                    }
-                  };
-                }
-                
-                return {
-                  success: false,
-                  currentButtons: buttons.map(btn => ({
-                    text: btn.innerText.trim(),
-                    isVisible: (() => {
-                      const rect = btn.getBoundingClientRect();
-                      const style = window.getComputedStyle(btn);
-                      return rect.width > 0 && rect.height > 0 && 
-                             style.display !== 'none' && 
-                             style.visibility !== 'hidden' && 
-                             style.opacity !== '0';
-                    })(),
-                    classes: btn.className
-                  }))
-                };
-              },
-              { timeout: 15000 }
-            );
-            
-            const followState = await followStateChange.jsonValue();
-            console.log('[DEBUG] フォロー状態の変更結果:', JSON.stringify(followState, null, 2));
-            
-            if (followState.success) {
-              console.log('[DEBUG] フォロー状態の変更を確認しました');
-              followCount++;
-              console.log(`[DEBUG] フォロー成功（${followCount}件目）｜（${name}）｜クリエイター: ${link}`);
-              
-              // フォロー成功後の待機
-              // 注意: 3秒の待機を設定（次のページ遷移前に状態を安定させる）
-              console.log('[DEBUG] フォロー成功後の待機を開始（3秒）...');
-              await new Promise(resolve => setTimeout(resolve, 3000));
-            } else {
-              console.log('[DEBUG] フォロー状態の変更が確認できませんでした');
-              console.log('[DEBUG] 現在のボタン状態:', followState.currentButtons);
-            }
-          } catch (error) {
-            console.log('[DEBUG] フォロー状態の変更を確認できませんでした');
-            console.log('[DEBUG] エラー詳細:', error.message);
-          }
-        } else {
-          console.log('[DEBUG] フォローボタンが見つかりませんでした');
-        }
-        await detailPage.close();
-      })(), 60000);
+      // 検索結果ページの各クリエイター要素を再取得
+      const userWrappers = await page.$$('.o-largeNoteSummary__userWrapper');
+      if (!userWrappers[i]) continue;
+      // aタグを取得してhover
+      const aTag = await userWrappers[i].$('a.o-largeNoteSummary__user');
+      if (!aTag) continue;
+      await aTag.hover();
+      // ホバー後に明示的な待機時間を追加（ポップアップが見やすくなるように）
+      // await new Promise(resolve => setTimeout(resolve, 800)); // 0.8秒待機
+      await new Promise(resolve => setTimeout(resolve, 3000)); // 3秒待機
+      // ポップアップが出るまで待機（最大2.5秒に延長）
+      await page.waitForSelector('.o-quickLook', { visible: true, timeout: 2500 });
+      // ポップアップ内のフォローボタンを取得
+      const followBtn = await page.$('.o-quickLook .a-button');
+      if (!followBtn) {
+        logTime('フォローボタンが見つかりませんでした');
+        continue;
+      }
+      // ボタンのテキストが「フォロー」か確認
+      const btnText = await followBtn.evaluate(el => el.innerText.trim());
+      if (btnText === 'フォロー') {
+        await followBtn.click();
+        // 状態変化を待つ（「フォロー中」になるまで or 最大1.5秒）
+        await Promise.race([
+          page.waitForFunction(
+            () => {
+              const btn = document.querySelector('.o-quickLook .a-button');
+              return btn && btn.innerText.trim() === 'フォロー中';
+            },
+            { timeout: 1500 }
+          ),
+          new Promise(resolve => setTimeout(resolve, 1500))
+        ]);
+        logTime(`ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー`);
+        logTime(`フォロー成功！！（${followCount + 1}件目）｜クリエイター名（${name}）`);
+        logTime(`ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー`);
+        followCount++;
+      } else {
+        logTime('すでにフォロー済み、またはボタン状態が「フォロー」ではありません');
+      }
+      // 少し待ってから次へ（0.3秒）
+      await new Promise(resolve => setTimeout(resolve, 300));
     } catch (e) {
-      console.log('クリエイターページ処理でタイムアウトまたはエラー:', e.message);
+      logTime(`エラー発生: ${e.message}`);
       continue;
     }
   }
