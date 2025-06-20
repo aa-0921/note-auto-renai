@@ -38,14 +38,41 @@ const { login } = require('../noteAutoDraftAndSheetUpdate');
   // 注目のページ
   // const targetUrl = 'https://note.com/notemagazine/m/mf2e92ffd6658'
 
-  // 検索：日記
-  // const targetUrl = 'https://note.com/search?q=%E6%97%A5%E8%A8%98&context=note&mode=search'
+  // 検索ワードリスト
+  const searchWords = [
+    '日記',
+    'フォロバ',
+    'メンタル',
+    '人間関係',
+    'ママ友',
+    '職場',
+    '学校',
+    '引き寄せ',
+    'マインド',
+    'はじめて',
+    '初めて',
+  ];
 
-  // 検索：フォロバ
-  // const targetUrl = 'https://note.com/search?q=%E3%83%95%E3%82%A9%E3%83%AD%E3%83%90&context=note&mode=search'
+  // 日付と時刻からインデックスを計算し、順番に切り替え
+  const now = new Date();
+  // インデックス計算の解説ログ
+  console.log('【インデックス計算解説】');
+  console.log('searchWords.length =', searchWords.length);
+  console.log('now.getDate() =', now.getDate(), '（本日の日付）');
+  console.log('now.getHours() =', now.getHours(), '（現在の時刻[0-23]）');
+  console.log('インデックス = (日付 + 時刻) % 検索ワード数 で計算します');
+  const index = (now.getDate() + now.getHours()) % searchWords.length;
+  console.log(`計算式: (${now.getDate()} + ${now.getHours()}) % ${searchWords.length} = ${index}`);
+  const word = searchWords[index];
+  const encoded = encodeURIComponent(word);
+  const targetUrl = `https://note.com/search?q=${encoded}&context=note&mode=search`;
 
-  // 検索：メンタル
-  const targetUrl = 'https://note.com/search?q=%E3%83%A1%E3%83%B3%E3%82%BF%E3%83%AB&context=note&mode=search'
+  // ログ出力（デバッグ用）
+  console.log('【検索ワード選択ログ】');
+  console.log('現在日時:', now.toString());
+  console.log('インデックス:', index);
+  console.log('選択ワード:', word);
+  console.log('検索URL:', targetUrl);
 
   // ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
 
