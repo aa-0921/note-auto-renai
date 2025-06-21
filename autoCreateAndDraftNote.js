@@ -75,16 +75,30 @@ const patterns = [
 
 // AIで記事生成
 async function generateArticle(topic, pattern) {
-  const prompt = `あなたは日本語のnote記事編集者です。以下の題材と切り口でnote記事を1本作成してください。\n\n題材: ${topic}\n切り口: ${pattern}\n\n【条件】\n- タイトル、本文、ハッシュタグ（#から始まるもの）を含めてください。\n- タイトルは1行目に「# タイトル」として記載してください。\n- 本文は見出しや箇条書きも交えて1000文字程度で丁寧にまとめてください。\n- ハッシュタグは記事末尾に「#〇〇 #〇〇 ...」の形式でまとめてください。\n- すべて日本語で出力してください。\n- 切り口に沿った内容になるようにしてください。`;
+  const prompt = `あなたは日本語のnote記事編集者です。以下の題材と切り口でnote記事を1本作成してください。
+
+題材: ${topic}
+切り口: ${pattern}
+
+【条件】
+- タイトル、本文、ハッシュタグ（#から始まるもの）を含めてください。
+- タイトルは1行目に「# タイトル」として記載してください。
+- 本文にはタイトルを含めないでください。
+- 本文は見出しや箇条書きも交えて1000文字程度で丁寧にまとめてください。
+- ハッシュタグは記事末尾に「#〇〇 #〇〇 ...」の形式でまとめてください。
+- すべて日本語で出力してください。
+- 切り口に沿った内容になるようにしてください。`;
   const messages = [
     { role: 'system', content: 'あなたは日本語のnote記事編集者です。' },
     { role: 'user', content: prompt }
   ];
+
   // AI記事生成APIリクエストを最大3回までリトライ
   let tryCount = 0;
   let lastError = null;
   while (tryCount < 3) {
     tryCount++;
+
     try {
       // APIリクエスト内容を詳細にログ出力
       console.log('AI記事生成APIリクエスト先:', API_URL);
@@ -99,6 +113,8 @@ async function generateArticle(topic, pattern) {
       } else {
         console.log('API_KEYが未設定です');
       }
+
+      // 記事生成リクエスト
       const res = await axios.post(API_URL, {
         model: MODEL,
         messages,
@@ -269,9 +285,28 @@ async function rewriteAndTagArticle(raw, API_URL, API_KEY, MODEL) {
     // 先頭行がタイトルでない場合、最初の10文字を仮タイトルに
     title = article.split('\n').find(line => line.trim().length > 0)?.slice(0, 10) || '無題';
   }
+  // 本文から「タイトルと同じh1行（# タイトル）」をすべて除去する
+  const h1TitleLine = `# ${title}`;
+  const articleLines = article.split('\n');
+  console.log('【h1タイトル除去デバッグ】');
+  console.log('タイトル:', title);
+  console.log('h1TitleLine:', JSON.stringify(h1TitleLine));
+  articleLines.forEach((line, idx) => {
+    if (line.trim() === h1TitleLine) {
+      console.log(`>> 除去対象: 行${idx + 1}:`, JSON.stringify(line));
+    } else {
+      console.log(`   残す: 行${idx + 1}:`, JSON.stringify(line));
+    }
+  });
+  const filteredArticleLines = articleLines.filter(line => line.trim() !== h1TitleLine);
+  const filteredArticle = filteredArticleLines.join('\n');
+  console.log('【h1タイトル除去後の本文行リスト】');
+  filteredArticleLines.forEach((line, idx) => {
+    console.log(`   ${idx + 1}:`, JSON.stringify(line));
+  });
 
   // 5. 記事リライト・チェック（直接関数で処理）
-  let rewrittenArticle = await rewriteAndTagArticle(article, API_URL, API_KEY, MODEL);
+  let rewrittenArticle = await rewriteAndTagArticle(filteredArticle, API_URL, API_KEY, MODEL);
   console.log('記事リライト・チェックが完了しました');
 
   // 6. note.comに下書き保存（Puppeteerで自動化）
