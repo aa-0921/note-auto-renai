@@ -81,16 +81,49 @@ function logTime(label) {
     '初めて',
   ];
 
-  // 日付と時刻からインデックスを計算し、順番に切り替え
+  // ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+  // 例：searchWords.length = 11, runsPerDay = 8（3時間ごと: 0,3,6,9,12,15,18,21時）
+  //
+  // 1月1日（dayOfYear = 1）
+  // 時刻   runIndex  index計算式              index  増分
+  // 0時    0         (8×1 + 0) % 11 = 8      8     
+  // 3時    1         (8×1 + 1) % 11 = 9      9     +1
+  // 6時    2         (8×1 + 2) % 11 = 10     10    +1
+  // 9時    3         (8×1 + 3) % 11 = 0      0     +1(10→0)
+  // 12時   4         (8×1 + 4) % 11 = 1      1     +1
+  // 15時   5         (8×1 + 5) % 11 = 2      2     +1
+  // 18時   6         (8×1 + 6) % 11 = 3      3     +1
+  // 21時   7         (8×1 + 7) % 11 = 4      4     +1
+  //
+  // 1月2日（dayOfYear = 2）
+  // 時刻   runIndex  index計算式              index  増分
+  // 0時    0         (8×2 + 0) % 11 = 16 % 11 = 5     
+  // 3時    1         (8×2 + 1) % 11 = 17 % 11 = 6     +1
+  // 6時    2         (8×2 + 2) % 11 = 18 % 11 = 7     +1
+  // 9時    3         (8×2 + 3) % 11 = 19 % 11 = 8     +1
+  // 12時   4         (8×2 + 4) % 11 = 20 % 11 = 9     +1
+  // 15時   5         (8×2 + 5) % 11 = 21 % 11 = 10    +1
+  // 18時   6         (8×2 + 6) % 11 = 22 % 11 = 0     +1(10→0)
+  // 21時   7         (8×2 + 7) % 11 = 23 % 11 = 1     +1
+  //
+  // ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+
+  // 1日あたりの実行回数（cronの回数に合わせて調整）
+  const runsPerDay = 8; // 例: 0,3,6,9,12,15,18,21時
   const now = new Date();
-  // インデックス計算の解説ログ
-  console.log('【インデックス計算解説】');
+  // 年初からの日数（1月1日が1）
+  const dayOfYear = Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 86400000);
+  // 今日の何回目の実行か（3時間ごとなら0～7）
+  const runIndex = Math.floor(now.getHours() / 3);
+  // 実行回数に応じて順番に消化
+  const index = (dayOfYear * runsPerDay + runIndex) % searchWords.length;
+  // デバッグ用ログ
+  console.log('【順番インデックス計算】');
   console.log('searchWords.length =', searchWords.length);
-  console.log('now.getDate() =', now.getDate(), '（本日の日付）');
-  console.log('now.getHours() =', now.getHours(), '（現在の時刻[0-23]）');
-  console.log('インデックス = (日付 + 時刻) % 検索ワード数 で計算します');
-  const index = (now.getDate() + now.getHours()) % searchWords.length;
-  console.log(`計算式: (${now.getDate()} + ${now.getHours()}) % ${searchWords.length} = ${index}`);
+  console.log('runsPerDay =', runsPerDay);
+  console.log('dayOfYear =', dayOfYear);
+  console.log('runIndex =', runIndex);
+  console.log('index = (dayOfYear * runsPerDay + runIndex) % searchWords.length =', index);
   const word = searchWords[index];
   const encoded = encodeURIComponent(word);
   const targetUrl = `https://note.com/search?q=${encoded}&context=note&mode=search`;
@@ -182,7 +215,7 @@ function logTime(label) {
       await aTag.hover();
       // ホバー後に明示的な待機時間を追加（ポップアップが見やすくなるように）
       // await new Promise(resolve => setTimeout(resolve, 800)); // 0.8秒待機
-      await new Promise(resolve => setTimeout(resolve, 3000)); // 3秒待機
+      await new Promise(resolve => setTimeout(resolve, 2000)); // 2秒待機
       // ポップアップが出るまで待機（最大2.5秒に延長）
       await page.waitForSelector('.o-quickLook', { visible: true, timeout: 2500 });
       // ポップアップ内のフォローボタンを取得
