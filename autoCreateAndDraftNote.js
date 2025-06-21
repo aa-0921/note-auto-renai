@@ -4,17 +4,17 @@
 // 日本語コメントで説明
 
 const puppeteer = require('puppeteer');
-const fs = require('fs');
-const path = require('path');
+// const fs = require('fs');
+// const path = require('path');
 const axios = require('axios');
-const { execSync } = require('child_process');
+// const { execSync } = require('child_process');
 require('dotenv').config();
 
 const API_KEY = process.env.OPENROUTER_API_KEY;
 const API_URL = 'https://openrouter.ai/api/v1/chat/completions';
 const MODEL = 'meta-llama/llama-4-maverick:free';
-const POSTS_DIR = 'posts';
-const SHEET_PATH = '投稿一覧管理表.md';
+// const POSTS_DIR = 'posts';
+// const SHEET_PATH = '投稿一覧管理表.md';
 
 // 題材リスト
 const topics = [
@@ -43,35 +43,35 @@ const patterns = [
   'メンタル崩壊ランキング'
 ];
 
-// 投稿一覧管理表.mdから最新IDを取得
-function getNextId() {
-  const text = fs.readFileSync(SHEET_PATH, 'utf-8');
-  const lines = text.split('\n');
-  let maxId = 0;
-  for (const line of lines) {
-    const m = line.match(/^\|\s*(\d+)\s*\|/);
-    if (m) {
-      const id = parseInt(m[1], 10);
-      if (id > maxId) maxId = id;
-    }
-  }
-  return maxId + 1;
-}
+// // 投稿一覧管理表.mdから最新IDを取得
+// function getNextId() {
+//   const text = fs.readFileSync(SHEET_PATH, 'utf-8');
+//   const lines = text.split('\n');
+//   let maxId = 0;
+//   for (const line of lines) {
+//     const m = line.match(/^\|\s*(\d+)\s*\|/);
+//     if (m) {
+//       const id = parseInt(m[1], 10);
+//       if (id > maxId) maxId = id;
+//     }
+//   }
+//   return maxId + 1;
+// }
 
-// 投稿一覧管理表.mdに新しい行を追加
-function appendToSheet(id, fileName, title, date) {
-  const row = `| ${id} | ${fileName} | ${title} | ${date} |  |  |  |  |\n`;
-  let sheet = fs.readFileSync(SHEET_PATH, 'utf-8');
+// // 投稿一覧管理表.mdに新しい行を追加
+// function appendToSheet(id, fileName, title, date) {
+//   const row = `| ${id} | ${fileName} | ${title} | ${date} |  |  |  |  |\n`;
+//   let sheet = fs.readFileSync(SHEET_PATH, 'utf-8');
 
-  // ファイル末尾が改行で終わっていなければ改行を追加
-  if (!sheet.endsWith('\n')) {
-    fs.appendFileSync(SHEET_PATH, '\n' + row, 'utf-8');
-  } else {
-    fs.appendFileSync(SHEET_PATH, row, 'utf-8');
-  }
+//   // ファイル末尾が改行で終わっていなければ改行を追加
+//   if (!sheet.endsWith('\n')) {
+//     fs.appendFileSync(SHEET_PATH, '\n' + row, 'utf-8');
+//   } else {
+//     fs.appendFileSync(SHEET_PATH, row, 'utf-8');
+//   }
 
-  console.log('投稿一覧管理表.mdに行を追加:', row.trim());
-}
+//   console.log('投稿一覧管理表.mdに行を追加:', row.trim());
+// }
 
 // AIで記事生成
 async function generateArticle(topic, pattern) {
