@@ -34,6 +34,8 @@ function logTime(label) {
   });
   const page = await browser.newPage();
 
+  let isLimit = false; // 上限検知フラグ
+
   // ダイアログ（alert等）検知時に即座に処理を停止
   page.on('dialog', async dialog => {
     const msg = dialog.message();
@@ -41,8 +43,9 @@ function logTime(label) {
     if (msg.includes('上限に達したためご利用できません')) {
       await dialog.dismiss(); // OKボタンを押す
       console.log('【noteフォロー上限に達したため、処理を中断します】');
+      isLimit = true; // 上限フラグを立てる
       await browser.close(); // ブラウザを閉じる
-      process.exit(1); // スクリプトを即時終了
+      // ここでは process.exit(1) を呼ばない
     } else {
       await dialog.dismiss();
     }
@@ -166,6 +169,7 @@ function logTime(label) {
 
   // 検索結果ページ上でポップアップのフォローボタンをクリックする方式に変更
   for (let i = 0; i < uniqueCreators.length && followCount < 15; i++) {
+    if (isLimit) break; // 上限検知時は即座にループを抜ける
     const name = uniqueCreators[i].name;
     logTime(`クリエイター${i + 1}のホバー＆ポップアップフォロー処理開始:（${name}）`);
     try {
@@ -216,7 +220,11 @@ function logTime(label) {
       continue;
     }
   }
-  console.log(`フォロー処理が完了しました。合計${followCount}件フォローしました。`);
+  logTime('全フォロー処理完了');
+  // 上限検知時はここで安全に終了
+  if (isLimit) {
+    process.exit(1);
+  }
   await browser.close();
   console.log('ブラウザを閉じました');
 })(); 
