@@ -214,8 +214,8 @@ function logTime(label) {
       if (!aTag) continue;
       await aTag.hover();
       // ホバー後に明示的な待機時間を追加（ポップアップが見やすくなるように）
-      // await new Promise(resolve => setTimeout(resolve, 800)); // 0.8秒待機
-      await new Promise(resolve => setTimeout(resolve, 2000)); // 2秒待機
+      await new Promise(resolve => setTimeout(resolve, 800)); // 0.8秒待機
+      // await new Promise(resolve => setTimeout(resolve, 2000)); // 2秒待機
       // ポップアップが出るまで待機（最大2.5秒に延長）
       await page.waitForSelector('.o-quickLook', { visible: true, timeout: 2500 });
       // ポップアップ内のフォローボタンを取得
