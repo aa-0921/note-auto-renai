@@ -1,0 +1,44 @@
+version: 2.1
+
+jobs:
+  auto-publish-notes:
+    docker:
+      - image: cimg/node:20.11 # Node.js 20系の公式イメージ
+    steps:
+      - checkout
+      # 依存関係インストール
+      - run:
+          name: npm install
+          command: npm install
+      # スクリプト実行
+      - run:
+          name: Run autoPublishNotes.js
+          command: node autoPublishNotes.js
+    environment:
+      NOTE_EMAIL: $NOTE_EMAIL
+      NOTE_PASSWORD: $NOTE_PASSWORD
+
+workflows:
+  version: 2
+  scheduled-auto-publish:
+    triggers:
+      - schedule:
+          cron: "45 2 * * *"   # JST 11:45
+          filters:
+            branches:
+              only:
+                - main
+      - schedule:
+          cron: "45 8 * * *"   # JST 17:45
+          filters:
+            branches:
+              only:
+                - main
+      - schedule:
+          cron: "45 14 * * *"  # JST 23:45
+          filters:
+            branches:
+              only:
+                - main
+    jobs:
+      - auto-publish-notes
