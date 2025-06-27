@@ -167,23 +167,66 @@ exports.dragAndDropToAddButton = dragAndDropToAddButton;
 
 // ログイン処理
 async function login(page, email, password) {
+  // User-AgentとAccept-Languageを日本向けに設定
+  await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36');
+  await page.setExtraHTTPHeaders({
+    'Accept-Language': 'ja-JP,ja;q=0.9,en-US;q=0.8,en;q=0.7'
+  });
   console.log('noteログインページへ遷移します');
-  await page.goto('https://note.com/login?redirectPath=https%3A%2F%2Fnote.com%2F', { waitUntil: 'networkidle2' });
+  await page.goto('https://note.com/login?redirectPath=https%3A%2F%2Fnote.com%2F', { waitUntil: 'networkidle2', timeout: 60000 });
   console.log('メールアドレスとパスワードを入力します');
   await page.type('#email', email);
   await page.type('#password', password);
   await page.waitForSelector('button[type="button"]:not([disabled])');
   console.log('ログインボタンを探します');
   const buttons = await page.$$('button[type="button"]');
+  let loginClicked = false;
   for (const btn of buttons) {
     const text = await (await btn.getProperty('innerText')).jsonValue();
     if (text && text.trim() === 'ログイン') {
       console.log('ログインボタンをクリックします');
-      await btn.click();
+      try {
+        await Promise.all([
+          btn.click(),
+          page.waitForSelector('img.a-userIcon--medium', { timeout: 60000 })
+        ]);
+        loginClicked = true;
+      } catch (e) {
+        console.error('ログイン後のユーザーアイコン検出に失敗:', e);
+        // スクリーンショットとHTMLを保存
+        try {
+          await page.screenshot({ path: 'login_error.png' });
+          console.log('ログイン失敗時のスクリーンショットを保存しました（login_error.png）');
+        } catch (screenshotErr) {
+          console.error('スクリーンショット保存に失敗:', screenshotErr);
+        }
+        try {
+          const html = await page.content();
+          console.error('ログイン失敗時のHTMLの一部:', html.slice(0, 2000));
+        } catch (htmlErr) {
+          console.error('HTML取得に失敗:', htmlErr);
+        }
+        throw e;
+      }
       break;
     }
   }
-  await page.waitForNavigation();
+  if (!loginClicked) {
+    console.error('ログインボタンが見つからずクリックできませんでした');
+    try {
+      await page.screenshot({ path: 'login_btn_notfound.png' });
+      console.log('ログインボタン未検出時のスクリーンショットを保存しました（login_btn_notfound.png）');
+    } catch (screenshotErr) {
+      console.error('スクリーンショット保存に失敗:', screenshotErr);
+    }
+    try {
+      const html = await page.content();
+      console.error('ログインボタン未検出時のHTMLの一部:', html.slice(0, 2000));
+    } catch (htmlErr) {
+      console.error('HTML取得に失敗:', htmlErr);
+    }
+    throw new Error('ログインボタンが見つかりませんでした');
+  }
   console.log('ログイン完了');
   // ログイン後のURLとタイトルを出力
   console.log('ログイン後の現在のURL:', await page.url());
@@ -196,6 +239,18 @@ async function login(page, email, password) {
     console.log('ユーザーアイコンが検出されました。ログイン成功です。画像URL:', iconUrl);
   } else {
     console.error('ユーザーアイコンが見つかりません。ログインに失敗した可能性があります。');
+    try {
+      await page.screenshot({ path: 'login_noicon.png' });
+      console.log('ユーザーアイコン未検出時のスクリーンショットを保存しました（login_noicon.png）');
+    } catch (screenshotErr) {
+      console.error('スクリーンショット保存に失敗:', screenshotErr);
+    }
+    try {
+      const html = await page.content();
+      console.error('ユーザーアイコン未検出時のHTMLの一部:', html.slice(0, 2000));
+    } catch (htmlErr) {
+      console.error('HTML取得に失敗:', htmlErr);
+    }
     process.exit(1);
   }
   // ログイン直後にユーザーポップアップがあれば閉じる
