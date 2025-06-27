@@ -1,5 +1,6 @@
 version: 2.1
 
+# コマンドーーーーーーーーーーーーーーーーーーーーーーーーーーー
 commands:
   setup-node-and-puppeteer:
     steps:
@@ -31,7 +32,9 @@ commands:
               libxrandr2 \
               xdg-utils \
               --no-install-recommends
+# コマンドーーーーーーーーーーーーーーーーーーーーーーーーーーー
 
+# ジョブーーーーーーーーーーーーーーーーーーーーーーーーーーーー
 jobs:
   auto-publish-notes:
     docker:
@@ -51,6 +54,26 @@ jobs:
           name: Run autoCreateAndDraftNote.js
           command: node autoCreateAndDraftNote.js
 
+  follow-from-articles:
+    docker:
+      - image: cimg/node:20.11
+    steps:
+      - setup-node-and-puppeteer
+      - run:
+          name: Run followFromArticles.js
+          command: node follow/followFromArticles.js
+
+  like-notes:
+    docker:
+      - image: cimg/node:20.11
+    steps:
+      - setup-node-and-puppeteer
+      - run:
+          name: Run likeUnlikedNotes.js
+          command: node likeUnlikedNotes.js
+# ジョブーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+
+# ワークフローーーーーーーーーーーーーーーーーーーーーーーーーー
 workflows:
   version: 2
   scheduled-auto-publish:
@@ -99,6 +122,28 @@ workflows:
     jobs:
       - auto-create-and-draft-note
 
+  scheduled-follow-from-articles:
+    triggers:
+      - schedule:
+          cron: "0 0,3,6,9,12,15,18,21 * * *" # JST 9:00,12:00,15:00,18:00,21:00,0:00,3:00,6:00
+          filters:
+            branches:
+              only:
+                - main
+    jobs:
+      - follow-from-articles
+
+  scheduled-like-notes:
+    triggers:
+      - schedule:
+          cron: "0 0,3,6,9,12,15,18,21 * * *" # JST 9:00,12:00,15:00,18:00,21:00,0:00,3:00,6:00
+          filters:
+            branches:
+              only:
+                - main
+    jobs:
+      - like-notes
+
   on-push:
     jobs:
       - auto-publish-notes:
@@ -111,3 +156,14 @@ workflows:
             branches:
               only:
                 - main
+      - follow-from-articles:
+          filters:
+            branches:
+              only:
+                - main
+      - like-notes:
+          filters:
+            branches:
+              only:
+                - main
+# ワークフローーーーーーーーーーーーーーーーーーーーーーーーーー
