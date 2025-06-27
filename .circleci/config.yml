@@ -69,8 +69,8 @@ workflows:
 
   on-push:
     jobs:
-      - auto-publish-notes
-    filters:
-      branches:
-        only:
-          - main
+      - auto-publish-notes:
+          filters:
+            branches:
+              only:
+                - main
