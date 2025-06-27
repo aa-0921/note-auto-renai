@@ -38,9 +38,6 @@ jobs:
       - run:
           name: Run autoPublishNotes.js
           command: node autoPublishNotes.js
-    environment:
-      NOTE_EMAIL: $NOTE_EMAIL
-      NOTE_PASSWORD: $NOTE_PASSWORD
 
 workflows:
   version: 2
