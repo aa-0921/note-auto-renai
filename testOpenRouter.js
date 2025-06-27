@@ -1,6 +1,12 @@
 require('dotenv').config();
 const axios = require('axios');
 
+// 必須環境変数のチェック
+if (!process.env.OPENROUTER_API_KEY) {
+  console.error('エラー: OPENROUTER_API_KEY の環境変数が設定されていません。');
+  process.exit(1);
+}
+
 const API_KEY = process.env.OPENROUTER_API_KEY;
 const API_URL = 'https://openrouter.ai/api/v1/chat/completions';
 // const MODEL = 'google/gemini-pro'; // 必要に応じて変更
