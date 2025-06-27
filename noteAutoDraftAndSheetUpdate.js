@@ -173,6 +173,11 @@ exports.dragAndDropToAddButton = dragAndDropToAddButton;
 
 // ログイン処理
 async function login(page, email, password) {
+  // NOTE_EMAILとNOTE_PASSWORDの環境変数チェック
+  if (!process.env.NOTE_EMAIL || !process.env.NOTE_PASSWORD) {
+    console.error('エラー: NOTE_EMAIL または NOTE_PASSWORD の環境変数が設定されていません。');
+    process.exit(1);
+  }
   // User-AgentとAccept-Languageを日本向けに設定
   await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36');
   await page.setExtraHTTPHeaders({
