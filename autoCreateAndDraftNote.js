@@ -18,7 +18,14 @@ if (!process.env.OPENROUTER_API_KEY) {
 
 const API_KEY = process.env.OPENROUTER_API_KEY;
 const API_URL = 'https://openrouter.ai/api/v1/chat/completions';
-const MODEL = 'meta-llama/llama-4-maverick:free';
+
+// 2025/06/25 なぜか認証エラーで使えなくなった
+// const MODEL = 'meta-llama/llama-4-maverick:free';
+
+// ↓少し遅いがまあまあ文章作成能力も高そう
+const MODEL = 'deepseek/deepseek-chat-v3-0324:free';
+
+
 // const POSTS_DIR = 'posts';
 // const SHEET_PATH = '投稿一覧管理表.md';
 

@@ -20,7 +20,14 @@ const API_URL = 'https://openrouter.ai/api/v1/chat/completions'; // OpenAI互換
 // const MODEL = 'deepseek/deepseek-chat-v3-0324:free';
 // const MODEL = 'google/gemini-2.0-flash-exp:free';
 // ↓早いし、内容も問題なさそう
-const MODEL = 'meta-llama/llama-4-maverick:free';
+// const MODEL = 'meta-llama/llama-4-maverick:free';
+
+// 2025/06/25 なぜか認証エラーで使えなくなった
+// const MODEL = 'meta-llama/llama-4-maverick:free';
+
+// ↓少し遅いがまあまあ文章作成能力も高そう
+const MODEL = 'deepseek/deepseek-chat-v3-0324:free';
+
 
 const POSTS_DIR = 'posts';
 const CHECK_SCRIPT = 'checkSectionLengths.js';
