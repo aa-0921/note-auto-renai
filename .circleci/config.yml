@@ -48,41 +48,7 @@ jobs:
           name: Run << parameters.script-file >>
           command: node << parameters.script-file >>
 
-  # auto-publish-notes:
-  #   docker:
-  #     - image: cimg/node:20.11
-  #   steps:
-  #     - setup-node-and-puppeteer
-  #     - run:
-  #         name: Run autoPublishNotes.js
-  #         command: node autoPublishNotes.js
 
-  # auto-create-and-draft-note:
-  #   docker:
-  #     - image: cimg/node:20.11
-  #   steps:
-  #     - setup-node-and-puppeteer
-  #     - run:
-  #         name: Run autoCreateAndDraftNote.js
-  #         command: node autoCreateAndDraftNote.js
-
-  # follow-from-articles:
-  #   docker:
-  #     - image: cimg/node:20.11
-  #   steps:
-  #     - setup-node-and-puppeteer
-  #     - run:
-  #         name: Run followFromArticles.js
-  #         command: node follow/followFromArticles.js
-
-  # like-notes:
-  #   docker:
-  #     - image: cimg/node:20.11
-  #   steps:
-  #     - setup-node-and-puppeteer
-  #     - run:
-  #         name: Run likeUnlikedNotes.js
-  #         command: node likeUnlikedNotes.js
 # ジョブーーーーーーーーーーーーーーーーーーーーーーーーーーーー
 
 # ワークフローーーーーーーーーーーーーーーーーーーーーーーーーー
