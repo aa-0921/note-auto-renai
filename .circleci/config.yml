@@ -54,28 +54,12 @@ jobs:
 # ワークフローーーーーーーーーーーーーーーーーーーーーーーーーー
 workflows:
   version: 2
-  scheduled-all:
+
+  # 記事公開用のワークフロー（1日3回）
+  scheduled-auto-publish-notes:
     triggers:
       - schedule:
-          cron: "45 2 * * *"
-          filters:
-            branches:
-              only:
-                - main
-      - schedule:
-          cron: "45 8 * * *"
-          filters:
-            branches:
-              only:
-                - main
-      - schedule:
-          cron: "45 14 * * *"
-          filters:
-            branches:
-              only:
-                - main
-      - schedule:
-          cron: "0 0,3,6,9,12,15,18,21 * * *"
+          cron: "45 2,8,14 * * *"   # JST 11:45, 17:45, 23:45
           filters:
             branches:
               only:
@@ -84,16 +68,50 @@ workflows:
       - run-js-script:
           name: auto-publish-notes
           script-file: autoPublishNotes.js
+
+  # 記事作成用のワークフロー（1日1回）
+  scheduled-auto-create-note:
+    triggers:
+      - schedule:
+          cron: "45 2,8,14 * * *"   # JST 11:45, 17:45, 23:45
+          filters:
+            branches:
+              only:
+                - main
+    jobs:
       - run-js-script:
           name: auto-create-and-draft-note
           script-file: autoCreateAndDraftNote.js
+
+  # フォロー用のワークフロー（1日8回、3時間ごと）
+  scheduled-follow-from-articles:
+    triggers:
+      - schedule:
+          cron: "0 0,3,6,9,12,15,18,21 * * *"   # 3時間ごと
+          filters:
+            branches:
+              only:
+                - main
+    jobs:
       - run-js-script:
           name: follow-from-articles
           script-file: follow/followFromArticles.js
+
+  # いいね用のワークフロー（1日8回、3時間ごと、フォローとずらす）
+  scheduled-like-notes:
+    triggers:
+      - schedule:
+          cron: "30 0,3,6,9,12,15,18,21 * * *"   # 3時間ごと（30分ずらし）
+          filters:
+            branches:
+              only:
+                - main
+    jobs:
       - run-js-script:
           name: like-notes
           script-file: likeUnlikedNotes.js
 
+  # Push時の実行用
   on-push:
     jobs:
       - run-js-script:
