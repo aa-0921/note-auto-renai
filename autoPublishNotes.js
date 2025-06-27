@@ -67,15 +67,18 @@ const { login } = require('./noteAutoDraftAndSheetUpdate');
 
     // 「公開に進む」ボタンを探してクリック
     console.log('「公開に進む」ボタンを探します');
-    await page.waitForSelector('button', {timeout: 10000});
-    const publishBtns = await page.$$('button');
     let publishBtn = null;
-    for (const btn of publishBtns) {
-      const text = await btn.evaluate(el => el.innerText.trim());
-      if (text && text.includes('公開に進む')) {
-        publishBtn = btn;
-        break;
+    for (let retry = 0; retry < 10; retry++) { // 最大10回リトライ（1秒ごと）
+      const publishBtns = await page.$$('button');
+      for (const btn of publishBtns) {
+        const text = await btn.evaluate(el => el.innerText.trim());
+        if (text && text.includes('公開に進む')) {
+          publishBtn = btn;
+          break;
+        }
       }
+      if (publishBtn) break;
+      await new Promise(resolve => setTimeout(resolve, 1000));
     }
     if (publishBtn) {
       console.log('「公開に進む」ボタンをクリックします');
@@ -100,6 +103,19 @@ const { login } = require('./noteAutoDraftAndSheetUpdate');
       await new Promise(resolve => setTimeout(resolve, 300)); // 追加で少し待機
     } else {
       console.log('「公開に進む」ボタンが見つかりません');
+      // デバッグ用: HTMLとスクリーンショットを保存
+      try {
+        await page.screenshot({ path: 'publish_btn_notfound.png' });
+        console.log('「公開に進む」ボタン未検出時のスクリーンショットを保存しました（publish_btn_notfound.png）');
+      } catch (screenshotErr) {
+        console.error('スクリーンショット保存に失敗:', screenshotErr);
+      }
+      try {
+        const html = await page.content();
+        console.error('「公開に進む」ボタン未検出時のHTMLの一部:', html.slice(0, 2000));
+      } catch (htmlErr) {
+        console.error('HTML取得に失敗:', htmlErr);
+      }
       console.log('下書き一覧ページに戻ります');
       await page.goto(draftUrl, { waitUntil: 'domcontentloaded', timeout: 60000 });
       continue;
