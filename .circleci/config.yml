@@ -1,11 +1,9 @@
 version: 2.1
 
-jobs:
-  # 共通ステップをYAMLアンカーで定義
-  .common-steps: &common-steps
+commands:
+  setup-node-and-puppeteer:
     steps:
       - checkout
-      # 依存関係インストール
       - run:
           name: npm install
           command: npm install
@@ -34,11 +32,12 @@ jobs:
               xdg-utils \
               --no-install-recommends
 
+jobs:
   auto-publish-notes:
     docker:
       - image: cimg/node:20.11
-    <<: *common-steps
     steps:
+      - setup-node-and-puppeteer
       - run:
           name: Run autoPublishNotes.js
           command: node autoPublishNotes.js
@@ -46,8 +45,8 @@ jobs:
   auto-create-and-draft-note:
     docker:
       - image: cimg/node:20.11
-    <<: *common-steps
     steps:
+      - setup-node-and-puppeteer
       - run:
           name: Run autoCreateAndDraftNote.js
           command: node autoCreateAndDraftNote.js
