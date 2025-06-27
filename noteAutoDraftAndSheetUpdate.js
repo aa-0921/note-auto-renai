@@ -4,6 +4,12 @@
 const isLambda = !!process.env.AWS_LAMBDA_FUNCTION_NAME;
 require('dotenv').config();
 
+// 必須環境変数のチェック
+if (!process.env.NOTE_EMAIL || !process.env.NOTE_PASSWORD) {
+  console.error('エラー: NOTE_EMAIL または NOTE_PASSWORD の環境変数が設定されていません。');
+  process.exit(1);
+}
+
 let puppeteer, launchOptions;
 
 if (isLambda) {
