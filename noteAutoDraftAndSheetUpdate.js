@@ -178,6 +178,8 @@ async function login(page, email, password) {
     console.error('エラー: NOTE_EMAIL または NOTE_PASSWORD の環境変数が設定されていません。');
     process.exit(1);
   }
+  console.log('email変数:', email);
+  console.log('password変数:', password);
 
   console.log('email:', process.env.NOTE_EMAIL);
   console.log('password:', process.env.NOTE_PASSWORD);
