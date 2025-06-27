@@ -12,12 +12,17 @@ const { login } = require('./noteAutoDraftAndSheetUpdate');
       '--no-sandbox',
       '--disable-setuid-sandbox',
       '--disable-gpu',
-      '--disable-dev-shm-usage'
-    ]
+      '--disable-dev-shm-usage',
+      '--window-size=1280,800'
+    ],
+    defaultViewport: null
   });
   const page = await browser.newPage();
   console.log('User-Agentを設定します');
   await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36');
+  // タイムアウト値を延長
+  page.setDefaultTimeout(60000);
+  page.setDefaultNavigationTimeout(60000);
 
   // ログイン
   console.log('noteにログインします');
@@ -26,7 +31,7 @@ const { login } = require('./noteAutoDraftAndSheetUpdate');
 
   const draftUrl = 'https://note.com/notes?page=1&status=draft';
   console.log('下書き一覧ページへ遷移します:', draftUrl);
-  await page.goto(draftUrl, { waitUntil: 'domcontentloaded', timeout: 60000 });
+  await page.goto(draftUrl, { waitUntil: 'networkidle2', timeout: 60000 });
   console.log('下書き一覧ページに到達しました');
   // ページ遷移後に少し待機
 
