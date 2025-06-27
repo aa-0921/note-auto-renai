@@ -1,9 +1,8 @@
 version: 2.1
 
 jobs:
-  auto-publish-notes:
-    docker:
-      - image: cimg/node:20.11 # Node.js 20系の公式イメージ
+  # 共通ステップをYAMLアンカーで定義
+  .common-steps: &common-steps
     steps:
       - checkout
       # 依存関係インストール
@@ -34,10 +33,24 @@ jobs:
               libxrandr2 \
               xdg-utils \
               --no-install-recommends
-      # スクリプト実行
+
+  auto-publish-notes:
+    docker:
+      - image: cimg/node:20.11
+    <<: *common-steps
+    steps:
       - run:
           name: Run autoPublishNotes.js
           command: node autoPublishNotes.js
+
+  auto-create-and-draft-note:
+    docker:
+      - image: cimg/node:20.11
+    <<: *common-steps
+    steps:
+      - run:
+          name: Run autoCreateAndDraftNote.js
+          command: node autoCreateAndDraftNote.js
 
 workflows:
   version: 2
@@ -64,9 +77,37 @@ workflows:
     jobs:
       - auto-publish-notes
 
+  scheduled-auto-create-and-draft-note:
+    triggers:
+      - schedule:
+          cron: "45 2 * * *"
+          filters:
+            branches:
+              only:
+                - main
+      - schedule:
+          cron: "45 8 * * *"
+          filters:
+            branches:
+              only:
+                - main
+      - schedule:
+          cron: "45 14 * * *"
+          filters:
+            branches:
+              only:
+                - main
+    jobs:
+      - auto-create-and-draft-note
+
   on-push:
     jobs:
       - auto-publish-notes:
+          filters:
+            branches:
+              only:
+                - main
+      - auto-create-and-draft-note:
           filters:
             branches:
               only:
