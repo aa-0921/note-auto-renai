@@ -55,11 +55,24 @@ jobs:
 workflows:
   version: 2
 
-  # 記事公開用のワークフロー（1日3回）
+  # 記事公開用のワークフロー（1日5回）
   scheduled-auto-publish-notes:
     triggers:
       - schedule:
           cron: "45 2,8,14 * * *"   # JST 11:45, 17:45, 23:45
+          filters:
+            branches:
+              only:
+                - main
+      - schedule:
+          cron: "0 22 * * *"   # JST 7:00
+          filters:
+            branches:
+              only:
+                - main
+
+      - schedule:
+          cron: "0 6 * * *"    # JST 15:00
           filters:
             branches:
               only:
@@ -69,11 +82,23 @@ workflows:
           name: auto-publish-notes
           script-file: autoPublishNotes.js
 
-  # 記事作成用のワークフロー（1日1回）
+  # 記事作成用のワークフロー（1日5回）
   scheduled-auto-create-note:
     triggers:
       - schedule:
+          cron: "0 22 * * *"   # JST 7:00
+          filters:
+            branches:
+              only:
+                - main
+      - schedule:
           cron: "45 2,8,14 * * *"   # JST 11:45, 17:45, 23:45
+          filters:
+            branches:
+              only:
+                - main
+      - schedule:
+          cron: "0 6 * * *"    # JST 15:00
           filters:
             branches:
               only:
