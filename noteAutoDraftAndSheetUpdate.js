@@ -323,7 +323,7 @@ async function goToNewPost(page) {
       // 全リンクを出力
       try {
         const links = await page.$$eval('a', as => as.map(a => ({href: a.getAttribute('href'), text: a.textContent.trim()})));
-        console.log('投稿ボタンクリック後の全リンク:', links);
+        // console.log('投稿ボタンクリック後の全リンク:', links);
       } catch (e) {
         console.error('全リンク出力に失敗:', e);
       }

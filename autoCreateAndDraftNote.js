@@ -131,12 +131,12 @@ async function generateArticle(topic, pattern) {
 
     try {
       // APIリクエスト内容を詳細にログ出力
-      console.log('AI記事生成APIリクエスト先:', API_URL);
-      console.log('AI記事生成APIリクエストヘッダー:', {
-        'Authorization': `Bearer ${API_KEY}`,
-        'Content-Type': 'application/json'
-      });
-      console.log('AI記事生成APIリクエストモデル:', MODEL);
+      // console.log('AI記事生成APIリクエスト先:', API_URL);
+      // console.log('AI記事生成APIリクエストヘッダー:', {
+      //   'Authorization': `Bearer ${API_KEY}`,
+      //   'Content-Type': 'application/json'
+      // });
+      // console.log('AI記事生成APIリクエストモデル:', MODEL);
       // APIキーの一部だけ（セキュリティのため）
       if (API_KEY) {
         console.log('API_KEYの先頭6文字:', API_KEY.slice(0, 6), '...（省略）');
@@ -361,22 +361,22 @@ async function rewriteAndTagArticle(raw, API_URL, API_KEY, MODEL) {
   // 本文から「タイトルと同じh1行（# タイトル）」をすべて除去する
   const h1TitleLine = `# ${title}`;
   const articleLines = article.split('\n');
-  console.log('【h1タイトル除去デバッグ】');
+  // console.log('【h1タイトル除去デバッグ】');
   console.log('タイトル:', title);
   console.log('h1TitleLine:', JSON.stringify(h1TitleLine));
-  articleLines.forEach((line, idx) => {
-    if (line.trim() === h1TitleLine) {
-      console.log(`>> 除去対象: 行${idx + 1}:`, JSON.stringify(line));
-    } else {
-      console.log(`   残す: 行${idx + 1}:`, JSON.stringify(line));
-    }
-  });
+  // articleLines.forEach((line, idx) => {
+  //   if (line.trim() === h1TitleLine) {
+  //     console.log(`>> 除去対象: 行${idx + 1}:`, JSON.stringify(line));
+  //   } else {
+  //     console.log(`   残す: 行${idx + 1}:`, JSON.stringify(line));
+  //   }
+  // });
   const filteredArticleLines = articleLines.filter(line => line.trim() !== h1TitleLine);
   const filteredArticle = filteredArticleLines.join('\n');
-  console.log('【h1タイトル除去後の本文行リスト】');
-  filteredArticleLines.forEach((line, idx) => {
-    console.log(`   ${idx + 1}:`, JSON.stringify(line));
-  });
+  // console.log('【h1タイトル除去後の本文行リスト】');
+  // filteredArticleLines.forEach((line, idx) => {
+  //   console.log(`   ${idx + 1}:`, JSON.stringify(line));
+  // });
 
   // 5. 記事リライト・チェック（直接関数で処理）
   let rewrittenArticle = await rewriteAndTagArticle(filteredArticle, API_URL, API_KEY, MODEL);
