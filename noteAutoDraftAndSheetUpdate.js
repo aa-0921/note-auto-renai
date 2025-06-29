@@ -56,7 +56,28 @@ function getRandomThumbnail() {
   const dir = path.join(__dirname, 'thumbnails');
   const files = fs.readdirSync(dir).filter(f => /\.(jpg|jpeg|png|gif)$/i.test(f));
   if (files.length === 0) throw new Error('サムネイル画像がありません');
-  const file = files[Math.floor(Math.random() * files.length)];
+  
+  // より強力なランダム化：複数の手法を組み合わせ
+  // 1. 現在時刻のミリ秒をシードとして使用
+  const now = Date.now();
+  const seed1 = now % files.length;
+  
+  // 2. プロセスの開始時間も組み合わせ
+  const seed2 = Math.floor(process.uptime() * 1000) % files.length;
+  
+  // 3. 複数回のランダム処理を組み合わせ
+  let randomIndex = Math.floor(Math.random() * files.length);
+  randomIndex = (randomIndex + seed1) % files.length;
+  randomIndex = (randomIndex + Math.floor(Math.random() * files.length)) % files.length;
+  randomIndex = (randomIndex + seed2) % files.length;
+  
+  // 4. さらにランダムシャッフルを追加
+  for (let i = 0; i < 3; i++) {
+    randomIndex = (randomIndex + Math.floor(Math.random() * files.length)) % files.length;
+  }
+  
+  const file = files[randomIndex];
+  console.log(`サムネイル選択: ${randomIndex}/${files.length-1} -> ${file}`);
   return path.join(dir, file);
 }
 
