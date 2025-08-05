@@ -352,7 +352,7 @@ async function rewriteAndTagArticle(raw, API_URL, API_KEY, MODEL) {
       sections[i].raw = lines.join('\n');
       updated = true;
 
-      await new Promise(resolve => setTimeout(resolve, 10));
+      await new Promise(resolve => setTimeout(resolve, 100));
     }
   }
   // firstPartの末尾に必ず改行を追加
