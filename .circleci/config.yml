@@ -83,30 +83,30 @@ workflows:
           script-file: autoPublishNotes.js
 
   # 記事作成用のワークフロー（1日5回）
-  scheduled-auto-create-note:
-    triggers:
-      - schedule:
-          cron: "0 22 * * *"   # JST 7:00
-          filters:
-            branches:
-              only:
-                - main
-      - schedule:
-          cron: "45 2,8,14 * * *"   # JST 11:45, 17:45, 23:45
-          filters:
-            branches:
-              only:
-                - main
-      - schedule:
-          cron: "0 6 * * *"    # JST 15:00
-          filters:
-            branches:
-              only:
-                - main
-    jobs:
-      - run-js-script:
-          name: auto-create-and-draft-note
-          script-file: autoCreateAndDraftNote.js
+  # scheduled-auto-create-note:
+  #   triggers:
+  #     - schedule:
+  #         cron: "0 22 * * *"   # JST 7:00
+  #         filters:
+  #           branches:
+  #             only:
+  #               - main
+  #     - schedule:
+  #         cron: "45 2,8,14 * * *"   # JST 11:45, 17:45, 23:45
+  #         filters:
+  #           branches:
+  #             only:
+  #               - main
+  #     - schedule:
+  #         cron: "0 6 * * *"    # JST 15:00
+  #         filters:
+  #           branches:
+  #             only:
+  #               - main
+  #   jobs:
+  #     - run-js-script:
+  #         name: auto-create-and-draft-note
+  #         script-file: autoCreateAndDraftNote.js
 
   # フォロー用のワークフロー（1日8回、3時間ごと）
   scheduled-follow-from-articles:
