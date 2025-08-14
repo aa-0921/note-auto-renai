@@ -301,18 +301,57 @@ async function rewriteSection(heading, body, API_URL, API_KEY, MODEL) {
     { role: 'system', content: 'あなたは日本語のnote記事編集者です。' },
     { role: 'user', content: prompt }
   ];
-  const res = await axios.post(API_URL, {
-    model: MODEL,
-    messages,
-    max_tokens: 600,
-    temperature: 0.7
-  }, {
-    headers: {
-      'Authorization': `Bearer ${API_KEY}`,
-      'Content-Type': 'application/json'
+  let tryCount = 0;
+  let lastError = null;
+  while (tryCount < 3) {
+    tryCount++;
+    try {
+      const res = await axios.post(API_URL, {
+        model: MODEL,
+        messages,
+        max_tokens: 600,
+        temperature: 0.7
+      }, {
+        headers: {
+          'Authorization': `Bearer ${API_KEY}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      // レスポンス全体の形状を記録（デバッグ用）
+      try {
+        console.log('rewriteSection res.data:', JSON.stringify(res.data));
+      } catch (_) {
+        console.log('rewriteSection res.data: [stringify失敗: 循環参照など]');
+      }
+
+      const content = res?.data?.choices?.[0]?.message?.content;
+      if (!content) {
+        console.error('rewriteSection: choices[0].message.content が存在しません。生レス:', JSON.stringify(res.data));
+        // 524（Cloudflare timeout）や一時的エラーの可能性 → リトライ
+        throw new Error('rewriteSection: AIレスポンスが不正です');
+      }
+      return content.trim();
+    } catch (e) {
+      lastError = e;
+      console.error(`rewriteSection: API呼び出しでエラー（${tryCount}回目）:`, e.message);
+      const status = e?.response?.status;
+      if (status) console.error('rewriteSection e.response.status:', status);
+      if (e.response) {
+        try {
+          console.error('rewriteSection e.response.data:', JSON.stringify(e.response.data));
+        } catch (_) {
+          console.error('rewriteSection e.response.data: [stringify失敗]');
+        }
+      }
+      if (tryCount < 3) {
+        const backoffMs = 1000 * tryCount; // 1s, 2s
+        console.log(`${backoffMs}ms 待機してリトライします...`);
+        await new Promise(r => setTimeout(r, backoffMs));
+      }
     }
-  });
-  return res.data.choices[0].message.content.trim();
+  }
+  throw new Error('rewriteSection: 3回連続で失敗しました: ' + (lastError && lastError.message));
 }
 
 // 記事末尾にタグを自動付与
@@ -322,18 +361,56 @@ async function generateTagsFromContent(content, API_URL, API_KEY, MODEL) {
     { role: 'system', content: 'あなたは日本語のnote記事編集者です。' },
     { role: 'user', content: prompt }
   ];
-  const res = await axios.post(API_URL, {
-    model: MODEL,
-    messages,
-    max_tokens: 100,
-    temperature: 0.5
-  }, {
-    headers: {
-      'Authorization': `Bearer ${API_KEY}`,
-      'Content-Type': 'application/json'
+  let tryCount = 0;
+  let lastError = null;
+  while (tryCount < 3) {
+    tryCount++;
+    try {
+      const res = await axios.post(API_URL, {
+        model: MODEL,
+        messages,
+        max_tokens: 100,
+        temperature: 0.5
+      }, {
+        headers: {
+          'Authorization': `Bearer ${API_KEY}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      // レスポンス形状ログ（デバッグ用）
+      try {
+        console.log('generateTagsFromContent res.data:', JSON.stringify(res.data));
+      } catch (_) {
+        console.log('generateTagsFromContent res.data: [stringify失敗]');
+      }
+
+      const content = res?.data?.choices?.[0]?.message?.content;
+      if (!content) {
+        console.error('generateTagsFromContent: choices[0].message.content が存在しません。生レス:', JSON.stringify(res.data));
+        throw new Error('generateTagsFromContent: AIレスポンスが不正です');
+      }
+      return content.trim();
+    } catch (e) {
+      lastError = e;
+      console.error(`generateTagsFromContent: API呼び出しでエラー（${tryCount}回目）:`, e.message);
+      const status = e?.response?.status;
+      if (status) console.error('generateTagsFromContent e.response.status:', status);
+      if (e.response) {
+        try {
+          console.error('generateTagsFromContent e.response.data:', JSON.stringify(e.response.data));
+        } catch (_) {
+          console.error('generateTagsFromContent e.response.data: [stringify失敗]');
+        }
+      }
+      if (tryCount < 3) {
+        const backoffMs = 1000 * tryCount;
+        console.log(`${backoffMs}ms 待機してリトライします...`);
+        await new Promise(r => setTimeout(r, backoffMs));
+      }
     }
-  });
-  return res.data.choices[0].message.content.trim();
+  }
+  throw new Error('generateTagsFromContent: 3回連続で失敗しました: ' + (lastError && lastError.message));
 }
 
 // 200字未満のセクションをリライトし、タグを付与して返す
@@ -345,13 +422,16 @@ async function rewriteAndTagArticle(raw, API_URL, API_KEY, MODEL) {
     const { heading, body, raw: sectionRaw } = sections[i];
     if (body.length < 200) {
       console.log(`「${heading}」の本文が${body.length}文字と少なめです。AIでリライトします...`);
-      const newBody = await rewriteSection(heading, body, API_URL, API_KEY, MODEL);
-      const newBodyWithExtraLine = newBody + '\n';
-      const lines = sectionRaw.split('\n');
-      lines.splice(1, lines.length - 1, newBodyWithExtraLine);
-      sections[i].raw = lines.join('\n');
-      updated = true;
-
+      try {
+        const newBody = await rewriteSection(heading, body, API_URL, API_KEY, MODEL);
+        const newBodyWithExtraLine = newBody + '\n';
+        const lines = sectionRaw.split('\n');
+        lines.splice(1, lines.length - 1, newBodyWithExtraLine);
+        sections[i].raw = lines.join('\n');
+        updated = true;
+      } catch (e) {
+        console.error(`「${heading}」のリライトに失敗しました。元の本文を維持して次へ進みます。理由:`, e.message);
+      }
       await new Promise(resolve => setTimeout(resolve, 100));
     }
   }
@@ -361,7 +441,13 @@ async function rewriteAndTagArticle(raw, API_URL, API_KEY, MODEL) {
   // 既存タグ行があれば除去
   newRaw = newRaw.replace(/\n# .+$/gm, '');
   // タグ生成
-  const tags = await generateTagsFromContent(newRaw, API_URL, API_KEY, MODEL);
+  let tags = '';
+  try {
+    tags = await generateTagsFromContent(newRaw, API_URL, API_KEY, MODEL);
+  } catch (e) {
+    console.error('タグ生成に失敗しました。フォールバックの固定タグを使用します。理由:', e.message);
+    tags = '#人間関係 #メンタル #自己肯定感 #引き寄せ #引き寄せの法則 #裏技';
+  }
 
   // タグの直前に案内文を追加（腸を温めることについての案内）
   const infoText = [
