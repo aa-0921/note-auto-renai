@@ -277,16 +277,33 @@ const { login } = require('./noteAutoDraftAndSheetUpdate'); // login関数をexp
       return { title, user };
     });
     console.log(`タイトル: ${info.title}｜投稿者: ${info.user}`);
+    
+    // CI環境でのみ待機時間を追加
+    if (isCI) {
+      console.log('CI環境のため、like処理前に2秒待機します');
+      await new Promise(resolve => setTimeout(resolve, 2000));
+    }
+    
     // クリック（ElementHandle.click()で本当のユーザー操作をエミュレート）
     console.log('クリック前: ElementHandle.click()実行');
     await btn.click({ delay: 100 });
+    
+    // CI環境でのみ追加の待機時間を設定
+    const waitTimeout = isCI ? 10000 : 5000; // CI環境では10秒、ローカルでは5秒
+    
     // クリック後、aria-pressedがtrueになるまで待機
     await page.waitForFunction(
       el => el.getAttribute('aria-pressed') === 'true',
-      { timeout: 5000 },
+      { timeout: waitTimeout },
       btn
     );
     console.log('クリック後: aria-pressedがtrueになったことを確認');
+    
+    // CI環境でのみlike処理後の待機時間を追加
+    if (isCI) {
+      console.log('CI環境のため、like処理後に1秒待機します');
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
   }
   console.log('クリック処理が全て完了しました');
 
