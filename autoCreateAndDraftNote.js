@@ -356,7 +356,7 @@ async function rewriteSection(heading, body, API_URL, API_KEY, MODEL) {
 
 // 記事末尾にタグを自動付与
 async function generateTagsFromContent(content, API_URL, API_KEY, MODEL) {
-  const prompt = `あなたは日本語のnote記事編集者です。以下の記事内容を読み、記事の内容に最も関連するハッシュタグを3～5個、日本語で生成してください。必ず「#引き寄せ #引き寄せの法則 #裏技」を含め、他にも内容に合うタグがあれば追加してください。タグは半角スペース区切りで、本文や説明は一切不要です。\n\n記事内容:\n${content}`;
+  const prompt = `あなたは日本語のnote記事編集者です。以下の記事内容を読み、記事の内容に最も関連するハッシュタグを3～5個、日本語で生成してください。必ず「#引き寄せ #引き寄せの法則 #裏技 #PR」を含め、他にも内容に合うタグがあれば追加してください。タグは半角スペース区切りで、本文や説明は一切不要です。\n\n記事内容:\n${content}`;
   const messages = [
     { role: 'system', content: 'あなたは日本語のnote記事編集者です。' },
     { role: 'user', content: prompt }
@@ -446,7 +446,7 @@ async function rewriteAndTagArticle(raw, API_URL, API_KEY, MODEL) {
     tags = await generateTagsFromContent(newRaw, API_URL, API_KEY, MODEL);
   } catch (e) {
     console.error('タグ生成に失敗しました。フォールバックの固定タグを使用します。理由:', e.message);
-    tags = '#人間関係 #メンタル #自己肯定感 #引き寄せ #引き寄せの法則 #裏技';
+    tags = '#人間関係 #メンタル #自己肯定感 #引き寄せ #引き寄せの法則 #裏技 #PR';
   }
 
   // タグの直前に案内文を追加（腸を温めることについての案内）
@@ -465,6 +465,8 @@ async function rewriteAndTagArticle(raw, API_URL, API_KEY, MODEL) {
     'https://amzn.to/44hKd5O',
     '',
     'https://amzn.to/40sJeP3',
+    '',
+    'Amazon のアソシエイトとして、「恋愛・人間関係カウンセラーRisa」は適格販売により収入を得ています。',
     ''
   ].join('\n');
   newRaw = newRaw.trim() + '\n\n' + infoText + '\n\n' + tags + '\n';

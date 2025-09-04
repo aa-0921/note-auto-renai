@@ -137,7 +137,7 @@ async function rewriteSection(heading, body) {
 
 // 記事末尾にタグを自動付与
 async function generateTagsFromContent(content) {
-  const prompt = `あなたは日本語のnote記事編集者です。以下の記事内容を読み、記事の内容に最も関連するハッシュタグを3～5個、日本語で生成してください。必ず「#引き寄せ #引き寄せの法則 #裏技」を含め、他にも内容に合うタグがあれば追加してください。タグは半角スペース区切りで、本文や説明は一切不要です。\n\n記事内容:\n${content}`;
+  const prompt = `あなたは日本語のnote記事編集者です。以下の記事内容を読み、記事の内容に最も関連するハッシュタグを3～5個、日本語で生成してください。必ず「#引き寄せ #引き寄せの法則 #裏技 #PR」を含め、他にも内容に合うタグがあれば追加してください。タグは半角スペース区切りで、本文や説明は一切不要です。\n\n記事内容:\n${content}`;
   const messages = [
     { role: 'system', content: 'あなたは日本語のnote記事編集者です。' },
     { role: 'user', content: prompt }
@@ -212,7 +212,10 @@ async function processFile(mdPath) {
   console.log('[DEBUG] processFile: finalRaw after tag removal:', JSON.stringify(finalRaw.slice(0, 300)));
   const tags = await generateTagsFromContent(finalRaw);
   console.log('[DEBUG] processFile: generated tags:', tags);
-  finalRaw = finalRaw.trim() + '\n\n\n\n' + tags + '\n';
+
+  // Amazonアソシエイトの文言を追加
+  const amazonText = 'Amazon のアソシエイトとして、「恋愛・人間関係カウンセラーRisa」は適格販売により収入を得ています。';
+  finalRaw = finalRaw.trim() + '\n\n' + amazonText + '\n\n' + tags + '\n';
   console.log('[DEBUG] processFile: finalRaw before write:', JSON.stringify(finalRaw.slice(0, 300)));
   fs.writeFileSync(mdPath, finalRaw, 'utf-8');
   console.log(`記事末尾にタグを自動付与しました: ${tags}`);
