@@ -435,12 +435,47 @@ async function rewriteAndTagArticle(raw, API_URL, API_KEY, MODEL) {
       await new Promise(resolve => setTimeout(resolve, 100));
     }
   }
-  // firstPartの末尾に必ず改行を追加
+  
+  // マガジンへの誘導セクション（リライト処理の成功・失敗に関係なく必ず挿入）
+  console.log('マガジン誘導セクションを挿入します...');
+  console.log('firstPartの長さ:', firstPart.length);
+  console.log('firstPartの末尾10文字:', firstPart.substring(firstPart.length - 10));
+  console.log('firstPartが改行で終わるか:', firstPart.endsWith('\n'));
+  
+  const magazinePromotion = [
+    '🏠　✨　🏠　✨　🏠　✨　🏠　✨　🏠　✨　🏠　✨　🏠　✨　🏠　✨　',
+    '',
+    '✅「毎日を少しでも快適に過ごしたい！」というあなたへ',
+    '',
+    '心の疲れを癒し、生活を豊かにするグッズを厳選したマガジンを用意しました。',
+    '',
+    '【物理的に幸せになるおすすめグッズ達】',
+    '✔ 日々のストレスを軽減したい',
+    '✔ 心地よい生活環境を作りたい',
+    'そんな人にピッタリです。',
+    '',
+    '小さな変化が大きな幸せにつながるヒントを、無料でどうぞ。',
+    '',
+    'https://note.com/counselor_risa/m/m72a580a7e712',
+    '',
+    '🏠　✨　🏠　✨　🏠　✨　🏠　✨　🏠　✨　🏠　✨　🏠　✨　🏠　✨　',
+    ''
+  ].join('\n');
+  
+  // firstPartの末尾に必ず改行を追加し、マガジン誘導セクションを挿入
   const safeFirstPart = firstPart.endsWith('\n') ? firstPart : firstPart + '\n';
-  let newRaw = safeFirstPart + sections.map(s => '## ' + s.raw).join('\n');
+  console.log('safeFirstPartの長さ:', safeFirstPart.length);
+  console.log('safeFirstPartの末尾10文字:', safeFirstPart.substring(safeFirstPart.length - 10));
+  
+  let newRaw = safeFirstPart + magazinePromotion + '\n\n' + sections.map(s => '## ' + s.raw).join('\n');
+  console.log('newRawの長さ:', newRaw.length);
+  console.log('newRawの先頭200文字:', newRaw.substring(0, 200));
+  console.log('newRawの末尾200文字:', newRaw.substring(newRaw.length - 200));
+  
   // 既存タグ行があれば除去
   newRaw = newRaw.replace(/\n# .+$/gm, '');
-  // タグ生成
+
+  // タグ生成（失敗時のフォールバック付き）
   let tags = '';
   try {
     tags = await generateTagsFromContent(newRaw, API_URL, API_KEY, MODEL);
@@ -469,7 +504,9 @@ async function rewriteAndTagArticle(raw, API_URL, API_KEY, MODEL) {
     'Amazon のアソシエイトとして、「恋愛・人間関係カウンセラーRisa」は適格販売により収入を得ています。',
     ''
   ].join('\n');
-  newRaw = newRaw.trim() + '\n\n' + infoText + '\n\n' + tags + '\n';
+  
+  newRaw = newRaw.trim() + '\n\n' + magazinePromotion + '\n\n' + infoText + '\n\n' + tags + '\n';
+  console.log('記事の加工が完了しました。マガジン誘導セクションとタグが含まれています。');
   return newRaw;
 }
 
