@@ -16,6 +16,18 @@ function logTime(label) {
 }
 
 (async () => {
+  // 全体のタイムアウト制御（10分で自動終了）
+  const startTime = Date.now();
+  const MAX_EXECUTION_TIME = 10 * 60 * 1000; // 10分
+  
+  // タイムアウトチェック関数
+  function checkTimeout() {
+    if (Date.now() - startTime > MAX_EXECUTION_TIME) {
+      console.log('【タイムアウト】10分経過したため処理を終了します');
+      process.exit(0);
+    }
+  }
+
   console.log('Puppeteer起動オプションを取得します');
   const isCI = process.env.CI === 'true';
   console.log('process.env.CIの値:', process.env.CI);
@@ -28,9 +40,10 @@ function logTime(label) {
       '--disable-gpu',
       '--disable-dev-shm-usage',
       '--disable-extensions',
-      '--window-size=1280,900'    
+      '--window-size=1280,900'
     ],
-    defaultViewport: null
+    defaultViewport: null,
+    protocolTimeout: 30000 // 30秒のプロトコルタイムアウト
   });
   const page = await browser.newPage();
 
@@ -326,6 +339,9 @@ function logTime(label) {
 
   // 検索結果ページ上でポップアップのフォローボタンをクリックする方式に変更
   for (let i = 0; i < uniqueCreators.length && followCount < 15; i++) {
+    // タイムアウトチェック
+    checkTimeout();
+    
     if (isLimit) break; // 上限検知時は即座にループを抜ける
     const name = uniqueCreators[i].name;
     logTime(`クリエイター${i + 1}のホバー＆ポップアップフォロー処理開始:（${name}）`);
@@ -338,10 +354,13 @@ function logTime(label) {
       if (!aTag) continue;
       await aTag.hover();
       // ホバー後に明示的な待機時間を追加（ポップアップが見やすくなるように）
-      await new Promise(resolve => setTimeout(resolve, 800)); // 0.8秒待機
-      // await new Promise(resolve => setTimeout(resolve, 2000)); // 2秒待機
-      // ポップアップが出るまで待機（最大2.5秒に延長）
-      await page.waitForSelector('.o-quickLook', { visible: true, timeout: 2500 });
+      // CI環境では短縮、ローカルでは通常の待機時間
+      const hoverWaitTime = isCI ? 500 : 800;
+      await new Promise(resolve => setTimeout(resolve, hoverWaitTime));
+      
+      // ポップアップが出るまで待機（CI環境では短縮）
+      const popupTimeout = isCI ? 1500 : 2500;
+      await page.waitForSelector('.o-quickLook', { visible: true, timeout: popupTimeout });
       // ポップアップ内のフォローボタンを取得
       const followBtn = await page.$('.o-quickLook .a-button');
       if (!followBtn) {
@@ -352,16 +371,17 @@ function logTime(label) {
       const btnText = await followBtn.evaluate(el => el.innerText.trim());
       if (btnText === 'フォロー') {
         await followBtn.click();
-        // 状態変化を待つ（「フォロー中」になるまで or 最大1.5秒）
+        // 状態変化を待つ（CI環境では短縮）
+        const stateChangeTimeout = isCI ? 1000 : 1500;
         await Promise.race([
           page.waitForFunction(
             () => {
               const btn = document.querySelector('.o-quickLook .a-button');
               return btn && btn.innerText.trim() === 'フォロー中';
             },
-            { timeout: 1500 }
+            { timeout: stateChangeTimeout }
           ),
-          new Promise(resolve => setTimeout(resolve, 1500))
+          new Promise(resolve => setTimeout(resolve, stateChangeTimeout))
         ]);
         logTime(`ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー`);
         logTime(`フォロー成功！！（${followCount + 1}件目）｜クリエイター名（${name}）`);
@@ -370,8 +390,9 @@ function logTime(label) {
       } else {
         logTime('すでにフォロー済み、またはボタン状態が「フォロー」ではありません');
       }
-      // 少し待ってから次へ（0.3秒）
-      await new Promise(resolve => setTimeout(resolve, 300));
+      // 少し待ってから次へ（CI環境では短縮）
+      const nextWaitTime = isCI ? 200 : 300;
+      await new Promise(resolve => setTimeout(resolve, nextWaitTime));
     } catch (e) {
       logTime(`エラー発生: ${e.message}`);
       continue;
