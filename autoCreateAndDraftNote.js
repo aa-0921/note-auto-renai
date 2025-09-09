@@ -253,6 +253,43 @@ const {
   closeDialogs
 } = require('./noteAutoDraftAndSheetUpdate');
 
+// アフィリエイトリンクを生成する関数
+function generateAffiliateLink() {
+  return [
+    '',
+    '💰　💎　💰　💎　💰　💎　💰　💎　💰　💎　💰　💎　💰　💎　💰',
+    'https://amzn.to/4goaSUk',
+    '👆引き寄せの法則がわかるおすすめの本です😊コスパ最強です👍',
+    '💰　💎　💰　💎　💰　💎　💰　💎　💰　💎　💰　💎　💰　💎　💰',
+    '',
+  ].join('\n');
+}
+
+// 記事の最初、中間、最後にアフィリエイトリンクを挿入する関数
+function insertAffiliateLinks(content) {
+  const affiliateLink = generateAffiliateLink();
+  
+  // 記事を段落に分割
+  const paragraphs = content.split('\n\n');
+  
+  if (paragraphs.length < 3) {
+    // 段落が少ない場合は、最初と最後に挿入
+    return paragraphs[0] + '\n\n' + affiliateLink + '\n\n' + paragraphs.slice(1).join('\n\n') + '\n\n' + affiliateLink;
+  }
+  
+  // 最初の段落の後にアフィリエイトリンクを挿入
+  const firstPart = paragraphs[0] + '\n\n' + affiliateLink;
+  
+  // 中間の段落を特定（全体の1/3から2/3の位置）
+  const middleIndex = Math.floor(paragraphs.length * 0.4);
+  const middlePart = paragraphs.slice(1, middleIndex).join('\n\n') + '\n\n' + affiliateLink + '\n\n' + paragraphs.slice(middleIndex, -1).join('\n\n');
+  
+  // 最後の段落の後にアフィリエイトリンクを挿入
+  const lastPart = paragraphs[paragraphs.length - 1] + '\n\n' + affiliateLink;
+  
+  return [firstPart, middlePart, lastPart].join('\n\n');
+}
+
 // セクションごとに分割
 function splitSections(raw) {
   const parts = raw.split(/^##+ /m); // 2個以上の#で分割
@@ -417,6 +454,7 @@ async function generateTagsFromContent(content, API_URL, API_KEY, MODEL) {
 async function rewriteAndTagArticle(raw, API_URL, API_KEY, MODEL) {
   let { firstPart, sections } = splitSections(raw);
   let updated = false;
+  
   // 200字未満のセクションをリライト
   for (let i = 0; i < sections.length; i++) {
     const { heading, body, raw: sectionRaw } = sections[i];
@@ -429,85 +467,85 @@ async function rewriteAndTagArticle(raw, API_URL, API_KEY, MODEL) {
         lines.splice(1, lines.length - 1, newBodyWithExtraLine);
         sections[i].raw = lines.join('\n');
         updated = true;
+        console.log(`「${heading}」のリライトが完了しました`);
       } catch (e) {
-        console.error(`「${heading}」のリライトに失敗しました。元の本文を維持して次へ進みます。理由:`, e.message);
+        console.error(`「${heading}」のリライトに失敗しました:`, e.message);
+        console.log(`「${heading}」は元の内容のまま処理を継続します`);
+        // リライト失敗時は元の内容を保持
       }
-      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      // APIリクエストの間に適切な待機時間を設定（レート制限回避）
+      if (i < sections.length - 1) {
+        console.log('次のセクション処理前に2秒待機します...');
+        await new Promise(resolve => setTimeout(resolve, 2000));
+      }
     }
   }
   
+  // 記事の最初、中間、最後にアフィリエイトリンクを挿入
+  console.log('アフィリエイトリンクを3箇所に挿入します...');
+  
+  // firstPartの末尾に必ず改行を追加
+  const safeFirstPart = firstPart.endsWith('\n') ? firstPart : firstPart + '\n';
+  
+  // セクションを結合して記事全体を作成
+  let articleContent = safeFirstPart + '\n\n' + sections.map(s => '## ' + s.raw).join('\n');
+  
+  // アフィリエイトリンクを3箇所に挿入
+  articleContent = insertAffiliateLinks(articleContent);
+  
+  console.log('アフィリエイトリンク挿入完了');
+  console.log('articleContentの長さ:', articleContent.length);
+  
   // マガジンへの誘導セクション（リライト処理の成功・失敗に関係なく必ず挿入）
   console.log('マガジン誘導セクションを挿入します...');
-  console.log('firstPartの長さ:', firstPart.length);
-  console.log('firstPartの末尾10文字:', firstPart.substring(firstPart.length - 10));
-  console.log('firstPartが改行で終わるか:', firstPart.endsWith('\n'));
   
   const magazinePromotion = [
-    '🏠　✨　🏠　✨　🏠　✨　🏠　✨　🏠　✨　🏠　✨　🏠　✨　🏠　✨　',
+    '🐈　🐾　🐈‍⬛　🐾　🐈　🐾　🐈‍⬛　🐾　🐈　🐾　🐈‍⬛　🐾　🐈　🐾　🐈‍⬛　',
     '',
-    '✅「毎日を少しでも快適に過ごしたい！」というあなたへ',
+    '✅「そろそろ資産運用、何か始めたい！」というあなたへ',
     '',
-    '心の疲れを癒し、生活を豊かにするグッズを厳選したマガジンを用意しました。',
+    '投資に興味はあるけど、「何から始めればいい？」「失敗が怖い…」そんな不安を、無料で解消できるマガジンを用意しました。',
     '',
-    '【物理的に幸せになるおすすめグッズ達】',
-    '✔ 日々のストレスを軽減したい',
-    '✔ 心地よい生活環境を作りたい',
+    '【早めに不安を払拭する資産運用】',
+    '✔ まずは小さく始めたい',
+    '✔ 仕組みをシンプルに知りたい',
     'そんな人にピッタリです。',
     '',
-    '小さな変化が大きな幸せにつながるヒントを、無料でどうぞ。',
+    '安心して一歩踏み出すヒントを、無料でどうぞ。',
     '',
-    'https://note.com/counselor_risa/m/m72a580a7e712',
+    'https://note.com/investment_happy/m/m76229c09696b',
     '',
-    '🏠　✨　🏠　✨　🏠　✨　🏠　✨　🏠　✨　🏠　✨　🏠　✨　🏠　✨　',
+    '🐈　🐾　🐈‍⬛　🐾　🐈　🐾　🐈‍⬛　🐾　🐈　🐾　🐈‍⬛　🐾　🐈　🐾　🐈‍⬛　',
     ''
   ].join('\n');
   
-  // firstPartの末尾に必ず改行を追加し、マガジン誘導セクションを挿入
-  const safeFirstPart = firstPart.endsWith('\n') ? firstPart : firstPart + '\n';
-  console.log('safeFirstPartの長さ:', safeFirstPart.length);
-  console.log('safeFirstPartの末尾10文字:', safeFirstPart.substring(safeFirstPart.length - 10));
-  
-  let newRaw = safeFirstPart + magazinePromotion + '\n\n' + sections.map(s => '## ' + s.raw).join('\n');
-  console.log('newRawの長さ:', newRaw.length);
-  console.log('newRawの先頭200文字:', newRaw.substring(0, 200));
-  console.log('newRawの末尾200文字:', newRaw.substring(newRaw.length - 200));
-  
   // 既存タグ行があれば除去
-  newRaw = newRaw.replace(/\n# .+$/gm, '');
-
+  articleContent = articleContent.replace(/\n# .+$/gm, '');
+  
   // タグ生成（失敗時のフォールバック付き）
   let tags = '';
   try {
-    tags = await generateTagsFromContent(newRaw, API_URL, API_KEY, MODEL);
+    console.log('タグ生成を開始します...');
+    tags = await generateTagsFromContent(articleContent, API_URL, API_KEY, MODEL);
+    console.log('タグ生成が完了しました:', tags);
   } catch (e) {
     console.error('タグ生成に失敗しました。フォールバックの固定タグを使用します。理由:', e.message);
-    tags = '#人間関係 #メンタル #自己肯定感 #引き寄せ #引き寄せの法則 #裏技 #PR';
+    tags = '#資産運用 #投資 #運用 #株 #投資信託 #FIRE #PR';
   }
 
-  // タグの直前に案内文を追加（腸を温めることについての案内）
+  // タグの直前に案内文を追加（日本語コメント付き）
   const infoText = [
-    '最後までお読みいただき、ありがとうございます！🙇‍♂️🙇‍♂️🙇‍♂️',
-    'お仕事や学校での人間関係など、日々の中で心が疲れてしまうこともありますよね。😭',
-    '悩みの種類が人それぞれであるように、その解決方法もまた人によって異なります。',
-    'ただ、「腸を温めること」は、どんな方にも共通してプラスになる方法だと私は感じています。',
-    '',
-    '私自身、心が沈んだときに色々な方法を試してきましたが、腸を温めることで体がほぐれ、自然と心も軽くなることが何度もありました。',
-    '実際に、腸を温めることは身体の健康だけでなく、メンタルの安定にも効果があると科学的にも証明されているんです。',
-    '',
-    'どんな方にとっても、まずは自分の「おなか」をいたわることが、健やかな毎日の第一歩になるかもしれません。',
-    'リンクを貼っておきますので、「ちょっと試してみようかな」くらいの気持ちで、ぜひ実践してみてくださいね☺️',
-    '',
-    'https://amzn.to/44hKd5O',
-    '',
-    'https://amzn.to/40sJeP3',
-    '',
-    'Amazon のアソシエイトとして、「恋愛・人間関係カウンセラーRisa」は適格販売により収入を得ています。',
-    ''
+    '最後までお読みいただきありがとうございます！💬',
+    '継続して、お得な情報を発信していきますので、フォローお願いします！',
   ].join('\n');
   
-  newRaw = newRaw.trim() + '\n\n' + magazinePromotion + '\n\n' + infoText + '\n\n' + tags + '\n';
-  console.log('記事の加工が完了しました。マガジン誘導セクションとタグが含まれています。');
-  return newRaw;
+  // Amazonアソシエイトの適格販売に関する文言を追加
+  const amazonAssociateText = 'Amazon のアソシエイトとして、「まずは100円から💹投資|運用|資産形成」は適格販売により収入を得ています。';
+  
+  const finalContent = articleContent.trim() + '\n\n' + magazinePromotion + '\n\n' + infoText + '\n\n' + amazonAssociateText + '\n\n' + tags + '\n';
+  console.log('記事の加工が完了しました。アフィリエイトリンク、マガジン誘導、タグが含まれています。');
+  return finalContent;
 }
 
 // メイン処理
