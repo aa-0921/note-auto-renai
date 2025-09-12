@@ -59,6 +59,11 @@ const topics = [
   '曖昧な関係に悩んでる人へ'
 ];
 
+// タイトル用絵文字リスト
+const titleEmojis = [
+  '❤️', '🌸', '🛑', '㊙︎', '🟥', '🈲', '🉐', '㊗️', '㊙️', '⭕', '‼️', '🎉'
+];
+
 // 切り口リスト
 const patterns = [
   '一歩踏み込んだ理解',
@@ -235,13 +240,19 @@ async function generateArticle(topic, pattern) {
   throw new Error('AI記事生成APIリクエストが3回連続で失敗しました: ' + (lastError && lastError.message));
 }
 
-// ファイル名生成
-function makeFileName(id, title) {
-  const date = new Date().toISOString().slice(0, 10);
-  // タイトルからファイル名用文字列を生成
-  const safeTitle = title.replace(/[\s#\/:*?"<>|\\]/g, '').slice(0, 30);
-  return `${id}__${date}-${safeTitle}.md`;
+// タイトルにランダム絵文字を追加する関数
+function addRandomEmojiToTitle(title) {
+  const randomEmoji = titleEmojis[Math.floor(Math.random() * titleEmojis.length)];
+  return `${randomEmoji} ${title}`;
 }
+
+// ファイル名生成 使われていない様子
+// function makeFileName(id, title) {
+//   const date = new Date().toISOString().slice(0, 10);
+//   // タイトルからファイル名用文字列を生成（絵文字を除去）
+//   const safeTitle = title.replace(/[\s#\/:*?"<>|\\]/g, '').slice(0, 30);
+//   return `${id}__${date}-${safeTitle}.md`;
+// }
 
 // note.com下書き保存用の関数をインポート
 const {
@@ -566,33 +577,27 @@ async function rewriteAndTagArticle(raw, API_URL, API_KEY, MODEL) {
   }
 
   // 4. タイトル抽出（# タイトル 形式を強化）
-  let title = '無題';
+  let originalTitle = '無題';
   const titleMatch = article.match(/^#\s*(.+)$/m);
   if (titleMatch && titleMatch[1].trim().length > 0) {
-    title = titleMatch[1].trim();
+    originalTitle = titleMatch[1].trim();
   } else {
     // 先頭行がタイトルでない場合、最初の10文字を仮タイトルに
-    title = article.split('\n').find(line => line.trim().length > 0)?.slice(0, 10) || '無題';
+    originalTitle = article.split('\n').find(line => line.trim().length > 0)?.slice(0, 10) || '無題';
   }
-  // 本文から「タイトルと同じh1行（# タイトル）」をすべて除去する
-  const h1TitleLine = `# ${title}`;
+  
+  // 本文から元のタイトル行（# タイトル）を除去する
+  const originalH1TitleLine = `# ${originalTitle}`;
   const articleLines = article.split('\n');
-  // console.log('【h1タイトル除去デバッグ】');
-  console.log('タイトル:', title);
-  console.log('h1TitleLine:', JSON.stringify(h1TitleLine));
-  // articleLines.forEach((line, idx) => {
-  //   if (line.trim() === h1TitleLine) {
-  //     console.log(`>> 除去対象: 行${idx + 1}:`, JSON.stringify(line));
-  //   } else {
-  //     console.log(`   残す: 行${idx + 1}:`, JSON.stringify(line));
-  //   }
-  // });
-  const filteredArticleLines = articleLines.filter(line => line.trim() !== h1TitleLine);
+  console.log('元のタイトル:', originalTitle);
+  console.log('除去対象h1行:', JSON.stringify(originalH1TitleLine));
+  
+  const filteredArticleLines = articleLines.filter(line => line.trim() !== originalH1TitleLine);
   const filteredArticle = filteredArticleLines.join('\n');
-  // console.log('【h1タイトル除去後の本文行リスト】');
-  // filteredArticleLines.forEach((line, idx) => {
-  //   console.log(`   ${idx + 1}:`, JSON.stringify(line));
-  // });
+  
+  // タイトルにランダム絵文字を追加（本文除去後）
+  const title = addRandomEmojiToTitle(originalTitle);
+  console.log('最終タイトル:', title);
 
   // 5. 記事リライト・チェック（直接関数で処理）
   let rewrittenArticle = await rewriteAndTagArticle(filteredArticle, API_URL, API_KEY, MODEL);
