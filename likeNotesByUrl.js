@@ -129,37 +129,181 @@ const puppeteer = require('puppeteer');
     });
     await new Promise(resolve => setTimeout(resolve, 2000));
     
-    // 「もっとみる」ボタンを探す（テキスト内容で検索）
-    const loadMoreButton = await page.evaluateHandle(() => {
+    // デバッグ用：スクロール後のスクリーンショット
+    await page.screenshot({ path: 'debug_scroll_after.png', fullPage: true });
+    console.log('スクロール後のスクリーンショットを保存しました: debug_scroll_after.png');
+    
+    // デバッグ用：すべてのボタンとリンクを調査
+    const debugElements = await page.evaluate(() => {
       const buttons = Array.from(document.querySelectorAll('button'));
-      return buttons.find(btn => btn.textContent.includes('もっとみる'));
+      const links = Array.from(document.querySelectorAll('a'));
+      const allElements = [...buttons, ...links];
+      
+      return allElements.map((el, index) => ({
+        tagName: el.tagName,
+        text: el.textContent.trim(),
+        className: el.className,
+        id: el.id,
+        visible: el.offsetParent !== null,
+        rect: el.getBoundingClientRect()
+      }));
+    });
+    
+    console.log('【デバッグ】ページ内の「もっとみる」関連要素:');
+    debugElements.forEach((el, index) => {
+      if (el.text.includes('もっと') || el.text.includes('みる')) {
+        console.log(`${el.tagName}${index}: "${el.text}" | 可視: ${el.visible} | rect: ${JSON.stringify(el.rect)}`);
+      }
+    });
+    
+    // デバッグ用：HTMLの構造を確認
+    const htmlStructure = await page.evaluate(() => {
+      const buttons = Array.from(document.querySelectorAll('button'));
+      const links = Array.from(document.querySelectorAll('a'));
+      const allElements = [...buttons, ...links];
+      
+      return allElements
+        .filter(el => el.textContent.includes('もっとみる'))
+        .map(el => ({
+          tagName: el.tagName,
+          text: el.textContent.trim(),
+          className: el.className,
+          id: el.id,
+          outerHTML: el.outerHTML,
+          parentHTML: el.parentElement ? el.parentElement.outerHTML : null,
+          computedStyle: {
+            display: window.getComputedStyle(el).display,
+            visibility: window.getComputedStyle(el).visibility,
+            opacity: window.getComputedStyle(el).opacity,
+            position: window.getComputedStyle(el).position,
+            top: window.getComputedStyle(el).top,
+            left: window.getComputedStyle(el).left,
+            width: window.getComputedStyle(el).width,
+            height: window.getComputedStyle(el).height
+          }
+        }));
+    });
+    
+    console.log('【デバッグ】「もっとみる」要素のHTML構造:');
+    htmlStructure.forEach((el, index) => {
+      console.log(`要素${index}:`);
+      console.log(`  tagName: ${el.tagName}`);
+      console.log(`  text: "${el.text}"`);
+      console.log(`  className: "${el.className}"`);
+      console.log(`  id: "${el.id}"`);
+      console.log(`  outerHTML: ${el.outerHTML}`);
+      console.log(`  computedStyle: ${JSON.stringify(el.computedStyle, null, 2)}`);
+      console.log('---');
+    });
+    
+    // 「もっとみる」ボタンを探す（サイズがあるボタンを優先）
+    const loadMoreButton = await page.evaluateHandle(() => {
+      // まずbutton要素を探す
+      const buttons = Array.from(document.querySelectorAll('button'));
+      const loadMoreButtons = buttons.filter(btn => btn.textContent.includes('もっとみる'));
+      
+      // サイズがあるボタンを探す（getBoundingClientRectでwidth > 0のもの）
+      let foundButton = loadMoreButtons.find(btn => {
+        const rect = btn.getBoundingClientRect();
+        return rect.width > 0 && rect.height > 0;
+      });
+      
+      // サイズがあるボタンが見つからない場合は最初のボタンを使用
+      if (!foundButton && loadMoreButtons.length > 0) {
+        foundButton = loadMoreButtons[0];
+      }
+      
+      // button要素が見つからない場合はa要素を探す
+      if (!foundButton) {
+        const links = Array.from(document.querySelectorAll('a'));
+        foundButton = links.find(link => link.textContent.includes('もっとみる'));
+      }
+      
+      return foundButton;
     });
     
     if (loadMoreButton && loadMoreButton.asElement && loadMoreButton.asElement() !== null) {
-      console.log('「もっとみる」ボタンが見つかりました。クリックします。');
+      console.log('「もっとみる」ボタンが見つかりました。詳細を調査します。');
       
       try {
         const buttonElement = loadMoreButton.asElement();
+        
+        // ボタンの詳細情報を取得
+        const buttonInfo = await buttonElement.evaluate(btn => ({
+          text: btn.textContent.trim(),
+          className: btn.className,
+          id: btn.id,
+          disabled: btn.disabled,
+          style: btn.style.cssText,
+          rect: btn.getBoundingClientRect(),
+          offsetParent: btn.offsetParent !== null,
+          computedStyle: {
+            display: window.getComputedStyle(btn).display,
+            visibility: window.getComputedStyle(btn).visibility,
+            opacity: window.getComputedStyle(btn).opacity,
+            pointerEvents: window.getComputedStyle(btn).pointerEvents
+          }
+        }));
+        
+        console.log('「もっとみる」ボタンの詳細情報:', JSON.stringify(buttonInfo, null, 2));
         
         // 要素の可視性をチェック
         const isVisible = await buttonElement.isIntersectingViewport();
         console.log('「もっとみる」ボタンの可視性:', isVisible);
         
-        if (isVisible) {
+        // ボタンがクリック可能かチェック
+        const isClickable = await buttonElement.evaluate(btn => {
+          const rect = btn.getBoundingClientRect();
+          return rect.width > 0 && rect.height > 0 && 
+                 !btn.disabled && 
+                 !btn.hasAttribute('disabled') &&
+                 window.getComputedStyle(btn).pointerEvents !== 'none' &&
+                 window.getComputedStyle(btn).visibility !== 'hidden' &&
+                 window.getComputedStyle(btn).opacity !== '0';
+        });
+        console.log('「もっとみる」ボタンのクリック可能性:', isClickable);
+        
+        if (isVisible && isClickable) {
+          // ボタンをハイライトしてスクリーンショット
+          await buttonElement.evaluate(btn => {
+            btn.style.border = '5px solid red';
+            btn.style.backgroundColor = 'yellow';
+          });
+          await page.screenshot({ path: 'debug_button_highlighted.png', fullPage: true });
+          console.log('ハイライトしたボタンのスクリーンショットを保存しました: debug_button_highlighted.png');
+          
           // JavaScriptでクリックイベントを発火
+          console.log('「もっとみる」ボタンをクリックします...');
           await buttonElement.evaluate(btn => btn.click());
           console.log('「もっとみる」ボタンをクリックしました');
           
           // 新しい記事が読み込まれるまで待機
           await new Promise(resolve => setTimeout(resolve, 5000));
+          
+          // クリック後のスクリーンショット
+          await page.screenshot({ path: 'debug_after_click.png', fullPage: true });
+          console.log('クリック後のスクリーンショットを保存しました: debug_after_click.png');
         } else {
-          console.log('「もっとみる」ボタンが可視状態ではありません');
+          console.log('「もっとみる」ボタンがクリック不可能です');
+          console.log(`可視性: ${isVisible}, クリック可能性: ${isClickable}`);
         }
       } catch (error) {
         console.log('「もっとみる」ボタンのクリックでエラー:', error.message);
+        console.log('エラーの詳細:', error.stack);
       }
     } else {
       console.log('「もっとみる」ボタンが見つかりませんでした');
+      
+      // 代替案：テキストに「もっと」を含むボタンを探す
+      const alternativeButton = await page.evaluateHandle(() => {
+        const buttons = Array.from(document.querySelectorAll('button'));
+        return buttons.find(btn => btn.textContent.includes('もっと'));
+      });
+      
+      if (alternativeButton && alternativeButton.asElement && alternativeButton.asElement() !== null) {
+        const altButtonText = await alternativeButton.asElement().evaluate(btn => btn.textContent.trim());
+        console.log(`代替ボタンが見つかりました: "${altButtonText}"`);
+      }
     }
     
     console.log('「もっとみる」ボタンの処理完了');
