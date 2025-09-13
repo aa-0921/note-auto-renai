@@ -606,10 +606,14 @@ async function rewriteAndTagArticle(raw, API_URL, API_KEY, MODEL) {
   // 6. note.comに下書き保存（Puppeteerで自動化）
   try {
     console.log('note.comに下書き保存処理を開始します...');
-    // CI環境（GitHub Actions等）ではheadless:'new'、ローカルではheadless:falseで切り替え
+    // 実行引数からheadlessを決定（--bg があればheadless、それ以外は可視）
+    const argv = process.argv.slice(2);
+    const wantsBackground = argv.includes('--bg');
     const isCI = process.env.CI === 'true';
+    const headlessMode = wantsBackground ? 'new' : false;
+    console.log('headlessモード:', headlessMode === false ? '可視(visible)' : 'バックグラウンド(headless)');
     const browser = await puppeteer.launch({
-      headless: isCI ? 'new' : false,
+      headless: headlessMode,
       args: [
         '--no-sandbox',
         '--disable-setuid-sandbox',

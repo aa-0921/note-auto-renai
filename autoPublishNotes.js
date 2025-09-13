@@ -3,10 +3,15 @@ const puppeteer = require('puppeteer');
 const { login } = require('./noteAutoDraftAndSheetUpdate');
 
 (async () => {
+  // 実行引数からheadlessを決定（--bg があればheadless、それ以外は可視）
+  const argv = process.argv.slice(2);
+  const wantsBackground = argv.includes('--bg');
   const isCI = process.env.CI === 'true';
+  const headlessMode = wantsBackground ? 'new' : false;
   console.log('Puppeteerを起動します');
+  console.log('headlessモード:', headlessMode === false ? '可視(visible)' : 'バックグラウンド(headless)');
   const browser = await puppeteer.launch({
-    headless: isCI ? 'old' : false,
+    headless: headlessMode,
     protocolTimeout: 120000,
     args: [
       '--no-sandbox',

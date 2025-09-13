@@ -29,11 +29,14 @@ function logTime(label) {
   }
 
   console.log('Puppeteer起動オプションを取得します');
+  // 実行引数からheadlessを決定（--bg があればheadless、それ以外は可視）
+  const argv = process.argv.slice(2);
+  const wantsBackground = argv.includes('--bg');
   const isCI = process.env.CI === 'true';
-  console.log('process.env.CIの値:', process.env.CI);
-  console.log('isCI:', isCI);
+  const headlessMode = wantsBackground ? 'new' : false;
+  console.log('headlessモード:', headlessMode === false ? '可視(visible)' : 'バックグラウンド(headless)');
   const browser = await puppeteer.launch({
-    headless: isCI ? 'old' : false,
+    headless: headlessMode,
     args: [
       '--no-sandbox',
       '--disable-setuid-sandbox',
@@ -399,9 +402,10 @@ function logTime(label) {
     }
   }
   logTime('全フォロー処理完了');
-  // 上限検知時はここで安全に終了
+  // 上限検知時はここで安全に終了（正常終了として扱う）
   if (isLimit) {
-    process.exit(1);
+    console.log('フォロー上限に達しましたが、正常終了として処理を継続します');
+    process.exit(0);
   }
   await browser.close();
   console.log('ブラウザを閉じました');

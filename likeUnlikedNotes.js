@@ -4,12 +4,14 @@ const { login } = require('./noteAutoDraftAndSheetUpdate'); // login関数をexp
 
 (async () => {
   console.log('Puppeteer起動オプションを取得します');
-  // CI環境（GitHub Actions等）ではheadless:'old'、ローカルではheadless:false
+  // 実行引数からheadlessを決定（--bg があればheadless、それ以外は可視）
+  const argv = process.argv.slice(2);
+  const wantsBackground = argv.includes('--bg');
   const isCI = process.env.CI === 'true';
-  console.log('process.env.CIの値:', process.env.CI);
-  console.log('isCI:', isCI);
+  const headlessMode = wantsBackground ? 'new' : false;
+  console.log('headlessモード:', headlessMode === false ? '可視(visible)' : 'バックグラウンド(headless)');
   const browser = await puppeteer.launch({
-    headless: isCI ? 'old' : false,
+    headless: headlessMode,
     defaultViewport: null, // ウインドウサイズをargsで指定するためnullに
     args: [
       '--window-size=1280,900',
