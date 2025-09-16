@@ -194,75 +194,135 @@ exports.dragAndDropToAddButton = dragAndDropToAddButton;
 
 // ログイン処理
 async function login(page, email, password) {
+  console.log('=== ログイン処理開始 ===');
+  console.log('現在のURL:', await page.url());
+  console.log('現在のタイトル:', await page.title());
+  
   // NOTE_EMAILとNOTE_PASSWORDの環境変数チェック
   if (!process.env.NOTE_EMAIL || !process.env.NOTE_PASSWORD) {
     console.error('エラー: NOTE_EMAIL または NOTE_PASSWORD の環境変数が設定されていません。');
     process.exit(1);
   }
-  // console.log('email変数:', email);
-  // console.log('password変数:', password);
-
-  // console.log('email:', process.env.NOTE_EMAIL);
-  // console.log('password:', process.env.NOTE_PASSWORD);
+  
+  console.log('環境変数チェック完了');
+  console.log('email変数の長さ:', email ? email.length : 'undefined');
+  console.log('password変数の長さ:', password ? password.length : 'undefined');
+  console.log('NOTE_EMAIL環境変数の長さ:', process.env.NOTE_EMAIL ? process.env.NOTE_EMAIL.length : 'undefined');
+  console.log('NOTE_PASSWORD環境変数の長さ:', process.env.NOTE_PASSWORD ? process.env.NOTE_PASSWORD.length : 'undefined');
 
   // User-AgentとAccept-Languageを日本向けに設定
+  console.log('User-AgentとAccept-Languageを設定します');
   await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36');
   await page.setExtraHTTPHeaders({
     'Accept-Language': 'ja-JP,ja;q=0.9,en-US;q=0.8,en;q=0.7'
   });
+  console.log('User-AgentとAccept-Language設定完了');
+  
   console.log('noteログインページへ遷移します');
+  console.log('遷移前のURL:', await page.url());
   await page.goto('https://note.com/login?redirectPath=https%3A%2F%2Fnote.com%2F', { waitUntil: 'networkidle2', timeout: 60000 });
+  console.log('遷移後のURL:', await page.url());
+  console.log('遷移後のタイトル:', await page.title());
   console.log('メールアドレスとパスワードを入力します');
-  await page.type('#email', email);
+  
+  // メールアドレス入力フィールドの確認
+  console.log('メールアドレス入力フィールドを探します');
+  const emailField = await page.$('#email');
+  if (emailField) {
+    console.log('メールアドレス入力フィールドが見つかりました');
+    await page.type('#email', email);
+    console.log('メールアドレス入力完了');
+  } else {
+    console.log('メールアドレス入力フィールドが見つかりません');
+    console.log('ページのHTMLの一部:', await page.content().then(content => content.slice(0, 1000)));
+  }
+  
   await new Promise(resolve => setTimeout(resolve, 1000)); // 1秒待機
-  await page.type('#password', password);
+  
+  // パスワード入力フィールドの確認
+  console.log('パスワード入力フィールドを探します');
+  const passwordField = await page.$('#password');
+  if (passwordField) {
+    console.log('パスワード入力フィールドが見つかりました');
+    await page.type('#password', password);
+    console.log('パスワード入力完了');
+  } else {
+    console.log('パスワード入力フィールドが見つかりません');
+  }
+  
   await new Promise(resolve => setTimeout(resolve, 1000)); // 1秒待機
-  await page.waitForSelector('button[type="button"]:not([disabled])');
+  
   console.log('ログインボタンを探します');
+  await page.waitForSelector('button[type="button"]:not([disabled])');
+  console.log('ログインボタンが有効になりました');
+  
   const buttons = await page.$$('button[type="button"]');
+  console.log('見つかったボタン数:', buttons.length);
+  
   let loginClicked = false;
-  for (const btn of buttons) {
+  for (let i = 0; i < buttons.length; i++) {
+    const btn = buttons[i];
     const text = await (await btn.getProperty('innerText')).jsonValue();
+    console.log(`ボタン${i + 1}のテキスト: "${text}"`);
     if (text && text.trim() === 'ログイン') {
       console.log('ログインボタンをクリックします');
       try {
         await btn.click();
         console.log('ログインボタンをクリックしました');
+        console.log('クリック後のURL:', await page.url());
+        console.log('クリック後のタイトル:', await page.title());
+        
+        // ログイン処理の待機
+        console.log('ログイン処理の待機を開始します（5秒待機）');
+        await new Promise(resolve => setTimeout(resolve, 5000));
+        console.log('待機後のURL:', await page.url());
+        console.log('待機後のタイトル:', await page.title());
         
         // ログイン後のページ遷移を待機（複数の方法で検出）
         try {
-          // 方法1: ユーザーアイコンを待機
+          console.log('方法1: ユーザーアイコンを検索中...');
           await page.waitForSelector('img.a-userIcon--medium', { timeout: 30000 });
           console.log('ユーザーアイコンを検出しました');
         } catch (e1) {
-          console.log('ユーザーアイコン検出に失敗、他の方法を試します');
+          console.log('ユーザーアイコン検出に失敗:', e1.message);
+          console.log('現在のURL:', await page.url());
+          console.log('現在のタイトル:', await page.title());
+          
           try {
-            // 方法2: ログインページからリダイレクトされることを確認
+            console.log('方法2: ログインページからのリダイレクトを確認中...');
             await page.waitForFunction(
               () => !window.location.href.includes('/login'),
               { timeout: 30000 }
             );
             console.log('ログインページからのリダイレクトを確認しました');
+            console.log('リダイレクト後のURL:', await page.url());
           } catch (e2) {
-            console.log('リダイレクト検出に失敗、ダッシュボード要素を探します');
+            console.log('リダイレクト検出に失敗:', e2.message);
+            console.log('現在のURL:', await page.url());
+            
             try {
-              // 方法3: ダッシュボードの要素を待機
+              console.log('方法3: ダッシュボード要素を検索中...');
               await page.waitForSelector('[data-testid="dashboard"], .o-dashboard, .dashboard', { timeout: 30000 });
               console.log('ダッシュボード要素を検出しました');
             } catch (e3) {
-              console.log('ダッシュボード要素検出に失敗、note.comのトップページ要素を探します');
+              console.log('ダッシュボード要素検出に失敗:', e3.message);
+              
               try {
-                // 方法4: note.comのトップページ要素を待機
+                console.log('方法4: トップページ要素を検索中...');
                 await page.waitForSelector('.o-topPage, .top-page, [data-testid="top"]', { timeout: 30000 });
                 console.log('トップページ要素を検出しました');
               } catch (e4) {
+                console.log('トップページ要素検出に失敗:', e4.message);
                 console.log('すべての検出方法が失敗しました');
+                console.log('最終的なURL:', await page.url());
+                console.log('最終的なタイトル:', await page.title());
                 throw e1; // 最初のエラーを再スロー
               }
             }
           }
         }
         
+        console.log('ログイン成功を確認しました');
         loginClicked = true;
       } catch (e) {
         console.error('ログイン後のユーザーアイコン検出に失敗:', e);
@@ -285,6 +345,9 @@ async function login(page, email, password) {
     }
   }
   if (!loginClicked) {
+    console.log('ログインボタンが見つからないか、クリックに失敗しました');
+    console.log('最終的なURL:', await page.url());
+    console.log('最終的なタイトル:', await page.title());
     console.error('ログインボタンが見つからずクリックできませんでした');
     try {
       await page.screenshot({ path: 'login_btn_notfound.png' });
@@ -300,6 +363,8 @@ async function login(page, email, password) {
     }
     throw new Error('ログインボタンが見つかりませんでした');
   }
+  
+  console.log('=== ログイン処理完了 ===');
   console.log('ログイン完了');
   // ログイン後のURLとタイトルを出力
   console.log('ログイン後の現在のURL:', await page.url());
