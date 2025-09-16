@@ -48,10 +48,15 @@ jobs:
             export DISPLAY=:99
             node -e "const puppeteer = require('puppeteer'); console.log('Puppeteer version:', puppeteer.version);"
 
-  # 記事公開用ジョブ
-  run-js-script:
+  # autoPublishNotes.js実行用ジョブ
+  run-auto-publish-notes:
     docker:
       - image: cimg/node:20.11
+    environment:
+      CI: true
+      DISPLAY: ":99"
+      NOTE_EMAIL: $NOTE_EMAIL
+      NOTE_PASSWORD: $NOTE_PASSWORD
     steps:
       - checkout
       - run:
@@ -89,23 +94,167 @@ jobs:
           name: Install Node.js dependencies
           command: npm ci
       - run:
-          name: Run JavaScript script
+          name: Run autoPublishNotes.js
           command: |
             export CI=true
             export DISPLAY=:99
-            # スクリプトファイル名を環境変数から取得
-            if [ -n "$SCRIPT_FILE" ]; then
-              echo "Running script: $SCRIPT_FILE"
-              node "$SCRIPT_FILE" --bg
-            else
-              echo "No script file specified"
-              exit 1
-            fi
-          environment:
-            CI: true
-            DISPLAY: ":99"
-            NOTE_EMAIL: $NOTE_EMAIL
-            NOTE_PASSWORD: $NOTE_PASSWORD
+            node autoPublishNotes.js --bg
+
+  # autoCreateAndDraftNote.js実行用ジョブ
+  run-auto-create-note:
+    docker:
+      - image: cimg/node:20.11
+    environment:
+      CI: true
+      DISPLAY: ":99"
+      NOTE_EMAIL: $NOTE_EMAIL
+      NOTE_PASSWORD: $NOTE_PASSWORD
+    steps:
+      - checkout
+      - run:
+          name: Install system dependencies
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y \
+              libnss3-dev \
+              libatk-bridge2.0-dev \
+              libdrm2 \
+              libxcomposite1 \
+              libxdamage1 \
+              libxrandr2 \
+              libgbm1 \
+              libxss1 \
+              libasound2 \
+              libxkbcommon0 \
+              libgtk-3-0 \
+              libx11-xcb1 \
+              libxcb-dri3-0 \
+              xvfb \
+              dbus-x11 \
+              fonts-liberation \
+              fonts-noto-color-emoji \
+              fonts-noto-cjk
+      - run:
+          name: Setup virtual display
+          command: |
+            sudo service dbus start
+            Xvfb :99 -screen 0 1280x1024x24 &
+            sleep 3
+            export DISPLAY=:99
+            echo "DISPLAY=$DISPLAY" >> $BASH_ENV
+      - run:
+          name: Install Node.js dependencies
+          command: npm ci
+      - run:
+          name: Run autoCreateAndDraftNote.js
+          command: |
+            export CI=true
+            export DISPLAY=:99
+            node autoCreateAndDraftNote.js --bg
+
+  # followFromArticles.js実行用ジョブ
+  run-follow-from-articles:
+    docker:
+      - image: cimg/node:20.11
+    environment:
+      CI: true
+      DISPLAY: ":99"
+      NOTE_EMAIL: $NOTE_EMAIL
+      NOTE_PASSWORD: $NOTE_PASSWORD
+    steps:
+      - checkout
+      - run:
+          name: Install system dependencies
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y \
+              libnss3-dev \
+              libatk-bridge2.0-dev \
+              libdrm2 \
+              libxcomposite1 \
+              libxdamage1 \
+              libxrandr2 \
+              libgbm1 \
+              libxss1 \
+              libasound2 \
+              libxkbcommon0 \
+              libgtk-3-0 \
+              libx11-xcb1 \
+              libxcb-dri3-0 \
+              xvfb \
+              dbus-x11 \
+              fonts-liberation \
+              fonts-noto-color-emoji \
+              fonts-noto-cjk
+      - run:
+          name: Setup virtual display
+          command: |
+            sudo service dbus start
+            Xvfb :99 -screen 0 1280x1024x24 &
+            sleep 3
+            export DISPLAY=:99
+            echo "DISPLAY=$DISPLAY" >> $BASH_ENV
+      - run:
+          name: Install Node.js dependencies
+          command: npm ci
+      - run:
+          name: Run followFromArticles.js
+          command: |
+            export CI=true
+            export DISPLAY=:99
+            node follow/followFromArticles.js --bg
+
+  # likeUnlikedNotes.js実行用ジョブ
+  run-like-notes:
+    docker:
+      - image: cimg/node:20.11
+    environment:
+      CI: true
+      DISPLAY: ":99"
+      NOTE_EMAIL: $NOTE_EMAIL
+      NOTE_PASSWORD: $NOTE_PASSWORD
+    steps:
+      - checkout
+      - run:
+          name: Install system dependencies
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y \
+              libnss3-dev \
+              libatk-bridge2.0-dev \
+              libdrm2 \
+              libxcomposite1 \
+              libxdamage1 \
+              libxrandr2 \
+              libgbm1 \
+              libxss1 \
+              libasound2 \
+              libxkbcommon0 \
+              libgtk-3-0 \
+              libx11-xcb1 \
+              libxcb-dri3-0 \
+              xvfb \
+              dbus-x11 \
+              fonts-liberation \
+              fonts-noto-color-emoji \
+              fonts-noto-cjk
+      - run:
+          name: Setup virtual display
+          command: |
+            sudo service dbus start
+            Xvfb :99 -screen 0 1280x1024x24 &
+            sleep 3
+            export DISPLAY=:99
+            echo "DISPLAY=$DISPLAY" >> $BASH_ENV
+      - run:
+          name: Install Node.js dependencies
+          command: npm ci
+      - run:
+          name: Run likeUnlikedNotes.js
+          command: |
+            export CI=true
+            export DISPLAY=:99
+            node likeUnlikedNotes.js --bg
 
 workflows:
   version: 2
@@ -132,14 +281,11 @@ workflows:
               only:
                 - main
     jobs:
-      - run-js-script:
-          name: auto-publish-notes
+      - run-auto-publish-notes:
           filters:
             branches:
               only:
                 - main
-          environment:
-            SCRIPT_FILE: "autoPublishNotes.js"
 
   # 記事作成用のワークフロー（1日5回）
   scheduled-auto-create-note:
@@ -163,14 +309,11 @@ workflows:
               only:
                 - main
     jobs:
-      - run-js-script:
-          name: auto-create-and-draft-note
+      - run-auto-create-note:
           filters:
             branches:
               only:
                 - main
-          environment:
-            SCRIPT_FILE: "autoCreateAndDraftNote.js"
 
   # フォロー用のワークフロー（1日8回、3時間ごと）
   scheduled-follow-from-articles:
@@ -182,14 +325,11 @@ workflows:
               only:
                 - main
     jobs:
-      - run-js-script:
-          name: follow-from-articles
+      - run-follow-from-articles:
           filters:
             branches:
               only:
                 - main
-          environment:
-            SCRIPT_FILE: "follow/followFromArticles.js"
 
   # いいね用のワークフロー（1日6回、4時間ごと）
   scheduled-like-notes:
@@ -201,53 +341,35 @@ workflows:
               only:
                 - main
     jobs:
-      - run-js-script:
-          name: like-notes
+      - run-like-notes:
           filters:
             branches:
               only:
                 - main
-          environment:
-            SCRIPT_FILE: "likeUnlikedNotes.js"
 
   # Push時の実行用
   on-push:
     jobs:
-      - run-js-script:
-          name: auto-publish-notes
+      - run-auto-publish-notes:
           filters:
             branches:
               only:
                 - main
-          environment:
-            SCRIPT_FILE: "autoPublishNotes.js"
-      - run-js-script:
-          name: auto-create-and-draft-note
-          script-file: autoCreateAndDraftNote.js
+      - run-auto-create-note:
           filters:
             branches:
               only:
                 - main
-          environment:
-            SCRIPT_FILE: "autoCreateAndDraftNote.js"
-      - run-js-script:
-          name: follow-from-articles
-          script-file: follow/followFromArticles.js
+      - run-follow-from-articles:
           filters:
             branches:
               only:
                 - main
-          environment:
-            SCRIPT_FILE: "follow/followFromArticles.js"
-      - run-js-script:
-          name: like-notes
-          script-file: likeUnlikedNotes.js
+      - run-like-notes:
           filters:
             branches:
               only:
                 - main
-          environment:
-            SCRIPT_FILE: "likeUnlikedNotes.js"
 
   # テスト用ワークフロー
   test-workflow:
