@@ -29,7 +29,10 @@ const puppeteer = require('puppeteer');
   const isCI = process.env.CI === 'true';
   console.log('process.env.CIの値:', process.env.CI);
   console.log('isCI:', isCI);
-  const headlessMode = wantsBackground ? 'new' : false;
+  console.log('process.env.DISPLAYの値:', process.env.DISPLAY);
+  
+  // CircleCI環境では強制的にheadlessモードを使用
+  const headlessMode = (isCI || wantsBackground) ? 'new' : false;
   console.log('headlessモード:', headlessMode === false ? '可視(visible)' : 'バックグラウンド(headless)');
   
   const browser = await puppeteer.launch({
@@ -40,7 +43,25 @@ const puppeteer = require('puppeteer');
       '--no-sandbox',
       '--disable-setuid-sandbox',
       '--disable-gpu',
-      '--disable-dev-shm-usage'
+      '--disable-dev-shm-usage',
+      // CircleCI環境用の追加オプション
+      '--disable-web-security',
+      '--disable-features=VizDisplayCompositor',
+      '--disable-extensions',
+      '--disable-plugins',
+      '--disable-images',
+      '--disable-default-apps',
+      '--disable-background-timer-throttling',
+      '--disable-backgrounding-occluded-windows',
+      '--disable-renderer-backgrounding',
+      '--disable-field-trial-config',
+      '--disable-back-forward-cache',
+      '--disable-ipc-flooding-protection',
+      '--no-first-run',
+      '--no-default-browser-check',
+      '--no-zygote',
+      '--single-process',
+      '--disable-background-networking'
     ]
   });
   

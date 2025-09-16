@@ -18,7 +18,25 @@ const { login } = require('./noteAutoDraftAndSheetUpdate');
       '--disable-setuid-sandbox',
       '--disable-gpu',
       '--disable-dev-shm-usage',
-      '--window-size=1280,800'
+      '--window-size=1280,800',
+      // CircleCI環境用の追加オプション
+      '--disable-web-security',
+      '--disable-features=VizDisplayCompositor',
+      '--disable-extensions',
+      '--disable-plugins',
+      '--disable-images',
+      '--disable-default-apps',
+      '--disable-background-timer-throttling',
+      '--disable-backgrounding-occluded-windows',
+      '--disable-renderer-backgrounding',
+      '--disable-field-trial-config',
+      '--disable-back-forward-cache',
+      '--disable-ipc-flooding-protection',
+      '--no-first-run',
+      '--no-default-browser-check',
+      '--no-zygote',
+      '--single-process',
+      '--disable-background-networking'
     ],
     defaultViewport: null
   });

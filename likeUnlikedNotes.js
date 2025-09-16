@@ -18,7 +18,25 @@ const { login } = require('./noteAutoDraftAndSheetUpdate'); // login関数をexp
       '--no-sandbox',
       '--disable-setuid-sandbox',
       '--disable-gpu',
-      '--disable-dev-shm-usage'
+      '--disable-dev-shm-usage',
+      // CircleCI環境用の追加オプション
+      '--disable-web-security',
+      '--disable-features=VizDisplayCompositor',
+      '--disable-extensions',
+      '--disable-plugins',
+      '--disable-images',
+      '--disable-default-apps',
+      '--disable-background-timer-throttling',
+      '--disable-backgrounding-occluded-windows',
+      '--disable-renderer-backgrounding',
+      '--disable-field-trial-config',
+      '--disable-back-forward-cache',
+      '--disable-ipc-flooding-protection',
+      '--no-first-run',
+      '--no-default-browser-check',
+      '--no-zygote',
+      '--single-process',
+      '--disable-background-networking'
     ]
   });
   const page = await browser.newPage();
