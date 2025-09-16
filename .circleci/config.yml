@@ -371,7 +371,7 @@ workflows:
               only:
                 - main
 
-  # テスト用ワークフロー
-  test-workflow:
-    jobs:
-      - setup-puppeteer
+  # テスト用ワークフロー（Puppeteer環境確認済みのためコメントアウト）
+  # test-workflow:
+  #   jobs:
+  #     - setup-puppeteer
