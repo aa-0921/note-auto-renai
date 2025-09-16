@@ -214,7 +214,9 @@ async function login(page, email, password) {
   await page.goto('https://note.com/login?redirectPath=https%3A%2F%2Fnote.com%2F', { waitUntil: 'networkidle2', timeout: 60000 });
   console.log('メールアドレスとパスワードを入力します');
   await page.type('#email', email);
+  await new Promise(resolve => setTimeout(resolve, 1000)); // 1秒待機
   await page.type('#password', password);
+  await new Promise(resolve => setTimeout(resolve, 1000)); // 1秒待機
   await page.waitForSelector('button[type="button"]:not([disabled])');
   console.log('ログインボタンを探します');
   const buttons = await page.$$('button[type="button"]');
@@ -224,10 +226,43 @@ async function login(page, email, password) {
     if (text && text.trim() === 'ログイン') {
       console.log('ログインボタンをクリックします');
       try {
-        await Promise.all([
-          btn.click(),
-          page.waitForSelector('img.a-userIcon--medium', { timeout: 60000 })
-        ]);
+        await btn.click();
+        console.log('ログインボタンをクリックしました');
+        
+        // ログイン後のページ遷移を待機（複数の方法で検出）
+        try {
+          // 方法1: ユーザーアイコンを待機
+          await page.waitForSelector('img.a-userIcon--medium', { timeout: 30000 });
+          console.log('ユーザーアイコンを検出しました');
+        } catch (e1) {
+          console.log('ユーザーアイコン検出に失敗、他の方法を試します');
+          try {
+            // 方法2: ログインページからリダイレクトされることを確認
+            await page.waitForFunction(
+              () => !window.location.href.includes('/login'),
+              { timeout: 30000 }
+            );
+            console.log('ログインページからのリダイレクトを確認しました');
+          } catch (e2) {
+            console.log('リダイレクト検出に失敗、ダッシュボード要素を探します');
+            try {
+              // 方法3: ダッシュボードの要素を待機
+              await page.waitForSelector('[data-testid="dashboard"], .o-dashboard, .dashboard', { timeout: 30000 });
+              console.log('ダッシュボード要素を検出しました');
+            } catch (e3) {
+              console.log('ダッシュボード要素検出に失敗、note.comのトップページ要素を探します');
+              try {
+                // 方法4: note.comのトップページ要素を待機
+                await page.waitForSelector('.o-topPage, .top-page, [data-testid="top"]', { timeout: 30000 });
+                console.log('トップページ要素を検出しました');
+              } catch (e4) {
+                console.log('すべての検出方法が失敗しました');
+                throw e1; // 最初のエラーを再スロー
+              }
+            }
+          }
+        }
+        
         loginClicked = true;
       } catch (e) {
         console.error('ログイン後のユーザーアイコン検出に失敗:', e);
