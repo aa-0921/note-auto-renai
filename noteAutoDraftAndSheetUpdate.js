@@ -326,11 +326,11 @@ async function login(page, email, password) {
         const pageContent = await page.content();
         if (pageContent.includes('ログインに失敗')) {
           console.log('ログイン失敗メッセージが検出されました');
-        } else if (pageContent.includes('CAPTCHA') || pageContent.includes('captcha')) {
-          console.log('CAPTCHAが検出されました');
-          console.log('【重要】CAPTCHAが表示されています');
-          console.log('【対処法】手動でログインしてCAPTCHAを解決するか、実行頻度を下げてください');
-          throw new Error('CAPTCHAが検出されました。手動でログインしてCAPTCHAを解決してください。');
+        // } else if (pageContent.includes('CAPTCHA') || pageContent.includes('captcha')) {
+        //   console.log('CAPTCHAが検出されました');
+        //   console.log('【重要】CAPTCHAが表示されています');
+        //   console.log('【対処法】手動でログインしてCAPTCHAを解決するか、実行頻度を下げてください');
+        //   throw new Error('CAPTCHAが検出されました。手動でログインしてCAPTCHAを解決してください。');
         } else if (pageContent.includes('セキュリティ') || pageContent.includes('security')) {
           console.log('セキュリティチェックが検出されました');
         } else {
