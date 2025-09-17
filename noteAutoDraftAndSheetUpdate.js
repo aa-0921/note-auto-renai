@@ -307,6 +307,16 @@ async function login(page, email, password) {
         );
         if (errorMessages.length > 0) {
           console.log('エラーメッセージが見つかりました:', errorMessages);
+          
+          // アカウントロックエラーの場合
+          if (errorMessages.some(msg => msg.includes('ロック') || msg.includes('一時的'))) {
+            console.log('【重要】アカウントが一時的にロックされています');
+            console.log('【対処法】以下のいずれかを実行してください:');
+            console.log('1. 手動でnote.comにログインしてアカウントロックを解除');
+            console.log('2. 数時間待ってから再実行');
+            console.log('3. CircleCIの実行頻度を下げる（1日1-2回程度）');
+            throw new Error('アカウントが一時的にロックされています。手動でロックを解除するか、時間をおいてから再実行してください。');
+          }
         } else {
           console.log('エラーメッセージは見つかりませんでした');
         }
@@ -318,6 +328,9 @@ async function login(page, email, password) {
           console.log('ログイン失敗メッセージが検出されました');
         } else if (pageContent.includes('CAPTCHA') || pageContent.includes('captcha')) {
           console.log('CAPTCHAが検出されました');
+          console.log('【重要】CAPTCHAが表示されています');
+          console.log('【対処法】手動でログインしてCAPTCHAを解決するか、実行頻度を下げてください');
+          throw new Error('CAPTCHAが検出されました。手動でログインしてCAPTCHAを解決してください。');
         } else if (pageContent.includes('セキュリティ') || pageContent.includes('security')) {
           console.log('セキュリティチェックが検出されました');
         } else {
