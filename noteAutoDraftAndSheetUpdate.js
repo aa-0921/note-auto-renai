@@ -267,16 +267,62 @@ async function login(page, email, password) {
     if (text && text.trim() === 'ログイン') {
       console.log('ログインボタンをクリックします');
       try {
+        // 方法1: ボタンクリック
         await btn.click();
         console.log('ログインボタンをクリックしました');
+        
+        // 方法2: フォーム送信も試す（ボタンクリックが失敗した場合のバックアップ）
+        try {
+          await page.evaluate(() => {
+            const form = document.querySelector('form');
+            if (form) {
+              form.submit();
+            }
+          });
+          console.log('フォーム送信も実行しました');
+        } catch (formErr) {
+          console.log('フォーム送信に失敗:', formErr.message);
+        }
         console.log('クリック後のURL:', await page.url());
         console.log('クリック後のタイトル:', await page.title());
         
         // ログイン処理の待機
-        console.log('ログイン処理の待機を開始します（5秒待機）');
-        await new Promise(resolve => setTimeout(resolve, 5000));
+        console.log('ログイン処理の待機を開始します（10秒待機）');
+        await new Promise(resolve => setTimeout(resolve, 10000));
         console.log('待機後のURL:', await page.url());
         console.log('待機後のタイトル:', await page.title());
+        
+        // URLが変わったかチェック
+        const currentUrl = await page.url();
+        if (currentUrl.includes('/login')) {
+          console.log('警告: まだログインページにいます。ログインが失敗している可能性があります');
+        } else {
+          console.log('ログインページから移動しました。ログインが成功している可能性があります');
+        }
+        
+        // ログインエラーメッセージの確認
+        console.log('ログインエラーメッセージを確認します');
+        const errorMessages = await page.$$eval('.error, .alert, .warning, [class*="error"], [class*="alert"], [class*="warning"]', elements => 
+          elements.map(el => el.textContent.trim()).filter(text => text.length > 0)
+        );
+        if (errorMessages.length > 0) {
+          console.log('エラーメッセージが見つかりました:', errorMessages);
+        } else {
+          console.log('エラーメッセージは見つかりませんでした');
+        }
+        
+        // ページの状態をより詳しく確認
+        console.log('ページの状態を確認します');
+        const pageContent = await page.content();
+        if (pageContent.includes('ログインに失敗')) {
+          console.log('ログイン失敗メッセージが検出されました');
+        } else if (pageContent.includes('CAPTCHA') || pageContent.includes('captcha')) {
+          console.log('CAPTCHAが検出されました');
+        } else if (pageContent.includes('セキュリティ') || pageContent.includes('security')) {
+          console.log('セキュリティチェックが検出されました');
+        } else {
+          console.log('特別なエラーメッセージは検出されませんでした');
+        }
         
         // ログイン後のページ遷移を待機（複数の方法で検出）
         try {
