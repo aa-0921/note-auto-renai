@@ -209,6 +209,22 @@ async function login(page, email, password) {
   console.log('password変数の長さ:', password ? password.length : 'undefined');
   console.log('NOTE_EMAIL環境変数の長さ:', process.env.NOTE_EMAIL ? process.env.NOTE_EMAIL.length : 'undefined');
   console.log('NOTE_PASSWORD環境変数の長さ:', process.env.NOTE_PASSWORD ? process.env.NOTE_PASSWORD.length : 'undefined');
+  
+  // 環境変数の詳細確認（最初と最後の文字を出力）
+  console.log('=== 環境変数詳細確認 ===');
+  if (process.env.NOTE_EMAIL) {
+    const email = process.env.NOTE_EMAIL;
+    console.log('NOTE_EMAIL存在: true, 長さ:', email.length, '最初の文字:', email[0], '最後の文字:', email[email.length-1]);
+  } else {
+    console.log('NOTE_EMAIL存在: false');
+  }
+  if (process.env.NOTE_PASSWORD) {
+    const password = process.env.NOTE_PASSWORD;
+    console.log('NOTE_PASSWORD存在: true, 長さ:', password.length, '最初の文字:', password[0], '最後の文字:', password[password.length-1]);
+  } else {
+    console.log('NOTE_PASSWORD存在: false');
+  }
+  console.log('=== 環境変数詳細確認完了 ===');
 
   // User-AgentとAccept-Languageを日本向けに設定
   console.log('User-AgentとAccept-Languageを設定します');
@@ -428,6 +444,22 @@ async function login(page, email, password) {
   // ログイン後のURLとタイトルを出力
   console.log('ログイン後の現在のURL:', await page.url());
   console.log('ログイン後の現在のタイトル:', await page.title());
+  
+  // ログイン完了時の環境変数再確認
+  console.log('=== ログイン完了時環境変数再確認 ===');
+  if (process.env.NOTE_EMAIL) {
+    const email = process.env.NOTE_EMAIL;
+    console.log('NOTE_EMAIL存在: true, 長さ:', email.length, '最初の文字:', email[0], '最後の文字:', email[email.length-1]);
+  } else {
+    console.log('NOTE_EMAIL存在: false');
+  }
+  if (process.env.NOTE_PASSWORD) {
+    const password = process.env.NOTE_PASSWORD;
+    console.log('NOTE_PASSWORD存在: true, 長さ:', password.length, '最初の文字:', password[0], '最後の文字:', password[password.length-1]);
+  } else {
+    console.log('NOTE_PASSWORD存在: false');
+  }
+  console.log('=== ログイン完了時環境変数再確認完了 ===');
   // ユーザーアイコンが表示されているかチェック（ログイン判定）
   const userIcon = await page.$('img.a-userIcon--medium');
   if (userIcon) {
@@ -710,6 +742,23 @@ function updateDraftDate(tablePath, rowIndex, dateStr) {
 // メイン処理
 async function main() {
   console.log('Puppeteer起動オプションを取得します');
+  
+  // メイン処理開始時の環境変数確認
+  console.log('=== メイン処理開始時環境変数確認 ===');
+  if (process.env.NOTE_EMAIL) {
+    const email = process.env.NOTE_EMAIL;
+    console.log('NOTE_EMAIL存在: true, 長さ:', email.length, '最初の文字:', email[0], '最後の文字:', email[email.length-1]);
+  } else {
+    console.log('NOTE_EMAIL存在: false');
+  }
+  if (process.env.NOTE_PASSWORD) {
+    const password = process.env.NOTE_PASSWORD;
+    console.log('NOTE_PASSWORD存在: true, 長さ:', password.length, '最初の文字:', password[0], '最後の文字:', password[password.length-1]);
+  } else {
+    console.log('NOTE_PASSWORD存在: false');
+  }
+  console.log('=== メイン処理開始時環境変数確認完了 ===');
+  
   const options = await launchOptions();
   console.log('Puppeteerを起動します');
   const browser = await puppeteer.launch(options);
