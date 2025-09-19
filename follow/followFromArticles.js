@@ -83,9 +83,7 @@ function logTime(label) {
       await dialog.dismiss();
     }
   });
-  
-  
-  
+
   console.log('noteにログインします');
   await login(page, process.env.NOTE_EMAIL, process.env.NOTE_PASSWORD);
   console.log('ログイン完了');

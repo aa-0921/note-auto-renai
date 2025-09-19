@@ -204,44 +204,44 @@ async function login(page, email, password) {
     process.exit(1);
   }
   
-  console.log('環境変数チェック完了');
-  console.log('email変数の長さ:', email ? email.length : 'undefined');
-  console.log('password変数の長さ:', password ? password.length : 'undefined');
-  console.log('NOTE_EMAIL環境変数の長さ:', process.env.NOTE_EMAIL ? process.env.NOTE_EMAIL.length : 'undefined');
-  console.log('NOTE_PASSWORD環境変数の長さ:', process.env.NOTE_PASSWORD ? process.env.NOTE_PASSWORD.length : 'undefined');
+  // console.log('環境変数チェック完了');
+  // console.log('email変数の長さ:', email ? email.length : 'undefined');
+  // console.log('password変数の長さ:', password ? password.length : 'undefined');
+  // console.log('NOTE_EMAIL環境変数の長さ:', process.env.NOTE_EMAIL ? process.env.NOTE_EMAIL.length : 'undefined');
+  // console.log('NOTE_PASSWORD環境変数の長さ:', process.env.NOTE_PASSWORD ? process.env.NOTE_PASSWORD.length : 'undefined');
   
-  // 環境変数の詳細確認（最初と最後の文字を出力）
-  console.log('=== 環境変数詳細確認 ===');
-  if (process.env.NOTE_EMAIL) {
-    const email = process.env.NOTE_EMAIL;
-    console.log('NOTE_EMAIL存在: true, 長さ:', email.length, '最初の文字:', email[0], '最後の文字:', email[email.length-1]);
-    console.log('NOTE_EMAIL全体（マスク）:', email.substring(0, 3) + '***' + email.substring(email.length-3));
-  } else {
-    console.log('NOTE_EMAIL存在: false');
-  }
-  if (process.env.NOTE_PASSWORD) {
-    const password = process.env.NOTE_PASSWORD;
-    console.log('NOTE_PASSWORD存在: true, 長さ:', password.length, '最初の文字:', password[0], '最後の文字:', password[password.length-1]);
-    console.log('NOTE_PASSWORD全体（マスク）:', password.substring(0, 3) + '***' + password.substring(password.length-3));
-  } else {
-    console.log('NOTE_PASSWORD存在: false');
-  }
+  // // 環境変数の詳細確認（最初と最後の文字を出力）
+  // console.log('=== 環境変数詳細確認 ===');
+  // if (process.env.NOTE_EMAIL) {
+  //   const email = process.env.NOTE_EMAIL;
+  //   console.log('NOTE_EMAIL存在: true, 長さ:', email.length, '最初の文字:', email[0], '最後の文字:', email[email.length-1]);
+  //   console.log('NOTE_EMAIL全体（マスク）:', email.substring(0, 3) + '***' + email.substring(email.length-3));
+  // } else {
+  //   console.log('NOTE_EMAIL存在: false');
+  // }
+  // if (process.env.NOTE_PASSWORD) {
+  //   const password = process.env.NOTE_PASSWORD;
+  //   console.log('NOTE_PASSWORD存在: true, 長さ:', password.length, '最初の文字:', password[0], '最後の文字:', password[password.length-1]);
+  //   console.log('NOTE_PASSWORD全体（マスク）:', password.substring(0, 3) + '***' + password.substring(password.length-3));
+  // } else {
+  //   console.log('NOTE_PASSWORD存在: false');
+  // }
   
-  // 環境変数が$で始まっているかチェック
-  if (process.env.NOTE_EMAIL && process.env.NOTE_EMAIL.startsWith('$')) {
-    console.log('【警告】NOTE_EMAILが$で始まっています。環境変数が正しく展開されていない可能性があります。');
-  }
-  if (process.env.NOTE_PASSWORD && process.env.NOTE_PASSWORD.startsWith('$')) {
-    console.log('【警告】NOTE_PASSWORDが$で始まっています。環境変数が正しく展開されていない可能性があります。');
-  }
+  // // 環境変数が$で始まっているかチェック
+  // if (process.env.NOTE_EMAIL && process.env.NOTE_EMAIL.startsWith('$')) {
+  //   console.log('【警告】NOTE_EMAILが$で始まっています。環境変数が正しく展開されていない可能性があります。');
+  // }
+  // if (process.env.NOTE_PASSWORD && process.env.NOTE_PASSWORD.startsWith('$')) {
+  //   console.log('【警告】NOTE_PASSWORDが$で始まっています。環境変数が正しく展開されていない可能性があります。');
+  // }
   
-  // 全ての環境変数を確認（NOTE_で始まるもの）
-  console.log('=== NOTE_で始まる環境変数一覧 ===');
-  Object.keys(process.env).filter(key => key.startsWith('NOTE_')).forEach(key => {
-    const value = process.env[key];
-    console.log(`${key}: ${value ? value.substring(0, 3) + '***' + value.substring(value.length-3) : 'undefined'}`);
-  });
-  console.log('=== 環境変数詳細確認完了 ===');
+  // // 全ての環境変数を確認（NOTE_で始まるもの）
+  // console.log('=== NOTE_で始まる環境変数一覧 ===');
+  // Object.keys(process.env).filter(key => key.startsWith('NOTE_')).forEach(key => {
+  //   const value = process.env[key];
+  //   console.log(`${key}: ${value ? value.substring(0, 3) + '***' + value.substring(value.length-3) : 'undefined'}`);
+  // });
+  // console.log('=== 環境変数詳細確認完了 ===');
 
   // User-AgentとAccept-Languageを日本向けに設定
   console.log('User-AgentとAccept-Languageを設定します');
@@ -463,28 +463,29 @@ async function login(page, email, password) {
   console.log('ログイン後の現在のタイトル:', await page.title());
   
   // ログイン完了時の環境変数再確認
-  console.log('=== ログイン完了時環境変数再確認 ===');
-  if (process.env.NOTE_EMAIL) {
-    const email = process.env.NOTE_EMAIL;
-    console.log('NOTE_EMAIL存在: true, 長さ:', email.length, '最初の文字:', email[0], '最後の文字:', email[email.length-1]);
-    console.log('NOTE_EMAIL全体（マスク）:', email.substring(0, 3) + '***' + email.substring(email.length-3));
-    if (email.startsWith('$')) {
-      console.log('【警告】NOTE_EMAILが$で始まっています。環境変数が正しく展開されていない可能性があります。');
-    }
-  } else {
-    console.log('NOTE_EMAIL存在: false');
-  }
-  if (process.env.NOTE_PASSWORD) {
-    const password = process.env.NOTE_PASSWORD;
-    console.log('NOTE_PASSWORD存在: true, 長さ:', password.length, '最初の文字:', password[0], '最後の文字:', password[password.length-1]);
-    console.log('NOTE_PASSWORD全体（マスク）:', password.substring(0, 3) + '***' + password.substring(password.length-3));
-    if (password.startsWith('$')) {
-      console.log('【警告】NOTE_PASSWORDが$で始まっています。環境変数が正しく展開されていない可能性があります。');
-    }
-  } else {
-    console.log('NOTE_PASSWORD存在: false');
-  }
-  console.log('=== ログイン完了時環境変数再確認完了 ===');
+  // console.log('=== ログイン完了時環境変数再確認 ===');
+  // if (process.env.NOTE_EMAIL) {
+  //   const email = process.env.NOTE_EMAIL;
+  //   console.log('NOTE_EMAIL存在: true, 長さ:', email.length, '最初の文字:', email[0], '最後の文字:', email[email.length-1]);
+  //   console.log('NOTE_EMAIL全体（マスク）:', email.substring(0, 3) + '***' + email.substring(email.length-3));
+  //   if (email.startsWith('$')) {
+  //     console.log('【警告】NOTE_EMAILが$で始まっています。環境変数が正しく展開されていない可能性があります。');
+  //   }
+  // } else {
+  //   console.log('NOTE_EMAIL存在: false');
+  // }
+  // if (process.env.NOTE_PASSWORD) {
+  //   const password = process.env.NOTE_PASSWORD;
+  //   console.log('NOTE_PASSWORD存在: true, 長さ:', password.length, '最初の文字:', password[0], '最後の文字:', password[password.length-1]);
+  //   console.log('NOTE_PASSWORD全体（マスク）:', password.substring(0, 3) + '***' + password.substring(password.length-3));
+  //   if (password.startsWith('$')) {
+  //     console.log('【警告】NOTE_PASSWORDが$で始まっています。環境変数が正しく展開されていない可能性があります。');
+  //   }
+  // } else {
+  //   console.log('NOTE_PASSWORD存在: false');
+  // }
+  // console.log('=== ログイン完了時環境変数再確認完了 ===');
+  
   // ユーザーアイコンが表示されているかチェック（ログイン判定）
   const userIcon = await page.$('img.a-userIcon--medium');
   if (userIcon) {
@@ -769,28 +770,28 @@ async function main() {
   console.log('Puppeteer起動オプションを取得します');
   
   // メイン処理開始時の環境変数確認
-  console.log('=== メイン処理開始時環境変数確認 ===');
-  if (process.env.NOTE_EMAIL) {
-    const email = process.env.NOTE_EMAIL;
-    console.log('NOTE_EMAIL存在: true, 長さ:', email.length, '最初の文字:', email[0], '最後の文字:', email[email.length-1]);
-    console.log('NOTE_EMAIL全体（マスク）:', email.substring(0, 3) + '***' + email.substring(email.length-3));
-    if (email.startsWith('$')) {
-      console.log('【警告】NOTE_EMAILが$で始まっています。環境変数が正しく展開されていない可能性があります。');
-    }
-  } else {
-    console.log('NOTE_EMAIL存在: false');
-  }
-  if (process.env.NOTE_PASSWORD) {
-    const password = process.env.NOTE_PASSWORD;
-    console.log('NOTE_PASSWORD存在: true, 長さ:', password.length, '最初の文字:', password[0], '最後の文字:', password[password.length-1]);
-    console.log('NOTE_PASSWORD全体（マスク）:', password.substring(0, 3) + '***' + password.substring(password.length-3));
-    if (password.startsWith('$')) {
-      console.log('【警告】NOTE_PASSWORDが$で始まっています。環境変数が正しく展開されていない可能性があります。');
-    }
-  } else {
-    console.log('NOTE_PASSWORD存在: false');
-  }
-  console.log('=== メイン処理開始時環境変数確認完了 ===');
+  // console.log('=== メイン処理開始時環境変数確認 ===');
+  // if (process.env.NOTE_EMAIL) {
+  //   const email = process.env.NOTE_EMAIL;
+  //   console.log('NOTE_EMAIL存在: true, 長さ:', email.length, '最初の文字:', email[0], '最後の文字:', email[email.length-1]);
+  //   console.log('NOTE_EMAIL全体（マスク）:', email.substring(0, 3) + '***' + email.substring(email.length-3));
+  //   if (email.startsWith('$')) {
+  //     console.log('【警告】NOTE_EMAILが$で始まっています。環境変数が正しく展開されていない可能性があります。');
+  //   }
+  // } else {
+  //   console.log('NOTE_EMAIL存在: false');
+  // }
+  // if (process.env.NOTE_PASSWORD) {
+  //   const password = process.env.NOTE_PASSWORD;
+  //   console.log('NOTE_PASSWORD存在: true, 長さ:', password.length, '最初の文字:', password[0], '最後の文字:', password[password.length-1]);
+  //   console.log('NOTE_PASSWORD全体（マスク）:', password.substring(0, 3) + '***' + password.substring(password.length-3));
+  //   if (password.startsWith('$')) {
+  //     console.log('【警告】NOTE_PASSWORDが$で始まっています。環境変数が正しく展開されていない可能性があります。');
+  //   }
+  // } else {
+  //   console.log('NOTE_PASSWORD存在: false');
+  // }
+  // console.log('=== メイン処理開始時環境変数確認完了 ===');
   
   const options = await launchOptions();
   console.log('Puppeteerを起動します');
