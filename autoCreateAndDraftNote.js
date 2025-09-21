@@ -555,7 +555,7 @@ async function rewriteAndTagArticle(raw, API_URL, API_KEY, MODEL) {
     console.log('タグ生成が完了しました:', tags);
   } catch (e) {
     console.error('タグ生成に失敗しました。フォールバックの固定タグを使用します。理由:', e.message);
-    tags = '#資産運用 #投資 #運用 #株 #投資信託 #FIRE #PR';
+    tags = '#人間関係 #メンタル #自己肯定感 #引き寄せ #引き寄せの法則 #裏技 #PR';n
   }
 
   // タグの直前に案内文を追加（日本語コメント付き）
@@ -565,7 +565,7 @@ async function rewriteAndTagArticle(raw, API_URL, API_KEY, MODEL) {
   ].join('\n');
   
   // Amazonアソシエイトの適格販売に関する文言を追加
-  const amazonAssociateText = 'Amazon のアソシエイトとして、「まずは100円から💹投資|運用|資産形成」は適格販売により収入を得ています。';
+  const amazonAssociateText = 'Amazon のアソシエイトとして、「恋愛・人間関係カウンセラーRisa」は適格販売により収入を得ています。';
   
   const finalContent = articleContent.trim() + '\n\n' + magazinePromotion + '\n\n' + infoText + '\n\n' + amazonAssociateText + '\n\n' + tags + '\n';
   console.log('記事の加工が完了しました。アフィリエイトリンク、マガジン誘導、タグが含まれています。');
