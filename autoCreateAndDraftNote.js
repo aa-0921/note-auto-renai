@@ -19,11 +19,23 @@ if (!process.env.OPENROUTER_API_KEY) {
 const API_KEY = process.env.OPENROUTER_API_KEY;
 const API_URL = 'https://openrouter.ai/api/v1/chat/completions';
 
+// ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+// ↓から無料のAPIを探す
+// https://openrouter.ai/models?max_price=0
+// ーーーーーーーーーーーーーーーーーーーーーー
+
 // 2025/06/25 なぜか認証エラーで使えなくなった
 // const MODEL = 'meta-llama/llama-4-maverick:free';
 
 // ↓少し遅いがまあまあ文章作成能力も高そう
-const MODEL = 'deepseek/deepseek-chat-v3-0324:free';
+// const MODEL = 'deepseek/deepseek-chat-v3-0324:free';
+
+// ↓記事は作れるが、ちょっとクオリティが低いかも（ランキング2位までしか作れない）
+// export const MODEL = 'x-ai/grok-4-fast:free'
+
+// ↓記事のクオリティが良く、使える
+const MODEL = 'deepseek/deepseek-chat-v3.1:free'
+
 
 
 // const POSTS_DIR = 'posts';
@@ -514,18 +526,19 @@ async function rewriteAndTagArticle(raw, API_URL, API_KEY, MODEL) {
   const magazinePromotion = [
     '🐈　🐾　🐈‍⬛　🐾　🐈　🐾　🐈‍⬛　🐾　🐈　🐾　🐈‍⬛　🐾　🐈　🐾　🐈‍⬛　',
     '',
-    '✅「そろそろ資産運用、何か始めたい！」というあなたへ',
+    '✅「物理的に幸せになるおすすめグッズ達」',
     '',
-    '投資に興味はあるけど、「何から始めればいい？」「失敗が怖い…」そんな不安を、無料で解消できるマガジンを用意しました。',
+    '私が皆さんにおすすめしているコスパ抜群のグッズをご紹介しています！',
+    '効果テキメンなので皆さん試してみていただけると幸いです😊',
     '',
-    '【早めに不安を払拭する資産運用】',
-    '✔ まずは小さく始めたい',
-    '✔ 仕組みをシンプルに知りたい',
-    'そんな人にピッタリです。',
+    '【コスパ抜群の幸せグッズ】',
+    '✔ 効果テキメンのアイテム',
+    '✔ 実際に使って良かったもの',
+    'そんなグッズを厳選してご紹介。',
     '',
-    '安心して一歩踏み出すヒントを、無料でどうぞ。',
+    'ぜひ試してみてください！',
     '',
-    'https://note.com/investment_happy/m/m76229c09696b',
+    'https://note.com/counselor_risa/m/m72a580a7e712',
     '',
     '🐈　🐾　🐈‍⬛　🐾　🐈　🐾　🐈‍⬛　🐾　🐈　🐾　🐈‍⬛　🐾　🐈　🐾　🐈‍⬛　',
     ''
