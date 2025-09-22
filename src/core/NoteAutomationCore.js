@@ -73,6 +73,77 @@ export default class NoteAutomationCore {
   }
 
   async runAutoCreateAndDraftNote(options = {}) {
-    return await this.notePublisher.autoCreateAndDraftNote(options);
+    try {
+      this.logger.info('記事の自動生成と下書き保存を開始します');
+      
+      // 題材と切り口をランダム選択
+      const topics = this.aiGenerator.getTopics();
+      const patterns = this.aiGenerator.getPatterns();
+      const topic = topics[Math.floor(Math.random() * topics.length)];
+      const pattern = patterns[Math.floor(Math.random() * patterns.length)];
+      
+      this.logger.info('選ばれた題材:', topic);
+      this.logger.info('選ばれた切り口:', pattern);
+      
+      // AIで記事生成
+      const article = await this.aiGenerator.generateArticle(topic, pattern);
+      this.logger.info('AI生成記事全文:', article);
+      
+      if (!article || article.length < 30) {
+        throw new Error('AI記事生成に失敗、または内容が不十分です');
+      }
+      
+      // タイトル抽出
+      let originalTitle = '無題';
+      const titleMatch = article.match(/^#\s*(.+)$/m);
+      if (titleMatch && titleMatch[1].trim().length > 0) {
+        originalTitle = titleMatch[1].trim();
+      } else {
+        // 先頭行がタイトルでない場合、最初の10文字を仮タイトルに
+        originalTitle = article.split('\n').find(line => line.trim().length > 0)?.slice(0, 10) || '無題';
+      }
+      
+      // 本文から元のタイトル行（# タイトル）を除去する
+      const originalH1TitleLine = `# ${originalTitle}`;
+      const articleLines = article.split('\n');
+      this.logger.info('元のタイトル:', originalTitle);
+      this.logger.info('除去対象h1行:', JSON.stringify(originalH1TitleLine));
+      
+      const filteredArticleLines = articleLines.filter(line => line.trim() !== originalH1TitleLine);
+      const filteredArticle = filteredArticleLines.join('\n');
+      
+      // タイトルにランダム絵文字を追加
+      const title = this.aiGenerator.addRandomEmojiToTitle(originalTitle);
+      this.logger.info('最終タイトル:', title);
+      
+      // 記事の加工・統合（リライト、アフィリエイトリンク、マガジン誘導、タグ付与）
+      const processedArticle = await this.aiGenerator.processArticle(filteredArticle);
+      this.logger.info('記事の加工が完了しました');
+      
+      // note.comに下書き保存
+      const page = await this.puppeteerManager.createPage();
+      
+      // ログイン
+      await this.notePublisher.login(page, process.env.NOTE_EMAIL, process.env.NOTE_PASSWORD);
+      
+      // 新規投稿画面へ遷移
+      await this.notePublisher.goToNewPost(page);
+      
+      // 記事タイトル・本文を入力
+      await this.notePublisher.fillArticle(page, title, processedArticle);
+      
+      // 下書き保存
+      await this.notePublisher.saveDraft(page);
+      
+      // ダイアログを閉じる
+      await this.notePublisher.closeDialogs(page);
+      
+      this.logger.info('note.comへの下書き保存が完了しました');
+      this.logger.info('下書き保存した記事タイトル:', title);
+      
+    } catch (error) {
+      this.logger.error('記事の自動生成と下書き保存でエラーが発生しました:', error);
+      throw error;
+    }
   }
 }

@@ -234,4 +234,168 @@ export default class AIContentGenerator {
       '❤️', '🌸', '🛑', '㊙︎', '🟥', '🈲', '🉐', '⭕', '‼️', '🎉'
     ];
   }
+
+  // タイトルにランダム絵文字を追加する関数
+  addRandomEmojiToTitle(title) {
+    const randomEmoji = this.getTitleEmojis()[Math.floor(Math.random() * this.getTitleEmojis().length)];
+    return `${randomEmoji} ${title}`;
+  }
+
+  // アフィリエイトリンクを生成する関数
+  generateAffiliateLink() {
+    return [
+      '',
+      '💰　💎　💰　💎　💰　💎　💰　💎　💰　💎　💰　💎　💰　💎　💰',
+      'https://amzn.to/4goaSUk',
+      '👆引き寄せの法則がわかるおすすめの本です😊コスパ最強です👍',
+      '💰　💎　💰　💎　💰　💎　💰　💎　💰　💎　💰　💎　💰　💎　💰',
+      '',
+    ].join('\n');
+  }
+
+  // 記事の最初、中間、最後にアフィリエイトリンクを挿入する関数
+  insertAffiliateLinks(content) {
+    const affiliateLink = this.generateAffiliateLink();
+    
+    // 記事を段落に分割
+    const paragraphs = content.split('\n\n');
+    
+    if (paragraphs.length < 3) {
+      // 段落が少ない場合は、最初と最後に挿入
+      return paragraphs[0] + '\n\n' + affiliateLink + '\n\n' + paragraphs.slice(1).join('\n\n') + '\n\n' + affiliateLink;
+    }
+    
+    // 最初の段落の後にアフィリエイトリンクを挿入
+    const firstPart = paragraphs[0] + '\n\n' + affiliateLink;
+    
+    // 中間の段落を特定（全体の1/3から2/3の位置）
+    const middleIndex = Math.floor(paragraphs.length * 0.4);
+    const middlePart = paragraphs.slice(1, middleIndex).join('\n\n') + '\n\n' + affiliateLink + '\n\n' + paragraphs.slice(middleIndex, -1).join('\n\n');
+    
+    // 最後の段落の後にアフィリエイトリンクを挿入
+    const lastPart = paragraphs[paragraphs.length - 1] + '\n\n' + affiliateLink;
+    
+    return [firstPart, middlePart, lastPart].join('\n\n');
+  }
+
+  // マガジン誘導セクションを生成する関数
+  generateMagazinePromotion() {
+    return [
+      '🐈　🐾　🐈‍⬛　🐾　🐈　🐾　🐈‍⬛　🐾　🐈　🐾　🐈‍⬛　🐾　🐈　🐾　🐈‍⬛　',
+      '',
+      '✅「物理的に幸せになるおすすめグッズ達」',
+      '',
+      '私が皆さんにおすすめしているコスパ抜群のグッズをご紹介しています！',
+      '効果テキメンなので皆さん試してみていただけると幸いです😊',
+      '',
+      '【コスパ抜群の幸せグッズ】',
+      '✔ 効果テキメンのアイテム',
+      '✔ 実際に使って良かったもの',
+      'そんなグッズを厳選してご紹介。',
+      '',
+      'ぜひ試してみてください！',
+      '',
+      'https://note.com/counselor_risa/m/m72a580a7e712',
+      '',
+      '🐈　🐾　🐈‍⬛　🐾　🐈　🐾　🐈‍⬛　🐾　🐈　🐾　🐈‍⬛　🐾　🐈　🐾　🐈‍⬛　',
+      ''
+    ].join('\n');
+  }
+
+  // セクションごとに分割
+  splitSections(raw) {
+    const parts = raw.split(/^##+ /m); // 2個以上の#で分割
+    const firstPart = parts[0];
+    const sections = parts.slice(1).map((section) => {
+      const lines = section.split('\n');
+      const heading = lines[0].trim();
+      let body = '';
+      for (let i = 1; i < lines.length; i++) {
+        if (/^##+ /.test(lines[i]) || lines[i].startsWith('---')) break;
+        body += lines[i].trim();
+      }
+      return { heading, body, raw: section };
+    });
+    return { firstPart, sections };
+  }
+
+  // 記事の加工・統合機能（リライト、アフィリエイトリンク、マガジン誘導、タグ付与）
+  async processArticle(raw) {
+    let { firstPart, sections } = this.splitSections(raw);
+    let updated = false;
+    
+    // 200字未満のセクションをリライト
+    for (let i = 0; i < sections.length; i++) {
+      const { heading, body, raw: sectionRaw } = sections[i];
+      if (body.length < 200) {
+        this.logger.info(`「${heading}」の本文が${body.length}文字と少なめです。AIでリライトします...`);
+        try {
+          const newBody = await this.rewriteSection(heading, body);
+          const newBodyWithExtraLine = newBody + '\n';
+          const lines = sectionRaw.split('\n');
+          lines.splice(1, lines.length - 1, newBodyWithExtraLine);
+          sections[i].raw = lines.join('\n');
+          updated = true;
+          this.logger.info(`「${heading}」のリライトが完了しました`);
+        } catch (e) {
+          this.logger.error(`「${heading}」のリライトに失敗しました:`, e.message);
+          this.logger.info(`「${heading}」は元の内容のまま処理を継続します`);
+          // リライト失敗時は元の内容を保持
+        }
+        
+        // APIリクエストの間に適切な待機時間を設定（レート制限回避）
+        if (i < sections.length - 1) {
+          this.logger.info('次のセクション処理前に2秒待機します...');
+          await new Promise(resolve => setTimeout(resolve, 2000));
+        }
+      }
+    }
+    
+    // 記事の最初、中間、最後にアフィリエイトリンクを挿入
+    this.logger.info('アフィリエイトリンクを3箇所に挿入します...');
+    
+    // firstPartの末尾に必ず改行を追加
+    const safeFirstPart = firstPart.endsWith('\n') ? firstPart : firstPart + '\n';
+    
+    // セクションを結合して記事全体を作成
+    let articleContent = safeFirstPart + '\n\n' + sections.map(s => '## ' + s.raw).join('\n');
+    
+    // アフィリエイトリンクを3箇所に挿入
+    articleContent = this.insertAffiliateLinks(articleContent);
+    
+    this.logger.info('アフィリエイトリンク挿入完了');
+    this.logger.info('articleContentの長さ:', articleContent.length);
+    
+    // マガジンへの誘導セクション（リライト処理の成功・失敗に関係なく必ず挿入）
+    this.logger.info('マガジン誘導セクションを挿入します...');
+    
+    const magazinePromotion = this.generateMagazinePromotion();
+    
+    // 既存タグ行があれば除去
+    articleContent = articleContent.replace(/\n# .+$/gm, '');
+    
+    // タグ生成（失敗時のフォールバック付き）
+    let tags = '';
+    try {
+      this.logger.info('タグ生成を開始します...');
+      tags = await this.generateTags(articleContent);
+      this.logger.info('タグ生成が完了しました:', tags);
+    } catch (e) {
+      this.logger.error('タグ生成に失敗しました。フォールバックの固定タグを使用します。理由:', e.message);
+      tags = '#人間関係 #メンタル #自己肯定感 #引き寄せ #引き寄せの法則 #裏技 #PR';
+    }
+
+    // タグの直前に案内文を追加（日本語コメント付き）
+    const infoText = [
+      '最後までお読みいただきありがとうございます！💬',
+      '継続して、お得な情報を発信していきますので、フォローお願いします！',
+    ].join('\n');
+    
+    // Amazonアソシエイトの適格販売に関する文言を追加
+    const amazonAssociateText = 'Amazon のアソシエイトとして、「恋愛・人間関係カウンセラーRisa」は適格販売により収入を得ています。';
+    
+    const finalContent = articleContent.trim() + '\n\n' + magazinePromotion + '\n\n' + infoText + '\n\n' + amazonAssociateText + '\n\n' + tags + '\n';
+    this.logger.info('記事の加工が完了しました。アフィリエイトリンク、マガジン誘導、タグが含まれています。');
+    return finalContent;
+  }
 }
