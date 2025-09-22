@@ -16,39 +16,23 @@ export default class AIContentGenerator {
   }
 
   // 記事生成
-  async generateArticle(topic, pattern) {
+  async generateArticle(topic, pattern, overrides = {}) {
+    if (!Array.isArray(overrides.articleConditionsLines) || overrides.articleConditionsLines.length === 0) {
+      throw new Error('articleConditionsLines が未設定です。各リポジトリ側で記事生成の条件を配列で指定してください。');
+    }
     const promptLines = [
-      'あなたは日本語のnote記事編集者です。以下の題材と切り口でnote記事を1本作成してください。',
+      ...overrides.articleConditionsLines,
       '',
       `題材: ${topic}`,
-      `切り口: ${pattern}`,
-      '',
-      '【条件】',
-      '- タイトル、本文、ハッシュタグ（#から始まるもの）を含めてください。',
-      '- タイトルは1行目に「# [実際のタイトル]」として記載してください。',
-      '- 「# タイトル」という文字列ではなく、実際の記事タイトルを入れてください。',
-      '- 本文にはタイトルを含めないでください。',
-      '- 本文は見出しや箇条書きも交えて1000文字程度で丁寧にまとめてください。',
-      '- ハッシュタグは記事末尾に「#〇〇 #〇〇 ...」の形式でまとめてください。',
-      '- あなたはプロのカウンセラーで、プロの編集者です。',
-      '- 読みやすさを重視してください',
-      '- もし題材・切り口を鑑みて可能であればランキング形式にしてください',
-      '- 改行をなるべく多めに入れて、読みやすくしてください。',
-      '- 文章作成時に多めに、たくさん絵文字を使用してください。各行に1つくらいは入れてください。',
-      '- すべて日本語で出力してください。',
-      '- 切り口に沿った内容になるようにしてください。',
-      '- noteの正しいマークダウン記法のみを使ってください。',
-      '- 箇条書きはマークダウンではなく、「・ 」で表現してください。',
-      '- 見出しはh2（## 見出し）・h3（### 見出し）のみ。',
-      '- 見出しに「**」等は使わないようにしてください。',
-      '- 番号付きリストは使わないようにしてください。',
-      '- h1（# タイトル）はタイトル行のみで本文中では使わないでください。',
-      '- その他のマークダウンやHTMLタグは使わないでください。',
+      `切り口: ${pattern}`
     ];
     const prompt = promptLines.join('\n');
 
+    if (typeof overrides.systemMessage !== 'string' || overrides.systemMessage.trim().length === 0) {
+      throw new Error('systemMessage が未設定です。各リポジトリ側で system の指示文を指定してください。');
+    }
     const messages = [
-      { role: 'system', content: 'あなたは日本語のnote記事編集者です。' },
+      { role: 'system', content: overrides.systemMessage },
       { role: 'user', content: prompt }
     ];
 
@@ -56,35 +40,22 @@ export default class AIContentGenerator {
   }
 
   // セクションリライト
-  async rewriteSection(heading, body) {
+  async rewriteSection(heading, body, overrides = {}) {
+    if (!Array.isArray(overrides.rewriteConditionsLines) || overrides.rewriteConditionsLines.length === 0) {
+      throw new Error('rewriteConditionsLines が未設定です。各リポジトリ側でリライト条件を配列で指定してください。');
+    }
     const prompt = [
-      `あなたは女性の心理カウンセラーです。`,
-      `以下のnote記事の「${heading}」という見出しの本文が${body.length}文字しかありません。`,
-      `200文字以上になるように、実体験や具体例、アドバイスを交えて厚くリライト・追記してください。`,
-      ``,
-      `【注意】`,
-      `- タイトルや見出しは出力せず、本文のみを返してください。`,
-      `- 「追加した要素」や「文字数」などのメタ情報は一切出力しないでください。`,
-      `- 「CRIPTION:」「】」などの記号や不要な文字列は一切出力しないでください。`,
-      `- 文章は話し言葉やカジュアルな表現を避け、できるだけ丁寧な敬語でまとめてください。`,
-      `- です。ます。で統一してください。`,
-      '- あなたはプロのカウンセラーで、プロの編集者です。',
-      '- 読みやすさを重視してください',
-      '- 改行をなるべく多めに入れて、読みやすくしてください。',
-      '- 文章作成時に多めに、たくさん絵文字を使用してください。各行に1つくらいは入れてください。',
-      '- すべて日本語で出力してください。',
-      '- 元々の文章に沿った内容になるようにしてください。',
-      '- noteの正しいマークダウン記法のみを使ってください。',
-      '- 箇条書きはマークダウンではなく、「・ 」で表現してください。',
-      '- 番号付きリストは使わないようにしてください。',
-      `- 文章のみを返してください。`,
-      `- 文章は日本語で返してください。acency等の英語が混じらないようにしてください。`,
-      ``,
+      ...overrides.rewriteConditionsLines,
+      '',
+      `見出し: ${heading}`,
       `元の本文: ${body}`
     ].join('\n');
 
+    if (typeof overrides.systemMessage !== 'string' || overrides.systemMessage.trim().length === 0) {
+      throw new Error('systemMessage が未設定です。各リポジトリ側で system の指示文を指定してください。');
+    }
     const messages = [
-      { role: 'system', content: 'あなたは日本語のnote記事編集者です。' },
+      { role: 'system', content: overrides.systemMessage },
       { role: 'user', content: prompt }
     ];
 
@@ -92,11 +63,17 @@ export default class AIContentGenerator {
   }
 
   // タグ生成
-  async generateTags(content) {
-    const prompt = `あなたは日本語のnote記事編集者です。以下の記事内容を読み、記事の内容に最も関連するハッシュタグを3～5個、日本語で生成してください。必ず「#引き寄せ #引き寄せの法則 #裏技 #PR」を含め、他にも内容に合うタグがあれば追加してください。タグは半角スペース区切りで、本文や説明は一切不要です。\n\n記事内容:\n${content}`;
+  async generateTags(content, overrides = {}) {
+    if (typeof overrides.tagsInstruction !== 'string' || overrides.tagsInstruction.trim().length === 0) {
+      throw new Error('tagsInstruction が未設定です。各リポジトリ側でタグ生成の指示文を指定してください。');
+    }
+    const prompt = `${overrides.tagsInstruction}\n\n記事内容:\n${content}`;
     
+    if (typeof overrides.systemMessage !== 'string' || overrides.systemMessage.trim().length === 0) {
+      throw new Error('systemMessage が未設定です。各リポジトリ側で system の指示文を指定してください。');
+    }
     const messages = [
-      { role: 'system', content: 'あなたは日本語のnote記事編集者です。' },
+      { role: 'system', content: overrides.systemMessage },
       { role: 'user', content: prompt }
     ];
 
@@ -107,13 +84,13 @@ export default class AIContentGenerator {
   async callAI(messages, maxTokens = this.maxTokens, temperature = this.temperature) {
     let tryCount = 0;
     let lastError = null;
-    
+
     while (tryCount < 3) {
       tryCount++;
-      
+
       try {
         this.logger.info(`AI API呼び出し（${tryCount}回目）`);
-        
+
         const response = await axios.post(this.apiUrl, {
           model: this.model,
           messages,
@@ -129,12 +106,12 @@ export default class AIContentGenerator {
         if (!response?.data?.choices?.[0]?.message?.content) {
           throw new Error('AI APIレスポンスが不正です');
         }
-        
+
         return response.data.choices[0].message.content.trim();
       } catch (error) {
         lastError = error;
         this.logger.error(`AI API呼び出しエラー（${tryCount}回目）:`, error.message);
-        
+
         if (tryCount < 3) {
           const backoffMs = 1000 * tryCount;
           this.logger.info(`${backoffMs}ms 待機してリトライします...`);
@@ -142,120 +119,31 @@ export default class AIContentGenerator {
         }
       }
     }
-    
+
     throw new Error(`AI API呼び出しが3回連続で失敗しました: ${lastError?.message}`);
   }
 
-  // 題材リスト
-  getTopics() {
-    return [
-      '腸活',
-      '人間関係',
-      '職場の人間関係',
-      '恋愛',
-      'メンタル',
-      '引き寄せの法則',
-      '自己肯定感',
-      '習慣化',
-      'マインドフルネス',
-      'HSP(繊細さん)',
-      '依存体質の克服法',
-      '感情コントロール',
-      'SNS疲れ',
-      '毒親との関係性',
-      'イライラの原因と対処',
-      '嫉妬心の乗り越え方',
-      '自分軸と他人軸',
-      '人に流されない方法',
-      '一人の時間の過ごし方',
-      'わかってほしい病',
-      '無気力・無関心モードのとき',
-      '承認欲求の扱い方',
-      '怒りの手放し方',
-      '感謝できない日の処方箋',
-      '親密感への恐れ',
-      '曖昧な関係に悩んでる人へ'
-    ];
-  }
-
-  // 切り口リスト
-  getPatterns() {
-    return [
-      '一歩踏み込んだ理解',
-      '具体的な活用方法',
-      '楽にする方法',
-      'ランキング',
-      'ランキング-トップ5',
-      'ランキング-トップ5',
-      'ランキング-トップ5',
-      'まつわるQ&Aまとめ',
-      'やってはいけないNG行動',
-      '初心者が最初の1週間でやることリスト',
-      '専門家に聞いた極意',
-      '正しい理解',
-      '続けるためのモチベーション維持法',
-      'ありがちな勘違いと正しいやり方',
-      '成功例・失敗例から学ぶ',
-      '絶望ランキング',
-      'メンタル崩壊ランキング',
-      'やってよかったベスト3',
-      '今すぐやめるべき3つの行動',
-      '私がどん底から回復するまでにやった5つのこと',
-      '読むだけでラクになる話',
-      '一番ラクだった方法',
-      '科学的に正しい○○の習慣',
-      '○○タイプ別の対処法',
-      '朝5分でできる○○',
-      '「実は逆効果」な○○',
-      '見落としがちな○○の落とし穴',
-      '○○診断(自己診断チェックリスト)',
-      'コミュニケーション苦手な人のための○○講座',
-      '「知らなきゃ損!」な裏テク',
-      'やって気づいた○○の本当の意味',
-      '5年後に差がつく○○',
-      'なぜかうまくいく人がやってる習慣',
-      '「○○ができない」あなたへ',
-      '意識低い系でもできる○○',
-      '3日坊主でも続いた○○のコツ',
-      '「向いてないかも」と思った時に読む話',
-      'モヤモヤを言語化してみた',
-      '初心者が陥りがちな○○の落とし穴',
-      '親には聞けない○○の話',
-      '○○をやめたら人生が軽くなった',
-      '忙しくてもできる○○',
-      'あなたのための「逃げ方」リスト',
-      '○○をやる前に知っておきたい3つのこと'
-    ];
-  }
-
-  // タイトル用絵文字リスト
-  getTitleEmojis() {
-    return [
-      '❤️', '🌸', '🛑', '㊙︎', '🟥', '🈲', '🉐', '⭕', '‼️', '🎉'
-    ];
-  }
 
   // タイトルにランダム絵文字を追加する関数
-  addRandomEmojiToTitle(title) {
-    const randomEmoji = this.getTitleEmojis()[Math.floor(Math.random() * this.getTitleEmojis().length)];
+  addRandomEmojiToTitle(title, overrides = {}) {
+    if (!Array.isArray(overrides.titleEmojis) || overrides.titleEmojis.length === 0) {
+      throw new Error('titleEmojis が未設定です。各リポジトリ側でタイトル用絵文字の配列を指定してください。');
+    }
+    const randomEmoji = overrides.titleEmojis[Math.floor(Math.random() * overrides.titleEmojis.length)];
     return `${randomEmoji} ${title}`;
   }
 
   // アフィリエイトリンクを生成する関数
-  generateAffiliateLink() {
-    return [
-      '',
-      '💰　💎　💰　💎　💰　💎　💰　💎　💰　💎　💰　💎　💰　💎　💰',
-      'https://amzn.to/4goaSUk',
-      '👆引き寄せの法則がわかるおすすめの本です😊コスパ最強です👍',
-      '💰　💎　💰　💎　💰　💎　💰　💎　💰　💎　💰　💎　💰　💎　💰',
-      '',
-    ].join('\n');
+  generateAffiliateLink(overrides = {}) {
+    if (typeof overrides.affiliateLink !== 'string' || overrides.affiliateLink.length === 0) {
+      throw new Error('affiliateLink が未設定です。各リポジトリ側でアフィリエイト文言を指定してください。');
+    }
+    return overrides.affiliateLink;
   }
 
   // 記事の最初、中間、最後にアフィリエイトリンクを挿入する関数
-  insertAffiliateLinks(content) {
-    const affiliateLink = this.generateAffiliateLink();
+  insertAffiliateLinks(content, overrides = {}) {
+    const affiliateLink = this.generateAffiliateLink(overrides);
     
     // 記事を段落に分割
     const paragraphs = content.split('\n\n');
@@ -279,27 +167,11 @@ export default class AIContentGenerator {
   }
 
   // マガジン誘導セクションを生成する関数
-  generateMagazinePromotion() {
-    return [
-      '🐈　🐾　🐈‍⬛　🐾　🐈　🐾　🐈‍⬛　🐾　🐈　🐾　🐈‍⬛　🐾　🐈　🐾　🐈‍⬛　',
-      '',
-      '✅「物理的に幸せになるおすすめグッズ達」',
-      '',
-      '私が皆さんにおすすめしているコスパ抜群のグッズをご紹介しています！',
-      '効果テキメンなので皆さん試してみていただけると幸いです😊',
-      '',
-      '【コスパ抜群の幸せグッズ】',
-      '✔ 効果テキメンのアイテム',
-      '✔ 実際に使って良かったもの',
-      'そんなグッズを厳選してご紹介。',
-      '',
-      'ぜひ試してみてください！',
-      '',
-      'https://note.com/counselor_risa/m/m72a580a7e712',
-      '',
-      '🐈　🐾　🐈‍⬛　🐾　🐈　🐾　🐈‍⬛　🐾　🐈　🐾　🐈‍⬛　🐾　🐈　🐾　🐈‍⬛　',
-      ''
-    ].join('\n');
+  generateMagazinePromotion(overrides = {}) {
+    if (typeof overrides.magazinePromotion !== 'string' || overrides.magazinePromotion.length === 0) {
+      throw new Error('magazinePromotion が未設定です。各リポジトリ側でマガジン誘導文を指定してください。');
+    }
+    return overrides.magazinePromotion;
   }
 
   // セクションごとに分割
@@ -320,7 +192,7 @@ export default class AIContentGenerator {
   }
 
   // 記事の加工・統合機能（リライト、アフィリエイトリンク、マガジン誘導、タグ付与）
-  async processArticle(raw) {
+  async processArticle(raw, overrides = {}) {
     let { firstPart, sections } = this.splitSections(raw);
     let updated = false;
     
@@ -330,7 +202,7 @@ export default class AIContentGenerator {
       if (body.length < 200) {
         this.logger.info(`「${heading}」の本文が${body.length}文字と少なめです。AIでリライトします...`);
         try {
-          const newBody = await this.rewriteSection(heading, body);
+          const newBody = await this.rewriteSection(heading, body, overrides);
           const newBodyWithExtraLine = newBody + '\n';
           const lines = sectionRaw.split('\n');
           lines.splice(1, lines.length - 1, newBodyWithExtraLine);
@@ -361,7 +233,7 @@ export default class AIContentGenerator {
     let articleContent = safeFirstPart + '\n\n' + sections.map(s => '## ' + s.raw).join('\n');
     
     // アフィリエイトリンクを3箇所に挿入
-    articleContent = this.insertAffiliateLinks(articleContent);
+    articleContent = this.insertAffiliateLinks(articleContent, overrides);
     
     this.logger.info('アフィリエイトリンク挿入完了');
     this.logger.info('articleContentの長さ:', articleContent.length);
@@ -369,21 +241,15 @@ export default class AIContentGenerator {
     // マガジンへの誘導セクション（リライト処理の成功・失敗に関係なく必ず挿入）
     this.logger.info('マガジン誘導セクションを挿入します...');
     
-    const magazinePromotion = this.generateMagazinePromotion();
+    const magazinePromotion = this.generateMagazinePromotion(overrides);
     
     // 既存タグ行があれば除去
     articleContent = articleContent.replace(/\n# .+$/gm, '');
     
-    // タグ生成（失敗時のフォールバック付き）
-    let tags = '';
-    try {
-      this.logger.info('タグ生成を開始します...');
-      tags = await this.generateTags(articleContent);
-      this.logger.info('タグ生成が完了しました:', tags);
-    } catch (e) {
-      this.logger.error('タグ生成に失敗しました。フォールバックの固定タグを使用します。理由:', e.message);
-      tags = '#人間関係 #メンタル #自己肯定感 #引き寄せ #引き寄せの法則 #裏技 #PR';
-    }
+    // タグ生成（各リポジトリ必須。失敗時はエラー）
+    this.logger.info('タグ生成を開始します...');
+    const tags = await this.generateTags(articleContent, overrides);
+    this.logger.info('タグ生成が完了しました:', tags);
 
     // タグの直前に案内文を追加（日本語コメント付き）
     const infoText = [
@@ -391,8 +257,11 @@ export default class AIContentGenerator {
       '継続して、お得な情報を発信していきますので、フォローお願いします！',
     ].join('\n');
     
-    // Amazonアソシエイトの適格販売に関する文言を追加
-    const amazonAssociateText = 'Amazon のアソシエイトとして、「恋愛・人間関係カウンセラーRisa」は適格販売により収入を得ています。';
+    // Amazonアソシエイトの適格販売に関する文言（各リポジトリ必須）
+    if (typeof overrides.amazonAssociateText !== 'string' || overrides.amazonAssociateText.trim().length === 0) {
+      throw new Error('amazonAssociateText が未設定です。各リポジトリ側で文言を指定してください。');
+    }
+    const amazonAssociateText = overrides.amazonAssociateText;
     
     const finalContent = articleContent.trim() + '\n\n' + magazinePromotion + '\n\n' + infoText + '\n\n' + amazonAssociateText + '\n\n' + tags + '\n';
     this.logger.info('記事の加工が完了しました。アフィリエイトリンク、マガジン誘導、タグが含まれています。');

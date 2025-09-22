@@ -76,17 +76,23 @@ export default class NoteAutomationCore {
     try {
       this.logger.info('記事の自動生成と下書き保存を開始します');
       
-      // 題材と切り口をランダム選択
-      const topics = this.aiGenerator.getTopics();
-      const patterns = this.aiGenerator.getPatterns();
+      // 題材と切り口（各リポジトリ必須）
+      if (!Array.isArray(options.topics) || options.topics.length === 0) {
+        throw new Error('topics が未設定です。各リポジトリ側で題材配列を指定してください。');
+      }
+      if (!Array.isArray(options.patterns) || options.patterns.length === 0) {
+        throw new Error('patterns が未設定です。各リポジトリ側で切り口配列を指定してください。');
+      }
+      const topics = options.topics;
+      const patterns = options.patterns;
       const topic = topics[Math.floor(Math.random() * topics.length)];
       const pattern = patterns[Math.floor(Math.random() * patterns.length)];
       
       this.logger.info('選ばれた題材:', topic);
       this.logger.info('選ばれた切り口:', pattern);
       
-      // AIで記事生成
-      const article = await this.aiGenerator.generateArticle(topic, pattern);
+      // AIで記事生成（各リポジトリ側オーバーライド対応）
+      const article = await this.aiGenerator.generateArticle(topic, pattern, options);
       this.logger.info('AI生成記事全文:', article);
       
       if (!article || article.length < 30) {
@@ -112,12 +118,12 @@ export default class NoteAutomationCore {
       const filteredArticleLines = articleLines.filter(line => line.trim() !== originalH1TitleLine);
       const filteredArticle = filteredArticleLines.join('\n');
       
-      // タイトルにランダム絵文字を追加
-      const title = this.aiGenerator.addRandomEmojiToTitle(originalTitle);
+      // タイトルにランダム絵文字を追加（オーバーライド対応）
+      const title = this.aiGenerator.addRandomEmojiToTitle(originalTitle, options);
       this.logger.info('最終タイトル:', title);
       
-      // 記事の加工・統合（リライト、アフィリエイトリンク、マガジン誘導、タグ付与）
-      const processedArticle = await this.aiGenerator.processArticle(filteredArticle);
+      // 記事の加工・統合（オーバーライド対応：リライト、アフィリエイトリンク、マガジン誘導、タグ生成）
+      const processedArticle = await this.aiGenerator.processArticle(filteredArticle, options);
       this.logger.info('記事の加工が完了しました');
       
       // note.comに下書き保存

@@ -17,36 +17,7 @@ export default class NotePublisher {
     this.logger = new Logger();
   }
 
-  // 設定から検索ワード配列を取得（未設定時は既定リストを使用）
-  getSearchWords() {
-    const configured = this?.config?.search?.words;
-    if (Array.isArray(configured) && configured.length > 0) {
-      return configured;
-    }
-    return [
-      '日記', 'フォロバ', 'メンタル', '人間関係', 'ママ友', '職場', '学校',
-      '引き寄せ', 'マインド', 'はじめて', '初めて', '恋愛', '婚活', '結婚',
-      '出会い', 'モテ', '自分磨き', '心理学', 'ストレス', '不安', '悩み',
-      '相談', '腸活', '健康', '美容', 'ダイエット', '自己肯定感', '自己啓発',
-      '成長', '習慣', '継続', 'モチベーション', '目標', '夢', '願望',
-      '実現', '成功', '幸せ', '癒し', 'リラックス', '疲れ', '睡眠', '休息',
-      '家族', '友達', '同僚', '上司', '部下', '先輩', '後輩', '子育て',
-      '育児', '教育', '学習', '勉強', '仕事', '転職', '副業', '起業',
-      'キャリア', 'スキル', '資格', '趣味', '読書', '映画', '音楽', '旅行',
-      '料理', '運動', 'ヨガ', '散歩', 'カフェ', 'グルメ', 'ファッション',
-      'コスメ', 'ライフスタイル', '暮らし', '節約', '貯金', '投資', 'お金',
-      '時間管理', '整理整頓', '断捨離', 'ミニマリスト', 'SNS', '別れ',
-      '失恋', '離婚', '復縁', '不倫', '浮気', '嫉妬', '束縛', '依存',
-      'マインドフルネス', 'ヒーリング', 'セラピー', 'カウンセリング',
-      'コーチング', 'コンサル', 'アドバイス', 'サポート', 'ヘルプ', 'SOS',
-      '助けて', '辛い', '苦しい', '痛い', '泣きたい', '叫びたい', '逃げたい',
-      '消えたい', '死にたい', '生きたい', '頑張りたい', '変わりたい',
-      '成長したい', '幸せになりたい', '愛されたい', '認められたい',
-      '理解されたい', '支えられたい', '守られたい', '癒されたい', '休みたい',
-      '眠りたい', '忘れたい', '許したい', '許されたい', '謝りたい',
-      '感謝したい', 'ありがとう', 'ごめんなさい', '大丈夫'
-    ];
-  }
+  // getSearchWords は廃止（各リポジトリ側で必須指定）
 
   // ログイン処理（既存コードから移植）
   async login(page, email, password) {
@@ -290,10 +261,14 @@ export default class NotePublisher {
     try {
       await this.login(page, process.env.NOTE_EMAIL, process.env.NOTE_PASSWORD);
       
-      // 検索ワードリスト（options.searchWords が優先）
+      // 検索ワードリスト（各リポジトリで必須指定）
       const searchWords = (Array.isArray(options.searchWords) && options.searchWords.length > 0)
         ? options.searchWords
-        : this.getSearchWords();
+        : null;
+
+      if (!Array.isArray(searchWords) || searchWords.length === 0) {
+        throw new Error('検索ワードが未設定のため処理を続行できません。アカウント側で options.searchWords を指定してください。');
+      }
 
       // 検索ワード選択ロジック
       const runsPerDay = 8;
@@ -588,10 +563,14 @@ export default class NotePublisher {
     try {
       await this.login(page, process.env.NOTE_EMAIL, process.env.NOTE_PASSWORD);
       
-      // 検索ワードリスト（options.searchWords が優先。なければ既定）
+      // 検索ワードリスト（各リポジトリで必須指定）
       const searchWords = (Array.isArray(options.searchWords) && options.searchWords.length > 0)
         ? options.searchWords
-        : this.getSearchWords();
+        : null;
+
+      if (!Array.isArray(searchWords) || searchWords.length === 0) {
+        throw new Error('検索ワードが未設定のため処理を続行できません。アカウント側で options.searchWords を指定してください。');
+      }
 
       // 検索ワード選択ロジック
       const runsPerDay = 8;
