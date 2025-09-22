@@ -11,6 +11,8 @@ export { default as NotePublisher } from './core/NotePublisher.js';
 export { default as ConfigManager } from './utils/ConfigManager.js';
 export { default as Logger } from './utils/Logger.js';
 export { default as UserAgentManager } from './utils/UserAgentManager.js';
+export { default as runWithCore } from './utils/runWithCore.js';
+export { runWithCore as bootstrapWithCore } from './utils/runWithCore.js';
 
 // 設定のエクスポート
 export { default as DefaultConfigs } from './config/DefaultConfigs.js';
