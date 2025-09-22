@@ -34,7 +34,7 @@ export default class NotePublisher {
     // メールアドレス入力
     const emailField = await page.$('#email');
     if (emailField) {
-      await page.type('#email', email);
+      await emailField.type(email);
       this.logger.info('メールアドレス入力完了');
     } else {
       throw new Error('メールアドレス入力フィールドが見つかりません');
@@ -45,7 +45,7 @@ export default class NotePublisher {
     // パスワード入力
     const passwordField = await page.$('#password');
     if (passwordField) {
-      await page.type('#password', password);
+      await passwordField.type(password);
       this.logger.info('パスワード入力完了');
     } else {
       throw new Error('パスワード入力フィールドが見つかりません');
