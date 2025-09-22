@@ -1,0 +1,24 @@
+# configs/defaults/schedule.yaml
+# デフォルトのスケジュール設定
+
+scripts:
+  likeUnlikedNotes:
+    frequency: "daily"
+    time_offset: 0
+    max_likes: 24
+  autoPublishNotes:
+    frequency: "weekdays"
+    time_offset: 5
+    post_limit: 1
+  followFromArticles:
+    frequency: "weekly"
+    time_offset: 10
+    max_follows: 15
+  likeNotesByUrl:
+    frequency: "daily"
+    time_offset: 15
+    max_likes: 50
+    urls:
+      - "https://note.com/counselor_risa"
+      - "https://note.com/investment_happy"
+      - "https://note.com/enginner_skill"
