@@ -19,7 +19,6 @@ export { default as DefaultConfigs } from './config/DefaultConfigs.js';
 export {
   login,
   goToNewPost,
-  dragAndDropToAddButton,
   fillArticle,
   saveDraft,
   closeDialogs
@@ -29,3 +28,6 @@ export {
   getRandomUserAgent,
   getUserAgentByType
 } from './utils/UserAgentManager.js';
+
+// デフォルトエクスポート（メインクラス）
+export { default } from './core/NoteAutomationCore.js';

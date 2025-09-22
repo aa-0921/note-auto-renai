@@ -10,7 +10,8 @@
   "scripts": {
     "test": "node --test",
     "build": "echo 'No build step required for ES modules'",
-    "lint": "echo 'Linting not configured yet'"
+    "lint": "echo 'Linting not configured yet'",
+    "prepublishOnly": "echo 'Preparing to publish...'"
   },
   "keywords": [
     "note",
@@ -39,5 +40,11 @@
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
-  }
+  },
+  "files": [
+    "src/",
+    "configs/",
+    "README.md",
+    "package.json"
+  ]
 }
