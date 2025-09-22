@@ -5,9 +5,10 @@
 // github actions 使用時間累積確認ページ
 // https://github.com/settings/billing/usage?period=3&group=1&customer=5978784
 
-require('dotenv').config();
-const puppeteer = require('puppeteer');
-const { login } = require('../noteAutoDraftAndSheetUpdate');
+import dotenv from 'dotenv';
+dotenv.config();
+import puppeteer from 'puppeteer';
+import { login } from '../noteAutoDraftAndSheetUpdate.js';
 
 // logTime関数を必ず先頭で定義
 function logTime(label) {

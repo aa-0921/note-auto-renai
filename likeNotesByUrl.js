@@ -1,6 +1,7 @@
-require('dotenv').config();
-const puppeteer = require('puppeteer');
-const { getRandomUserAgent } = require('./userAgents');
+import dotenv from 'dotenv';
+dotenv.config();
+import puppeteer from 'puppeteer';
+import { getRandomUserAgent } from './userAgents.js';
 
 (async () => {
   // コマンドライン引数を解析

@@ -1,6 +1,7 @@
-require('dotenv').config();
-const puppeteer = require('puppeteer');
-const { login } = require('./noteAutoDraftAndSheetUpdate');
+import dotenv from 'dotenv';
+dotenv.config();
+import puppeteer from 'puppeteer';
+import { login } from './noteAutoDraftAndSheetUpdate.js';
 
 (async () => {
   // 実行引数からheadlessを決定（--bg があればheadless、それ以外は可視）

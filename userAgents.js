@@ -86,7 +86,7 @@ function getUserAgentByType(type) {
   return filteredAgents[randomIndex];
 }
 
-module.exports = {
+export {
   getRandomUserAgent,
   getUserAgentByType,
   userAgents

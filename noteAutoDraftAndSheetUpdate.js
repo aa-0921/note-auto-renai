@@ -2,7 +2,8 @@
 
 // Lambda本番用 + ローカルテスト両対応のnote自動投稿スクリプト
 const isLambda = !!process.env.AWS_LAMBDA_FUNCTION_NAME;
-require('dotenv').config();
+import dotenv from 'dotenv';
+dotenv.config();
 
 // 必須環境変数のチェック
 if (!process.env.NOTE_EMAIL || !process.env.NOTE_PASSWORD) {
@@ -10,35 +11,46 @@ if (!process.env.NOTE_EMAIL || !process.env.NOTE_PASSWORD) {
   process.exit(1);
 }
 
-let puppeteer, launchOptions;
-
-if (isLambda) {
-  // Lambda本番用
-  puppeteer = require('puppeteer-core');
-  const chromium = require('chrome-aws-lambda');
-  launchOptions = async () => ({
-    args: chromium.args,
-    defaultViewport: chromium.defaultViewport,
-    executablePath: await chromium.executablePath,
-    headless: chromium.headless,
-  });
-} else {
-  // ローカルテスト用
-  puppeteer = require('puppeteer');
-  launchOptions = async () => ({
-    headless: false,
-    executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
-    args: [
-      '--no-sandbox',
-      '--disable-setuid-sandbox',
-      '--disable-gpu',
-      '--disable-dev-shm-usage'
-    ]
-  });
+// ESモジュール用の動的import関数
+async function getPuppeteerConfig() {
+  if (isLambda) {
+    // Lambda本番用
+    const puppeteerCore = await import('puppeteer-core');
+    const chromium = await import('chrome-aws-lambda');
+    return {
+      puppeteer: puppeteerCore.default,
+      launchOptions: async () => ({
+        args: chromium.default.args,
+        defaultViewport: chromium.default.defaultViewport,
+        executablePath: await chromium.default.executablePath,
+        headless: chromium.default.headless,
+      })
+    };
+  } else {
+    // ローカルテスト用
+    const puppeteerModule = await import('puppeteer');
+    return {
+      puppeteer: puppeteerModule.default,
+      launchOptions: async () => ({
+        headless: false,
+        executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+        args: [
+          '--no-sandbox',
+          '--disable-setuid-sandbox',
+          '--disable-gpu',
+          '--disable-dev-shm-usage'
+        ]
+      })
+    };
+  }
 }
 
-const fs = require('fs');
-const path = require('path');
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+// ESモジュール用の__dirnameと__filenameの代替
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // 記事データ取得
 function getArticleData(articlePath) {
@@ -190,7 +202,7 @@ async function dragAndDropToAddButton(page) {
     console.error('ドラッグ＆ドロップ画像アップロード中にエラー:', e);
   }
 }
-exports.dragAndDropToAddButton = dragAndDropToAddButton;
+export { dragAndDropToAddButton };
 
 // ログイン処理
 async function login(page, email, password) {
@@ -521,7 +533,7 @@ async function login(page, email, password) {
   // ポップアップの有無にかかわらず2秒待機してから次の処理へ
   await new Promise(resolve => setTimeout(resolve, 2000));
 }
-exports.login = login;
+export { login };
 
 // 投稿画面遷移
 async function goToNewPost(page) {
@@ -618,7 +630,7 @@ async function goToNewPost(page) {
   await page.waitForNavigation();
   console.log('新規投稿画面に遷移しました');
 }
-exports.goToNewPost = goToNewPost;
+export { goToNewPost };
 
 // 記事入力
 async function fillArticle(page, title, body) {
@@ -647,7 +659,7 @@ async function fillArticle(page, title, body) {
     throw new Error('本文入力欄が見つかりませんでした');
   }
 }
-exports.fillArticle = fillArticle;
+export { fillArticle };
 
 // 下書き保存
 async function saveDraft(page) {
@@ -668,7 +680,7 @@ async function saveDraft(page) {
     throw new Error('「下書き保存」ボタンが見つかりませんでした');
   }
 }
-exports.saveDraft = saveDraft;
+export { saveDraft };
 
 // 閉じる処理
 async function closeDialogs(page) {
@@ -710,7 +722,7 @@ async function closeDialogs(page) {
   }
   await new Promise(resolve => setTimeout(resolve, 500));
 }
-exports.closeDialogs = closeDialogs;
+export { closeDialogs };
 
 // 投稿一覧管理表.mdをパースし、下書き保存日が空欄の行のファイル名リストを返す
 function parseUnsubmittedArticles(tablePath) {
@@ -768,6 +780,9 @@ function updateDraftDate(tablePath, rowIndex, dateStr) {
 // メイン処理
 async function main() {
   console.log('Puppeteer起動オプションを取得します');
+  
+  // Puppeteer設定を取得
+  const { puppeteer, launchOptions } = await getPuppeteerConfig();
   
   // メイン処理開始時の環境変数確認
   // console.log('=== メイン処理開始時環境変数確認 ===');
@@ -855,10 +870,13 @@ async function main() {
   return { status: 'done' };
 }
 
-if (isLambda) {
-  exports.handler = async (event) => {
-    return await main();
-  };
-} else if (require.main === module) {
+// Lambda用のhandler関数をエクスポート
+export const handler = async (event) => {
+  return await main();
+};
+
+// ESモジュールでは require.main === module は使用できないため、
+// import.meta.url を使用してメインモジュールかどうかを判定
+if (import.meta.url === `file://${process.argv[1]}`) {
   main().then(() => console.log('完了')).catch(console.error);
 } 

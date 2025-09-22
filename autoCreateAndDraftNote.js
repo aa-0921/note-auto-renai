@@ -3,12 +3,13 @@
 // Puppeteerを利用
 // 日本語コメントで説明
 
-const puppeteer = require('puppeteer');
-// const fs = require('fs');
-// const path = require('path');
-const axios = require('axios');
-// const { execSync } = require('child_process');
-require('dotenv').config();
+import puppeteer from 'puppeteer';
+// import fs from 'fs';
+// import path from 'path';
+import axios from 'axios';
+// import { execSync } from 'child_process';
+import dotenv from 'dotenv';
+dotenv.config();
 
 // 必須環境変数のチェック
 if (!process.env.OPENROUTER_API_KEY) {
@@ -268,14 +269,14 @@ function addRandomEmojiToTitle(title) {
 // }
 
 // note.com下書き保存用の関数をインポート
-const {
+import {
   login,
   goToNewPost,
   dragAndDropToAddButton,
   fillArticle,
   saveDraft,
   closeDialogs
-} = require('./noteAutoDraftAndSheetUpdate');
+} from './noteAutoDraftAndSheetUpdate.js';
 
 // アフィリエイトリンクを生成する関数
 function generateAffiliateLink() {
