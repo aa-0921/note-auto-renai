@@ -1,5 +1,5 @@
 {
-  "name": "@aa-0921/note-automation-core",
+  "name": "@aa-0921/note-auto-core",
   "version": "1.0.0",
   "description": "共通のnote自動化ライブラリ",
   "type": "module",
@@ -35,7 +35,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/aa-0921/note-automation-core.git"
+    "url": "https://github.com/aa-0921/note-auto-core.git"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"

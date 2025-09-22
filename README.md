@@ -1,4 +1,4 @@
-# note-automation-core
+# note-auto-core
 
 共通のnote自動化ライブラリ
 
@@ -19,7 +19,7 @@
 ## インストール
 
 ```bash
-npm install @aa-0921/note-automation-core
+npm install @aa-0921/note-auto-core
 ```
 
 ## 使用方法
@@ -27,7 +27,7 @@ npm install @aa-0921/note-automation-core
 ### 基本的な使用方法
 
 ```javascript
-import NoteAutomationCore from '@aa-0921/note-automation-core';
+import NoteAutomationCore from '@aa-0921/note-auto-core';
 
 const core = new NoteAutomationCore('config/account.yaml');
 await core.initialize();
