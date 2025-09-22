@@ -86,6 +86,22 @@ sheets:
   enabled: true
 ```
 
+### 検索ワードの指定方法（アカウント側スクリプト）
+
+アカウント側で `options.searchWords` に配列を渡してください。未指定時はコアの既定語彙にフォールバックします。
+
+```javascript
+// likeUnlikedNotes.js（アカウント側）
+import { runWithCore } from '@aa-0921/note-auto-core';
+
+(async () => {
+  await runWithCore(async ({ core, wantsBackground }) => {
+    const searchWords = ['恋愛', '人間関係', '自己肯定感'];
+    await core.runLikeUnlikedNotes({ background: wantsBackground, searchWords });
+  });
+})();
+```
+
 ### スケジュール設定 (config/schedule.yaml)
 
 ```yaml
