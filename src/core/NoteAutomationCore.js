@@ -1,11 +1,15 @@
 // src/core/NoteAutomationCore.js
 // メインの自動化コアクラス
 
+import dotenv from 'dotenv';
 import ConfigManager from '../utils/ConfigManager.js';
 import Logger from '../utils/Logger.js';
 import PuppeteerManager from './PuppeteerManager.js';
 import AIContentGenerator from './AIContentGenerator.js';
 import NotePublisher from './NotePublisher.js';
+
+// 環境変数を読み込み
+dotenv.config();
 
 export default class NoteAutomationCore {
   constructor(configPath = 'config/account.yaml') {
