@@ -1,6 +1,6 @@
 {
   "name": "@aa-0921/note-auto-core",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "共通のnote自動化ライブラリ",
   "type": "module",
   "main": "src/index.js",
