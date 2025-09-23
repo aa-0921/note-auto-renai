@@ -1,0 +1,369 @@
+version: 2.1
+
+jobs:
+  # 共通のPuppeteer実行環境セットアップ
+  setup-puppeteer:
+    docker:
+      - image: cimg/node:20.11
+    steps:
+      - checkout
+      - run:
+          name: Install system dependencies
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y \
+              libnss3-dev \
+              libatk-bridge2.0-dev \
+              libdrm2 \
+              libxcomposite1 \
+              libxdamage1 \
+              libxrandr2 \
+              libgbm1 \
+              libxss1 \
+              libasound2 \
+              libxkbcommon0 \
+              libgtk-3-0 \
+              libx11-xcb1 \
+              libxcb-dri3-0 \
+              xvfb \
+              dbus-x11 \
+              fonts-liberation \
+              fonts-noto-color-emoji \
+              fonts-noto-cjk
+      - run:
+          name: Setup virtual display
+          command: |
+            sudo service dbus start
+            Xvfb :99 -screen 0 1280x1024x24 &
+            sleep 3
+            export DISPLAY=:99
+            echo "DISPLAY=$DISPLAY" >> $BASH_ENV
+      - run:
+          name: Install Node.js dependencies
+          command: npm ci
+      - run:
+          name: Test Puppeteer installation
+          command: |
+            export CI=true
+            export DISPLAY=:99
+            node -e "const puppeteer = require('puppeteer'); console.log('Puppeteer version:', puppeteer.version);"
+
+  # autoPublishNotes.js実行用ジョブ
+  run-auto-publish-notes:
+    docker:
+      - image: cimg/node:20.11
+    environment:
+      CI: true
+      DISPLAY: ":99"
+    steps:
+      - checkout
+      - run:
+          name: Install system dependencies
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y \
+              libnss3-dev \
+              libatk-bridge2.0-dev \
+              libdrm2 \
+              libxcomposite1 \
+              libxdamage1 \
+              libxrandr2 \
+              libgbm1 \
+              libxss1 \
+              libasound2 \
+              libxkbcommon0 \
+              libgtk-3-0 \
+              libx11-xcb1 \
+              libxcb-dri3-0 \
+              xvfb \
+              dbus-x11 \
+              fonts-liberation \
+              fonts-noto-color-emoji \
+              fonts-noto-cjk
+      - run:
+          name: Setup virtual display
+          command: |
+            sudo service dbus start
+            Xvfb :99 -screen 0 1280x1024x24 &
+            sleep 3
+            export DISPLAY=:99
+            echo "DISPLAY=$DISPLAY" >> $BASH_ENV
+      - run:
+          name: Install Node.js dependencies
+          command: npm ci
+      - run:
+          name: Run autoPublishNotes.js
+          command: |
+            export CI=true
+            export DISPLAY=:99
+            node autoPublishNotes.js --bg
+
+  # autoCreateAndDraftNote.js実行用ジョブ
+  run-auto-create-note:
+    docker:
+      - image: cimg/node:20.11
+    environment:
+      CI: true
+      DISPLAY: ":99"
+    steps:
+      - checkout
+      - run:
+          name: Install system dependencies
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y \
+              libnss3-dev \
+              libatk-bridge2.0-dev \
+              libdrm2 \
+              libxcomposite1 \
+              libxdamage1 \
+              libxrandr2 \
+              libgbm1 \
+              libxss1 \
+              libasound2 \
+              libxkbcommon0 \
+              libgtk-3-0 \
+              libx11-xcb1 \
+              libxcb-dri3-0 \
+              xvfb \
+              dbus-x11 \
+              fonts-liberation \
+              fonts-noto-color-emoji \
+              fonts-noto-cjk
+      - run:
+          name: Setup virtual display
+          command: |
+            sudo service dbus start
+            Xvfb :99 -screen 0 1280x1024x24 &
+            sleep 3
+            export DISPLAY=:99
+            echo "DISPLAY=$DISPLAY" >> $BASH_ENV
+      - run:
+          name: Install Node.js dependencies
+          command: npm ci
+      - run:
+          name: Run autoCreateAndDraftNote.js
+          command: |
+            export CI=true
+            export DISPLAY=:99
+            node autoCreateAndDraftNote.js --bg
+
+  # followFromArticles.js実行用ジョブ
+  run-follow-from-articles:
+    docker:
+      - image: cimg/node:20.11
+    environment:
+      CI: true
+      DISPLAY: ":99"
+    steps:
+      - checkout
+      - run:
+          name: Install system dependencies
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y \
+              libnss3-dev \
+              libatk-bridge2.0-dev \
+              libdrm2 \
+              libxcomposite1 \
+              libxdamage1 \
+              libxrandr2 \
+              libgbm1 \
+              libxss1 \
+              libasound2 \
+              libxkbcommon0 \
+              libgtk-3-0 \
+              libx11-xcb1 \
+              libxcb-dri3-0 \
+              xvfb \
+              dbus-x11 \
+              fonts-liberation \
+              fonts-noto-color-emoji \
+              fonts-noto-cjk
+      - run:
+          name: Setup virtual display
+          command: |
+            sudo service dbus start
+            Xvfb :99 -screen 0 1280x1024x24 &
+            sleep 3
+            export DISPLAY=:99
+            echo "DISPLAY=$DISPLAY" >> $BASH_ENV
+      - run:
+          name: Install Node.js dependencies
+          command: npm ci
+      - run:
+          name: Run followFromArticles.js
+          command: |
+            export CI=true
+            export DISPLAY=:99
+            node follow/followFromArticles.js --bg
+
+  # likeUnlikedNotes.js実行用ジョブ
+  run-like-notes:
+    docker:
+      - image: cimg/node:20.11
+    environment:
+      CI: true
+      DISPLAY: ":99"
+    steps:
+      - checkout
+      - run:
+          name: Install system dependencies
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y \
+              libnss3-dev \
+              libatk-bridge2.0-dev \
+              libdrm2 \
+              libxcomposite1 \
+              libxdamage1 \
+              libxrandr2 \
+              libgbm1 \
+              libxss1 \
+              libasound2 \
+              libxkbcommon0 \
+              libgtk-3-0 \
+              libx11-xcb1 \
+              libxcb-dri3-0 \
+              xvfb \
+              dbus-x11 \
+              fonts-liberation \
+              fonts-noto-color-emoji \
+              fonts-noto-cjk
+      - run:
+          name: Setup virtual display
+          command: |
+            sudo service dbus start
+            Xvfb :99 -screen 0 1280x1024x24 &
+            sleep 3
+            export DISPLAY=:99
+            echo "DISPLAY=$DISPLAY" >> $BASH_ENV
+      - run:
+          name: Install Node.js dependencies
+          command: npm ci
+      - run:
+          name: Run likeUnlikedNotes.js
+          command: |
+            export CI=true
+            export DISPLAY=:99
+            node likeUnlikedNotes.js --bg
+
+workflows:
+  version: 2
+  
+  # 記事公開用のワークフロー（1日5回）
+  scheduled-auto-publish-notes:
+    triggers:
+      - schedule:
+          cron: "45 2,8,14 * * *"   # JST 11:45, 17:45, 23:45
+          filters:
+            branches:
+              only:
+                - main
+      - schedule:
+          cron: "0 22 * * *"   # JST 7:00
+          filters:
+            branches:
+              only:
+                - main
+      - schedule:
+          cron: "0 6 * * *"    # JST 15:00
+          filters:
+            branches:
+              only:
+                - main
+    jobs:
+      - run-auto-publish-notes:
+          filters:
+            branches:
+              only:
+                - main
+
+  # 記事作成用のワークフロー（1日5回）
+  scheduled-auto-create-note:
+    triggers:
+      - schedule:
+          cron: "0 22 * * *"   # JST 7:00
+          filters:
+            branches:
+              only:
+                - main
+      - schedule:
+          cron: "45 2,8,14 * * *"   # JST 11:45, 17:45, 23:45
+          filters:
+            branches:
+              only:
+                - main
+      - schedule:
+          cron: "0 6 * * *"    # JST 15:00
+          filters:
+            branches:
+              only:
+                - main
+    jobs:
+      - run-auto-create-note:
+          filters:
+            branches:
+              only:
+                - main
+
+  # フォロー用のワークフロー（1日8回、3時間ごと）
+  scheduled-follow-from-articles:
+    triggers:
+      - schedule:
+          cron: "0 0,3,6,9,12,15,18,21 * * *"   # 3時間ごと
+          filters:
+            branches:
+              only:
+                - main
+    jobs:
+      - run-follow-from-articles:
+          filters:
+            branches:
+              only:
+                - main
+
+  # いいね用のワークフロー（1日6回、4時間ごと）
+  scheduled-like-notes:
+    triggers:
+      - schedule:
+          cron: "30 1,5,9,13,17,21 * * *"   # 4時間ごと
+          filters:
+            branches:
+              only:
+                - main
+    jobs:
+      - run-like-notes:
+          filters:
+            branches:
+              only:
+                - main
+
+  # Push時の実行用
+  on-push:
+    jobs:
+      - run-auto-publish-notes:
+          filters:
+            branches:
+              only:
+                - main
+      - run-auto-create-note:
+          filters:
+            branches:
+              only:
+                - main
+      - run-follow-from-articles:
+          filters:
+            branches:
+              only:
+                - main
+      - run-like-notes:
+          filters:
+            branches:
+              only:
+                - main
+
+  # テスト用ワークフロー（Puppeteer環境確認済みのためコメントアウト）
+  # test-workflow:
+  #   jobs:
+  #     - setup-puppeteer
