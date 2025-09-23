@@ -17,7 +17,7 @@
     "likeNotesByUrl": "node scripts/likeNotesByUrl.js",
     "followFromArticles": "node scripts/followFromArticles.js",
     "noteAutoDraftAndSheetUpdate": "node scripts/noteAutoDraftAndSheetUpdate.js",
-    "likeAsGuestByAccounts": "node likeAsGuestByAccounts.js"
+    "likeAsGuestByAccounts": "node scripts/likeAsGuestByAccounts.js"
   },
   "keywords": [
     "note",
