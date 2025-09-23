@@ -10,8 +10,7 @@
     "lint": "eslint . --ext .js",
     "lint:fix": "eslint . --ext .js --fix",
     "format": "prettier --write .",
-    "format:check": "prettier --check .",
-    "prepare": "husky install"
+    "format:check": "prettier --check ."
   },
   "keywords": [
     "note",
@@ -36,8 +35,6 @@
     "eslint": "^9.0.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",
-    "husky": "^9.0.0",
-    "lint-staged": "^15.0.0",
     "prettier": "^3.0.0"
   },
   "engines": {
@@ -47,13 +44,5 @@
     "type": "git",
     "url": "https://github.com/aa-0921/note-auto-renai.git"
   },
-  "lint-staged": {
-    "*.js": [
-      "eslint --fix",
-      "prettier --write"
-    ],
-    "*.{json,yml,yaml}": [
-      "prettier --write"
-    ]
-  }
+  
 }
