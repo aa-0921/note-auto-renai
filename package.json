@@ -1,9 +1,50 @@
 {
+  "name": "@aa-0921/note-auto-core",
+  "version": "1.0.7",
+  "description": "共通のnote自動化ライブラリ",
   "type": "module",
+  "main": "src/index.js",
+  "bin": {
+    "note-core": "bin/cli.js"
+  },
+  "scripts": {
+    "test": "node --test",
+    "build": "echo 'No build step required for ES modules'",
+    "lint": "echo 'Linting not configured yet'",
+    "prepublishOnly": "echo 'Preparing to publish...'"
+  },
+  "keywords": [
+    "note",
+    "automation",
+    "puppeteer",
+    "ai",
+    "content-generation"
+  ],
+  "author": "aa-0921",
+  "license": "MIT",
   "dependencies": {
-    "@aa-0921/note-auto-core": "file:../note-auto-core/aa-0921-note-auto-core-1.0.7.tgz",
     "axios": "^1.9.0",
     "dotenv": "^16.5.0",
-    "puppeteer": "^24.10.0"
-  }
+    "puppeteer": "^24.10.0",
+    "js-yaml": "^4.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aa-0921/note-auto-core.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "files": [
+    "src/",
+    "configs/",
+    "README.md",
+    "package.json"
+  ]
 }
