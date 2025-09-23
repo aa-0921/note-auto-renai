@@ -39,7 +39,11 @@ jobs:
 
       # 3. 依存パッケージのインストール
       - name: 依存パッケージをインストール
-        run: npm ci
+        run: |
+          npm install
+          # note-auto-coreをローカルパスにリンク
+          cd note-auto-core && npm install
+          cd .. && npm link note-auto-core
 
       # 4. 必要な環境変数を設定（OpenRouter APIキーなど）
       #    GitHubリポジトリのSettings > Secrets and variables > Actions で設定してください

@@ -39,7 +39,11 @@ jobs:
         with:
           node-version: '20.x'
       - name: Install dependencies
-        run: npm install
+        run: |
+          npm install
+          # note-auto-coreをローカルパスにリンク
+          cd note-auto-core && npm install
+          cd .. && npm link note-auto-core
       - name: Run follow/followFromArticles.js
         env:
           NOTE_EMAIL: ${{ secrets.NOTE_EMAIL }}
