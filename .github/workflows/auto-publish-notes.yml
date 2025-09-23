@@ -19,16 +19,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       
       - name: Checkout note-auto-core
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: aa-0921/note-auto-core
           path: note-auto-core
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '20.x'
       - name: Install dependencies
