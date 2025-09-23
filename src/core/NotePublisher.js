@@ -716,8 +716,37 @@ export default class NotePublisher {
   // フォロー機能（followFromArticles.jsから移植）
   async followFromArticles(options = {}) {
     const page = await this.puppeteerManager.createPage();
+    let isLimit = false; // 上限検知フラグ
     
     try {
+      // 全体のタイムアウト制御（10分で自動終了）
+      const startTime = Date.now();
+      const MAX_EXECUTION_TIME = 10 * 60 * 1000; // 10分
+      
+      // タイムアウトチェック関数
+      const checkTimeout = () => {
+        if (Date.now() - startTime > MAX_EXECUTION_TIME) {
+          this.logger.info('【タイムアウト】10分経過したため処理を終了します');
+          return true;
+        }
+        return false;
+      };
+
+      // ダイアログ（alert等）検知時に即座に処理を停止
+      page.on('dialog', async dialog => {
+        const msg = dialog.message();
+        this.logger.info('[ALERT検知]', msg);
+        if (msg.includes('上限に達したためご利用できません')) {
+          await dialog.dismiss(); // OKボタンを押す
+          this.logger.info('【noteフォロー上限に達したため、処理を中断します】');
+          isLimit = true; // 上限フラグを立てる
+          await this.puppeteerManager.cleanup(); // ブラウザを閉じる
+          // ここでは process.exit(1) を呼ばない
+        } else {
+          await dialog.dismiss();
+        }
+      });
+
       await this.login(page, process.env.NOTE_EMAIL, process.env.NOTE_PASSWORD);
       
       // 検索ワードリスト（各リポジトリで必須指定）
@@ -739,11 +768,25 @@ export default class NotePublisher {
       const encoded = encodeURIComponent(word);
       const targetUrl = `https://note.com/search?q=${encoded}&context=note&mode=search`;
 
+      // デバッグ用ログ
+      this.logger.info('【順番インデックス計算】');
+      this.logger.info('searchWords.length =', searchWords.length);
+      this.logger.info('runsPerDay =', runsPerDay);
+      this.logger.info('dayOfYear =', dayOfYear);
+      this.logger.info('runIndex =', runIndex);
+      this.logger.info('index = (dayOfYear * runsPerDay + runIndex) % searchWords.length =', index);
+      this.logger.info('【検索ワード選択ログ】');
+      this.logger.info('現在日時:', now.toString());
+      this.logger.info('インデックス:', index);
+      this.logger.info('選択ワード:', word);
+      this.logger.info('検索URL:', targetUrl);
+
       this.logger.info('対象ページへ遷移します:', targetUrl);
       await page.goto(targetUrl, { waitUntil: 'networkidle2' });
 
       // 記事一覧ページでスクロール
       for (let i = 0; i < 10; i++) {
+        if (checkTimeout() || isLimit) break;
         this.logger.info(`下までスクロールします (${i + 1}/10)`);
         await page.evaluate(() => {
           window.scrollTo(0, document.body.scrollHeight);
@@ -774,9 +817,13 @@ export default class NotePublisher {
 
       let followCount = 0;
       const maxFollows = options.maxFollows || 15;
+      const isCI = process.env.CI === 'true';
 
       // 検索結果ページ上でポップアップのフォローボタンをクリック
       for (let i = 0; i < uniqueCreators.length && followCount < maxFollows; i++) {
+        // タイムアウトチェック
+        if (checkTimeout() || isLimit) break;
+        
         const name = uniqueCreators[i].name;
         this.logger.info(`クリエイター${i + 1}のホバー＆ポップアップフォロー処理開始:（${name}）`);
         
@@ -789,10 +836,15 @@ export default class NotePublisher {
           const aTag = await userWrappers[i].$('a.o-largeNoteSummary__user');
           if (!aTag) continue;
           await aTag.hover();
-          await new Promise(resolve => setTimeout(resolve, 800));
           
-          // ポップアップが出るまで待機
-          await page.waitForSelector('.o-quickLook', { visible: true, timeout: 2500 });
+          // ホバー後に明示的な待機時間を追加（ポップアップが見やすくなるように）
+          // CI環境では短縮、ローカルでは通常の待機時間
+          const hoverWaitTime = isCI ? 500 : 800;
+          await new Promise(resolve => setTimeout(resolve, hoverWaitTime));
+          
+          // ポップアップが出るまで待機（CI環境では短縮）
+          const popupTimeout = isCI ? 1500 : 2500;
+          await page.waitForSelector('.o-quickLook', { visible: true, timeout: popupTimeout });
           
           // ポップアップ内のフォローボタンを取得
           const followBtn = await page.$('.o-quickLook .a-button');
@@ -806,26 +858,30 @@ export default class NotePublisher {
           if (btnText === 'フォロー') {
             await followBtn.click();
             
-            // 状態変化を待つ
+            // 状態変化を待つ（CI環境では短縮）
+            const stateChangeTimeout = isCI ? 1000 : 1500;
             await Promise.race([
               page.waitForFunction(
                 () => {
                   const btn = document.querySelector('.o-quickLook .a-button');
                   return btn && btn.innerText.trim() === 'フォロー中';
                 },
-                { timeout: 1500 }
+                { timeout: stateChangeTimeout }
               ),
-              new Promise(resolve => setTimeout(resolve, 1500))
+              new Promise(resolve => setTimeout(resolve, stateChangeTimeout))
             ]);
             
+            this.logger.info(`ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー`);
             this.logger.info(`フォロー成功！！（${followCount + 1}件目）｜クリエイター名（${name}）`);
+            this.logger.info(`ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー`);
             followCount++;
           } else {
             this.logger.info('すでにフォロー済み、またはボタン状態が「フォロー」ではありません');
           }
           
-          // 少し待ってから次へ
-          await new Promise(resolve => setTimeout(resolve, 300));
+          // 少し待ってから次へ（CI環境では短縮）
+          const nextWaitTime = isCI ? 200 : 300;
+          await new Promise(resolve => setTimeout(resolve, nextWaitTime));
         } catch (e) {
           this.logger.info(`エラー発生: ${e.message}`);
           continue;
@@ -833,6 +889,12 @@ export default class NotePublisher {
       }
       
       this.logger.info('全フォロー処理完了');
+      
+      // 上限検知時はここで安全に終了（正常終了として扱う）
+      if (isLimit) {
+        this.logger.info('フォロー上限に達しましたが、正常終了として処理を継続します');
+        return;
+      }
       
     } finally {
       await this.puppeteerManager.cleanup();
