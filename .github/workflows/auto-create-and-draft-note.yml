@@ -28,6 +28,7 @@ jobs:
         with:
           repository: aa-0921/note-auto-core
           path: note-auto-core
+          ref: main
           token: ${{ secrets.GITHUB_TOKEN }}
 
       # 2. Node.jsのセットアップ（バージョンは必要に応じて変更）
