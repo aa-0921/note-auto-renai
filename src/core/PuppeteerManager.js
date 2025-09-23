@@ -39,8 +39,7 @@ export default class PuppeteerManager {
         puppeteer: puppeteerCore.default,
         launchOptions: async () => ({
           args: chromium.default.args,
-          // defaultViewport: chromium.default.defaultViewport,
-          defaultViewport: null,
+          defaultViewport: chromium.default.defaultViewport,
           executablePath: await chromium.default.executablePath,
           headless: chromium.default.headless,
         })
@@ -74,8 +73,6 @@ export default class PuppeteerManager {
             '--disable-ipc-flooding-protection',
             '--no-first-run',
             '--no-default-browser-check',
-            '--no-zygote',
-            '--single-process',
             '--disable-background-networking'
           ],
           defaultViewport: null,
