@@ -56,4 +56,4 @@ jobs:
 
       # 5. スクリプトを実行
       - name: autoCreateAndDraftNote.js を実行
-        run: node autoCreateAndDraftNote.js
+        run: node scripts/autoCreateAndDraftNote.js

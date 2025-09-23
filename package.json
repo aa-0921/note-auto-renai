@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "description": "恋愛・人間関係系note自動化スクリプト",
   "type": "module",
-  "main": "autoCreateAndDraftNote.js",
+  "main": "scripts/autoCreateAndDraftNote.js",
   "scripts": {
     "test": "echo 'No tests configured'",
-    "start": "node autoCreateAndDraftNote.js",
+    "start": "node scripts/autoCreateAndDraftNote.js",
     "lint": "eslint . --ext .js",
     "lint:fix": "eslint . --ext .js --fix",
     "format": "prettier --write .",
