@@ -40,10 +40,11 @@ jobs:
           node-version: '20.x'
       - name: Install dependencies
         run: |
-          npm install
-          # note-auto-coreをローカルパスにリンク
+          # note-auto-coreの依存関係をインストール
           cd note-auto-core && npm install
-          cd .. && npm link note-auto-core
+          cd ..
+          # ローカルパッケージを直接参照してインストール
+          npm install ./note-auto-core
       - name: Run likeUnlikedNotes.js
         env:
           NOTE_EMAIL: ${{ secrets.NOTE_EMAIL }}
