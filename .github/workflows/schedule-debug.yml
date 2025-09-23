@@ -1,0 +1,19 @@
+name: Schedule Debug
+
+on:
+  schedule:
+    - cron: '*/10 * * * *' # UTCで10分毎（JSTでも約10分毎）。発火確認用
+  workflow_dispatch:
+
+jobs:
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print timestamp and runner info
+        run: |
+          echo "Triggered at (UTC): $(date -u +'%Y-%m-%d %H:%M:%S')"
+          echo "Runner: $RUNNER_OS"
+          echo "Repo: $GITHUB_REPOSITORY"
+          echo "Ref: $GITHUB_REF"
+          echo "Event name: $GITHUB_EVENT_NAME"
+
