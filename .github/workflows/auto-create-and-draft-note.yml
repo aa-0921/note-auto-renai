@@ -21,6 +21,13 @@ jobs:
       # 1. リポジトリのコードをチェックアウト
       - name: コードをチェックアウト
         uses: actions/checkout@v4
+      
+      # 2. note-auto-coreリポジトリをチェックアウト
+      - name: note-auto-coreをチェックアウト
+        uses: actions/checkout@v4
+        with:
+          repository: aa-0921/note-auto-core
+          path: note-auto-core
 
       # 2. Node.jsのセットアップ（バージョンは必要に応じて変更）
       - name: Node.jsをセットアップ

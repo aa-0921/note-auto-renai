@@ -20,6 +20,12 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+      
+      - name: Checkout note-auto-core
+        uses: actions/checkout@v3
+        with:
+          repository: aa-0921/note-auto-core
+          path: note-auto-core
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
