@@ -1,6 +1,7 @@
 # configs/defaults/schedule.yaml
 # デフォルトのスケジュール設定
 
+# これ必要か？
 scripts:
   likeUnlikedNotes:
     frequency: 'daily'
