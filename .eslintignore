@@ -1,0 +1,7 @@
+# ESLintが無視するファイル・ディレクトリ
+node_modules/
+note-auto-core/
+dist/
+build/
+*.min.js
+.husky/
