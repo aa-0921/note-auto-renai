@@ -27,10 +27,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20.x'
+          registry-url: 'https://npm.pkg.github.com'
 
       # 3. 依存パッケージのインストール
       - name: 依存パッケージをインストール
         run: npm ci
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # 4. 必要な環境変数を設定（OpenRouter APIキーなど）
       #    GitHubリポジトリのSettings > Secrets and variables > Actions で設定してください
