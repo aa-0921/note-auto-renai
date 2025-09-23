@@ -18,16 +18,19 @@ export default class NoteAutomationCore {
     this.puppeteerManager = null;
     this.aiGenerator = null;
     this.notePublisher = null;
+    this.background = false;
   }
 
-  async initialize() {
+  async initialize(background = false) {
     try {
+      this.background = background;
+      
       // 設定を読み込み
       await this.configManager.loadConfig();
       this.logger.info('設定を読み込みました');
 
       // Puppeteerマネージャーを初期化
-      this.puppeteerManager = new PuppeteerManager(this.configManager.config);
+      this.puppeteerManager = new PuppeteerManager(this.configManager.config, this.background);
       await this.puppeteerManager.initialize();
       this.logger.info('Puppeteerマネージャーを初期化しました');
 

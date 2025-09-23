@@ -4,8 +4,9 @@
 import Logger from '../utils/Logger.js';
 
 export default class PuppeteerManager {
-  constructor(config) {
+  constructor(config, background = false) {
     this.config = config;
+    this.background = background;
     this.logger = new Logger();
     this.browser = null;
     this.page = null;
@@ -38,7 +39,8 @@ export default class PuppeteerManager {
         puppeteer: puppeteerCore.default,
         launchOptions: async () => ({
           args: chromium.default.args,
-          defaultViewport: chromium.default.defaultViewport,
+          // defaultViewport: chromium.default.defaultViewport,
+          defaultViewport: null,
           executablePath: await chromium.default.executablePath,
           headless: chromium.default.headless,
         })
@@ -49,14 +51,35 @@ export default class PuppeteerManager {
       return {
         puppeteer: puppeteerModule.default,
         launchOptions: async () => ({
-          headless: false,
+          headless: this.background ? 'new' : false,
           executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
           args: [
             '--no-sandbox',
             '--disable-setuid-sandbox',
             '--disable-gpu',
-            '--disable-dev-shm-usage'
-          ]
+            '--disable-dev-shm-usage',
+            '--disable-extensions',
+            '--window-size=1280,900',
+            // CircleCI環境用の追加オプション
+            '--disable-web-security',
+            '--disable-features=VizDisplayCompositor',
+            '--disable-plugins',
+            '--disable-images',
+            '--disable-default-apps',
+            '--disable-background-timer-throttling',
+            '--disable-backgrounding-occluded-windows',
+            '--disable-renderer-backgrounding',
+            '--disable-field-trial-config',
+            '--disable-back-forward-cache',
+            '--disable-ipc-flooding-protection',
+            '--no-first-run',
+            '--no-default-browser-check',
+            '--no-zygote',
+            '--single-process',
+            '--disable-background-networking'
+          ],
+          defaultViewport: null,
+          protocolTimeout: 30000 // 30秒のプロトコルタイムアウト
         })
       };
     }

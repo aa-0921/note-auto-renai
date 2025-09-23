@@ -15,7 +15,7 @@ export async function runWithCore(executor, options = {}) {
 
   const core = new NoteAutomationCore(accountConfigPath);
   try {
-    await core.initialize();
+    await core.initialize(wantsBackground);
     await executor({ core, argv, wantsBackground });
     console.log('処理が完了しました');
   } catch (error) {
