@@ -16,7 +16,7 @@ import { runWithCore, extractNoteUrl } from '@aa-0921/note-auto-core';
     // 特定URLへのいいね機能を実行
     await core.runLikeNotesByUrl(urlToUse, {
       background: wantsBackground,
-      maxLikes: 50
+      maxLikes: 50,
     });
     console.log('いいね処理が完了しました');
   });

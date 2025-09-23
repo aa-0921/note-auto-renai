@@ -11,7 +11,10 @@ export async function runWithCore(executor, options = {}) {
   const argv = process.argv.slice(2);
   const wantsBackground = argv.includes('--bg');
 
-  console.log('headlessモード:', wantsBackground ? 'バックグラウンド(headless)' : '可視(visible)');
+  console.log(
+    'headlessモード:',
+    wantsBackground ? 'バックグラウンド(headless)' : '可視(visible)'
+  );
 
   const core = new NoteAutomationCore(accountConfigPath);
   try {
@@ -31,5 +34,3 @@ export async function runWithCore(executor, options = {}) {
 }
 
 export default runWithCore;
-
-

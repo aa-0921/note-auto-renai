@@ -7,17 +7,17 @@ on:
     # • 30分以内に24回以上のスキを押すと制限がかかる場合があります。
     # 2. 1日のスキ数制限
     # • 24時間以内に200回以上のスキを押すと制限対象になることがあります。
-    - cron: '0 0 * * *'    # 毎日9:00(JST)
+    - cron: '0 0 * * *' # 毎日9:00(JST)
 
     - cron: '15 1 * * *' # JST 10:15 一時的に追加
 
-    - cron: '0 3 * * *'    # 毎日12:00(JST)
-    - cron: '0 6 * * *'    # 毎日15:00(JST)
-    - cron: '0 9 * * *'    # 毎日18:00(JST)
-    - cron: '0 12 * * *'   # 毎日21:00(JST)
-    - cron: '0 15 * * *'   # 毎日0:00(JST)
-    - cron: '0 18 * * *'   # 毎日3:00(JST)
-    - cron: '0 21 * * *'   # 毎日6:00(JST)
+    - cron: '0 3 * * *' # 毎日12:00(JST)
+    - cron: '0 6 * * *' # 毎日15:00(JST)
+    - cron: '0 9 * * *' # 毎日18:00(JST)
+    - cron: '0 12 * * *' # 毎日21:00(JST)
+    - cron: '0 15 * * *' # 毎日0:00(JST)
+    - cron: '0 18 * * *' # 毎日3:00(JST)
+    - cron: '0 21 * * *' # 毎日6:00(JST)
   workflow_dispatch:
 
 jobs:
@@ -26,7 +26,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      
+
       - name: Checkout note-auto-core
         uses: actions/checkout@v4
         with:
@@ -49,4 +49,4 @@ jobs:
         env:
           NOTE_EMAIL: ${{ secrets.NOTE_EMAIL }}
           NOTE_PASSWORD: ${{ secrets.NOTE_PASSWORD }}
-        run: node likeUnlikedNotes.js 
+        run: node likeUnlikedNotes.js

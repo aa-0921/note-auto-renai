@@ -6,7 +6,12 @@
   "main": "autoCreateAndDraftNote.js",
   "scripts": {
     "test": "echo 'No tests configured'",
-    "start": "node autoCreateAndDraftNote.js"
+    "start": "node autoCreateAndDraftNote.js",
+    "lint": "eslint . --ext .js",
+    "lint:fix": "eslint . --ext .js --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "prepare": "husky install"
   },
   "keywords": [
     "note",
@@ -25,7 +30,15 @@
     "puppeteer": "^24.22.0"
   },
   "devDependencies": {
-    "@types/node": "^20.0.0"
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
+    "eslint": "^9.0.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "husky": "^9.0.0",
+    "lint-staged": "^15.0.0",
+    "prettier": "^3.0.0"
   },
   "engines": {
     "node": ">=18.0.0"
@@ -33,5 +46,14 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/aa-0921/note-auto-renai.git"
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,yml,yaml}": [
+      "prettier --write"
+    ]
   }
 }

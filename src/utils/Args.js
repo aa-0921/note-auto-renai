@@ -11,7 +11,9 @@ export function extractNoteUrl(argv = process.argv.slice(2), defaultUrl) {
   const urlToUse = targetUrl || defaultUrl;
 
   if (!urlToUse || !urlToUse.startsWith('https://note.com/')) {
-    throw new Error('有効なnote.comのURLを指定してください（例: https://note.com/enginner_skill）');
+    throw new Error(
+      '有効なnote.comのURLを指定してください（例: https://note.com/enginner_skill）'
+    );
   }
 
   return { targetUrl, urlToUse };
@@ -19,7 +21,5 @@ export function extractNoteUrl(argv = process.argv.slice(2), defaultUrl) {
 
 export default {
   parseBackgroundFlag,
-  extractNoteUrl
+  extractNoteUrl,
 };
-
-

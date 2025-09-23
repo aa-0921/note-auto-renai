@@ -7,7 +7,7 @@ import { runWithCore } from '@aa-0921/note-auto-core';
   await runWithCore(async ({ core, wantsBackground }) => {
     await core.runAutoPublishNotes({
       background: wantsBackground,
-      postLimit: 1
+      postLimit: 1,
     });
     console.log('自動投稿処理が完了しました');
   });

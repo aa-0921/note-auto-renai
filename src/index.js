@@ -25,12 +25,12 @@ export {
   fillArticle,
   saveDraft,
   closeDialogs,
-  dragAndDropToAddButton
+  dragAndDropToAddButton,
 } from './core/NotePublisher.js';
 
 export {
   getRandomUserAgent,
-  getUserAgentByType
+  getUserAgentByType,
 } from './utils/UserAgentManager.js';
 
 // デフォルトエクスポート（メインクラス）

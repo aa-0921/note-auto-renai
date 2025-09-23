@@ -24,13 +24,16 @@ export default class NoteAutomationCore {
   async initialize(background = false) {
     try {
       this.background = background;
-      
+
       // 設定を読み込み
       await this.configManager.loadConfig();
       this.logger.info('設定を読み込みました');
 
       // Puppeteerマネージャーを初期化
-      this.puppeteerManager = new PuppeteerManager(this.configManager.config, this.background);
+      this.puppeteerManager = new PuppeteerManager(
+        this.configManager.config,
+        this.background
+      );
       await this.puppeteerManager.initialize();
       this.logger.info('Puppeteerマネージャーを初期化しました');
 
@@ -78,30 +81,38 @@ export default class NoteAutomationCore {
   async runAutoCreateAndDraftNote(options = {}) {
     try {
       this.logger.info('記事の自動生成と下書き保存を開始します');
-      
+
       // 題材と切り口（各リポジトリ必須）
       if (!Array.isArray(options.topics) || options.topics.length === 0) {
-        throw new Error('topics が未設定です。各リポジトリ側で題材配列を指定してください。');
+        throw new Error(
+          'topics が未設定です。各リポジトリ側で題材配列を指定してください。'
+        );
       }
       if (!Array.isArray(options.patterns) || options.patterns.length === 0) {
-        throw new Error('patterns が未設定です。各リポジトリ側で切り口配列を指定してください。');
+        throw new Error(
+          'patterns が未設定です。各リポジトリ側で切り口配列を指定してください。'
+        );
       }
       const topics = options.topics;
       const patterns = options.patterns;
       const topic = topics[Math.floor(Math.random() * topics.length)];
       const pattern = patterns[Math.floor(Math.random() * patterns.length)];
-      
+
       this.logger.info('選ばれた題材:', topic);
       this.logger.info('選ばれた切り口:', pattern);
-      
+
       // AIで記事生成（各リポジトリ側オーバーライド対応）
-      const article = await this.aiGenerator.generateArticle(topic, pattern, options);
+      const article = await this.aiGenerator.generateArticle(
+        topic,
+        pattern,
+        options
+      );
       this.logger.info('AI生成記事全文:', article);
-      
+
       if (!article || article.length < 30) {
         throw new Error('AI記事生成に失敗、または内容が不十分です');
       }
-      
+
       // タイトル抽出
       let originalTitle = '無題';
       const titleMatch = article.match(/^#\s*(.+)$/m);
@@ -109,52 +120,70 @@ export default class NoteAutomationCore {
         originalTitle = titleMatch[1].trim();
       } else {
         // 先頭行がタイトルでない場合、最初の10文字を仮タイトルに
-        originalTitle = article.split('\n').find(line => line.trim().length > 0)?.slice(0, 10) || '無題';
+        originalTitle =
+          article
+            .split('\n')
+            .find(line => line.trim().length > 0)
+            ?.slice(0, 10) || '無題';
       }
-      
+
       // 本文から元のタイトル行（# タイトル）を除去する
       const originalH1TitleLine = `# ${originalTitle}`;
       const articleLines = article.split('\n');
       this.logger.info('元のタイトル:', originalTitle);
       this.logger.info('除去対象h1行:', JSON.stringify(originalH1TitleLine));
-      
-      const filteredArticleLines = articleLines.filter(line => line.trim() !== originalH1TitleLine);
+
+      const filteredArticleLines = articleLines.filter(
+        line => line.trim() !== originalH1TitleLine
+      );
       const filteredArticle = filteredArticleLines.join('\n');
-      
+
       // タイトルにランダム絵文字を追加（オーバーライド対応）
-      const title = this.aiGenerator.addRandomEmojiToTitle(originalTitle, options);
+      const title = this.aiGenerator.addRandomEmojiToTitle(
+        originalTitle,
+        options
+      );
       this.logger.info('最終タイトル:', title);
-      
+
       // 記事の加工・統合（オーバーライド対応：リライト、アフィリエイトリンク、マガジン誘導、タグ生成）
-      const processedArticle = await this.aiGenerator.processArticle(filteredArticle, options);
+      const processedArticle = await this.aiGenerator.processArticle(
+        filteredArticle,
+        options
+      );
       this.logger.info('記事の加工が完了しました');
-      
+
       // note.comに下書き保存
       const page = await this.puppeteerManager.createPage();
-      
+
       // ログイン
-      await this.notePublisher.login(page, process.env.NOTE_EMAIL, process.env.NOTE_PASSWORD);
-      
+      await this.notePublisher.login(
+        page,
+        process.env.NOTE_EMAIL,
+        process.env.NOTE_PASSWORD
+      );
+
       // 新規投稿画面へ遷移
       await this.notePublisher.goToNewPost(page);
-      
+
       // サムネイル画像アップロード
       await this.notePublisher.dragAndDropToAddButton(page);
-      
+
       // 記事タイトル・本文を入力
       await this.notePublisher.fillArticle(page, title, processedArticle);
-      
+
       // 下書き保存
       await this.notePublisher.saveDraft(page);
-      
+
       // ダイアログを閉じる
       await this.notePublisher.closeDialogs(page);
-      
+
       this.logger.info('note.comへの下書き保存が完了しました');
       this.logger.info('下書き保存した記事タイトル:', title);
-      
     } catch (error) {
-      this.logger.error('記事の自動生成と下書き保存でエラーが発生しました:', error);
+      this.logger.error(
+        '記事の自動生成と下書き保存でエラーが発生しました:',
+        error
+      );
       throw error;
     }
   }

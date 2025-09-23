@@ -71,17 +71,17 @@ npx note-core like-url --bg https://note.com/example
 ### アカウント設定 (config/account.yaml)
 
 ```yaml
-genre: "renai"
-locale: "ja-JP"
+genre: 'renai'
+locale: 'ja-JP'
 posting:
-  time_window: ["09:00", "11:00"]
+  time_window: ['09:00', '11:00']
   days: [Mon, Tue, Wed, Thu, Fri]
 ai:
-  provider: "openrouter"
-  model: "deepseek/deepseek-chat-v3.1:free"
+  provider: 'openrouter'
+  model: 'deepseek/deepseek-chat-v3.1:free'
   temperature: 0.7
 note:
-  login_method: "email_password"
+  login_method: 'email_password'
 sheets:
   enabled: true
 ```
@@ -97,7 +97,10 @@ import { runWithCore } from '@aa-0921/note-auto-core';
 (async () => {
   await runWithCore(async ({ core, wantsBackground }) => {
     const searchWords = ['恋愛', '人間関係', '自己肯定感'];
-    await core.runLikeUnlikedNotes({ background: wantsBackground, searchWords });
+    await core.runLikeUnlikedNotes({
+      background: wantsBackground,
+      searchWords,
+    });
   });
 })();
 ```
@@ -107,11 +110,11 @@ import { runWithCore } from '@aa-0921/note-auto-core';
 ```yaml
 scripts:
   likeUnlikedNotes:
-    frequency: "daily"
+    frequency: 'daily'
     time_offset: 0
     max_likes: 24
   autoPublishNotes:
-    frequency: "weekdays"
+    frequency: 'weekdays'
     time_offset: 5
     post_limit: 1
 ```

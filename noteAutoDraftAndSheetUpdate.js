@@ -7,7 +7,9 @@ dotenv.config();
 
 // 必須環境変数のチェック
 if (!process.env.NOTE_EMAIL || !process.env.NOTE_PASSWORD) {
-  console.error('エラー: NOTE_EMAIL または NOTE_PASSWORD の環境変数が設定されていません。');
+  console.error(
+    'エラー: NOTE_EMAIL または NOTE_PASSWORD の環境変数が設定されていません。'
+  );
   process.exit(1);
 }
 
@@ -24,7 +26,7 @@ async function getPuppeteerConfig() {
         defaultViewport: chromium.default.defaultViewport,
         executablePath: await chromium.default.executablePath,
         headless: chromium.default.headless,
-      })
+      }),
     };
   } else {
     // ローカルテスト用
@@ -33,14 +35,15 @@ async function getPuppeteerConfig() {
       puppeteer: puppeteerModule.default,
       launchOptions: async () => ({
         headless: false,
-        executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+        executablePath:
+          '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
         args: [
           '--no-sandbox',
           '--disable-setuid-sandbox',
           '--disable-gpu',
-          '--disable-dev-shm-usage'
-        ]
-      })
+          '--disable-dev-shm-usage',
+        ],
+      }),
     };
   }
 }
@@ -66,30 +69,34 @@ function getArticleData(articlePath) {
 // サムネイル画像をランダム選択
 function getRandomThumbnail() {
   const dir = path.join(__dirname, 'thumbnails');
-  const files = fs.readdirSync(dir).filter(f => /\.(jpg|jpeg|png|gif)$/i.test(f));
+  const files = fs
+    .readdirSync(dir)
+    .filter(f => /\.(jpg|jpeg|png|gif)$/i.test(f));
   if (files.length === 0) throw new Error('サムネイル画像がありません');
-  
+
   // より強力なランダム化：複数の手法を組み合わせ
   // 1. 現在時刻のミリ秒をシードとして使用
   const now = Date.now();
   const seed1 = now % files.length;
-  
+
   // 2. プロセスの開始時間も組み合わせ
   const seed2 = Math.floor(process.uptime() * 1000) % files.length;
-  
+
   // 3. 複数回のランダム処理を組み合わせ
   let randomIndex = Math.floor(Math.random() * files.length);
   randomIndex = (randomIndex + seed1) % files.length;
-  randomIndex = (randomIndex + Math.floor(Math.random() * files.length)) % files.length;
+  randomIndex =
+    (randomIndex + Math.floor(Math.random() * files.length)) % files.length;
   randomIndex = (randomIndex + seed2) % files.length;
-  
+
   // 4. さらにランダムシャッフルを追加
   for (let i = 0; i < 3; i++) {
-    randomIndex = (randomIndex + Math.floor(Math.random() * files.length)) % files.length;
+    randomIndex =
+      (randomIndex + Math.floor(Math.random() * files.length)) % files.length;
   }
-  
+
   const file = files[randomIndex];
-  console.log(`サムネイル選択: ${randomIndex}/${files.length-1} -> ${file}`);
+  console.log(`サムネイル選択: ${randomIndex}/${files.length - 1} -> ${file}`);
   return path.join(dir, file);
 }
 
@@ -105,53 +112,73 @@ async function dragAndDropToAddButton(page) {
     const fileBase64 = fileData.toString('base64');
     console.log('ドラッグ＆ドロップでアップロードする画像ファイル:', filePath);
 
-    await page.evaluate(async (dropSelector, fileName, fileBase64) => {
-      const dropArea = document.querySelector(dropSelector);
-      if (!dropArea) {
-        throw new Error('ドロップエリアが見つかりません');
-      }
-      const bstr = atob(fileBase64);
-      let n = bstr.length;
-      const u8arr = new Uint8Array(n);
-      while(n--) u8arr[n] = bstr.charCodeAt(n);
-      const file = new File([u8arr], fileName, { type: "image/jpeg" });
-      const dataTransfer = new DataTransfer();
-      dataTransfer.items.add(file);
-      // dragover
-      const dragOverEvent = new DragEvent('dragover', {
-        dataTransfer,
-        bubbles: true,
-        cancelable: true
-      });
-      dropArea.dispatchEvent(dragOverEvent);
-      // drop
-      const dropEvent = new DragEvent('drop', {
-        dataTransfer,
-        bubbles: true,
-        cancelable: true
-      });
-      dropArea.dispatchEvent(dropEvent);
-    }, dropSelector, fileName, fileBase64);
-    console.log('ドラッグ＆ドロップによる画像アップロードを実行しました:', filePath);
+    await page.evaluate(
+      async (dropSelector, fileName, fileBase64) => {
+        const dropArea = document.querySelector(dropSelector);
+        if (!dropArea) {
+          throw new Error('ドロップエリアが見つかりません');
+        }
+        const bstr = atob(fileBase64);
+        let n = bstr.length;
+        const u8arr = new Uint8Array(n);
+        while (n--) u8arr[n] = bstr.charCodeAt(n);
+        const file = new File([u8arr], fileName, { type: 'image/jpeg' });
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+        // dragover
+        const dragOverEvent = new DragEvent('dragover', {
+          dataTransfer,
+          bubbles: true,
+          cancelable: true,
+        });
+        dropArea.dispatchEvent(dragOverEvent);
+        // drop
+        const dropEvent = new DragEvent('drop', {
+          dataTransfer,
+          bubbles: true,
+          cancelable: true,
+        });
+        dropArea.dispatchEvent(dropEvent);
+      },
+      dropSelector,
+      fileName,
+      fileBase64
+    );
+    console.log(
+      'ドラッグ＆ドロップによる画像アップロードを実行しました:',
+      filePath
+    );
 
     // 画像アップロード後の「保存」ボタンをモーダル内で探して複合マウスイベントでクリック
     try {
       // --- 画像アップロード後の保存処理を安定化するための待機処理 ---
       // 1. 画像プレビュー(imgタグ)がモーダル内に表示されるまで待機
       //    これにより、画像アップロードが完了してから保存ボタンを押すことができる
-      console.log('画像プレビュー(imgタグ)がモーダル内に表示されるのを待機します...');
-      await page.waitForSelector('.ReactModal__Content img', { timeout: 15000 });
+      console.log(
+        '画像プレビュー(imgタグ)がモーダル内に表示されるのを待機します...'
+      );
+      await page.waitForSelector('.ReactModal__Content img', {
+        timeout: 15000,
+      });
       console.log('画像プレビュー(imgタグ)が表示されました');
 
       // 2. 「保存」ボタンが有効（disabled属性やaria-disabledがfalse）になるまで待機
       //    これにより、ボタンが押せる状態になるまで確実に待つことができる
       console.log('「保存」ボタンが有効になるのを待機します...');
-      await page.waitForFunction(() => {
-        const modal = document.querySelector('.ReactModal__Content');
-        if (!modal) return false;
-        const btns = Array.from(modal.querySelectorAll('button'));
-        return btns.some(btn => btn.innerText.trim() === '保存' && !btn.disabled && btn.getAttribute('aria-disabled') !== 'true');
-      }, { timeout: 15000 });
+      await page.waitForFunction(
+        () => {
+          const modal = document.querySelector('.ReactModal__Content');
+          if (!modal) return false;
+          const btns = Array.from(modal.querySelectorAll('button'));
+          return btns.some(
+            btn =>
+              btn.innerText.trim() === '保存' &&
+              !btn.disabled &&
+              btn.getAttribute('aria-disabled') !== 'true'
+          );
+        },
+        { timeout: 15000 }
+      );
       console.log('「保存」ボタンが有効になりました');
 
       // 3. モーダル内の全ボタンを取得し、デバッグ出力
@@ -168,9 +195,13 @@ async function dragAndDropToAddButton(page) {
         console.log('モーダル内ボタンテキスト:', text);
         if (text === '保存') {
           // クリック前に画面内にスクロール
-          await btn.evaluate(el => el.scrollIntoView({ behavior: 'auto', block: 'center' }));
+          await btn.evaluate(el =>
+            el.scrollIntoView({ behavior: 'auto', block: 'center' })
+          );
           // ボタンの有効状態を再確認
-          const isDisabled = await btn.evaluate(el => el.disabled || el.getAttribute('aria-disabled') === 'true');
+          const isDisabled = await btn.evaluate(
+            el => el.disabled || el.getAttribute('aria-disabled') === 'true'
+          );
           console.log('保存ボタンのdisabled状態:', isDisabled);
           if (isDisabled) {
             console.error('保存ボタンが無効化されています');
@@ -184,19 +215,34 @@ async function dragAndDropToAddButton(page) {
         }
       }
       if (clicked) {
-        console.log('画像アップロード後の「保存」ボタン（モーダル内）をElementHandle.click()でクリックしました');
+        console.log(
+          '画像アップロード後の「保存」ボタン（モーダル内）をElementHandle.click()でクリックしました'
+        );
         // クリック後、モーダルが消える/非表示になるまで待機
         // これにより、保存処理が完了し次の処理に進めることを保証する
-        await page.waitForFunction(() => {
-          const modal = document.querySelector('.ReactModal__Content');
-          return !modal || modal.offsetParent === null || window.getComputedStyle(modal).display === 'none' || window.getComputedStyle(modal).opacity === '0';
-        }, { timeout: 15000 });
+        await page.waitForFunction(
+          () => {
+            const modal = document.querySelector('.ReactModal__Content');
+            return (
+              !modal ||
+              modal.offsetParent === null ||
+              window.getComputedStyle(modal).display === 'none' ||
+              window.getComputedStyle(modal).opacity === '0'
+            );
+          },
+          { timeout: 15000 }
+        );
         console.log('画像アップロード後のモーダルが閉じました');
       } else {
-        console.error('画像アップロード後の「保存」ボタン（モーダル内）が見つかりませんでした');
+        console.error(
+          '画像アップロード後の「保存」ボタン（モーダル内）が見つかりませんでした'
+        );
       }
     } catch (e) {
-      console.error('画像アップロード後の「保存」ボタン（モーダル内）のクリック処理中にエラー:', e);
+      console.error(
+        '画像アップロード後の「保存」ボタン（モーダル内）のクリック処理中にエラー:',
+        e
+      );
     }
   } catch (e) {
     console.error('ドラッグ＆ドロップ画像アップロード中にエラー:', e);
@@ -209,19 +255,21 @@ async function login(page, email, password) {
   console.log('=== ログイン処理開始 ===');
   console.log('現在のURL:', await page.url());
   console.log('現在のタイトル:', await page.title());
-  
+
   // NOTE_EMAILとNOTE_PASSWORDの環境変数チェック
   if (!process.env.NOTE_EMAIL || !process.env.NOTE_PASSWORD) {
-    console.error('エラー: NOTE_EMAIL または NOTE_PASSWORD の環境変数が設定されていません。');
+    console.error(
+      'エラー: NOTE_EMAIL または NOTE_PASSWORD の環境変数が設定されていません。'
+    );
     process.exit(1);
   }
-  
+
   // console.log('環境変数チェック完了');
   // console.log('email変数の長さ:', email ? email.length : 'undefined');
   // console.log('password変数の長さ:', password ? password.length : 'undefined');
   // console.log('NOTE_EMAIL環境変数の長さ:', process.env.NOTE_EMAIL ? process.env.NOTE_EMAIL.length : 'undefined');
   // console.log('NOTE_PASSWORD環境変数の長さ:', process.env.NOTE_PASSWORD ? process.env.NOTE_PASSWORD.length : 'undefined');
-  
+
   // // 環境変数の詳細確認（最初と最後の文字を出力）
   // console.log('=== 環境変数詳細確認 ===');
   // if (process.env.NOTE_EMAIL) {
@@ -238,7 +286,7 @@ async function login(page, email, password) {
   // } else {
   //   console.log('NOTE_PASSWORD存在: false');
   // }
-  
+
   // // 環境変数が$で始まっているかチェック
   // if (process.env.NOTE_EMAIL && process.env.NOTE_EMAIL.startsWith('$')) {
   //   console.log('【警告】NOTE_EMAILが$で始まっています。環境変数が正しく展開されていない可能性があります。');
@@ -246,7 +294,7 @@ async function login(page, email, password) {
   // if (process.env.NOTE_PASSWORD && process.env.NOTE_PASSWORD.startsWith('$')) {
   //   console.log('【警告】NOTE_PASSWORDが$で始まっています。環境変数が正しく展開されていない可能性があります。');
   // }
-  
+
   // // 全ての環境変数を確認（NOTE_で始まるもの）
   // console.log('=== NOTE_で始まる環境変数一覧 ===');
   // Object.keys(process.env).filter(key => key.startsWith('NOTE_')).forEach(key => {
@@ -257,19 +305,24 @@ async function login(page, email, password) {
 
   // User-AgentとAccept-Languageを日本向けに設定
   console.log('User-AgentとAccept-Languageを設定します');
-  await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36');
+  await page.setUserAgent(
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'
+  );
   await page.setExtraHTTPHeaders({
-    'Accept-Language': 'ja-JP,ja;q=0.9,en-US;q=0.8,en;q=0.7'
+    'Accept-Language': 'ja-JP,ja;q=0.9,en-US;q=0.8,en;q=0.7',
   });
   console.log('User-AgentとAccept-Language設定完了');
-  
+
   console.log('noteログインページへ遷移します');
   console.log('遷移前のURL:', await page.url());
-  await page.goto('https://note.com/login?redirectPath=https%3A%2F%2Fnote.com%2F', { waitUntil: 'networkidle2', timeout: 60000 });
+  await page.goto(
+    'https://note.com/login?redirectPath=https%3A%2F%2Fnote.com%2F',
+    { waitUntil: 'networkidle2', timeout: 60000 }
+  );
   console.log('遷移後のURL:', await page.url());
   console.log('遷移後のタイトル:', await page.title());
   console.log('メールアドレスとパスワードを入力します');
-  
+
   // メールアドレス入力フィールドの確認
   console.log('メールアドレス入力フィールドを探します');
   const emailField = await page.$('#email');
@@ -279,11 +332,14 @@ async function login(page, email, password) {
     console.log('メールアドレス入力完了');
   } else {
     console.log('メールアドレス入力フィールドが見つかりません');
-    console.log('ページのHTMLの一部:', await page.content().then(content => content.slice(0, 1000)));
+    console.log(
+      'ページのHTMLの一部:',
+      await page.content().then(content => content.slice(0, 1000))
+    );
   }
-  
+
   await new Promise(resolve => setTimeout(resolve, 1000)); // 1秒待機
-  
+
   // パスワード入力フィールドの確認
   console.log('パスワード入力フィールドを探します');
   const passwordField = await page.$('#password');
@@ -294,16 +350,16 @@ async function login(page, email, password) {
   } else {
     console.log('パスワード入力フィールドが見つかりません');
   }
-  
+
   await new Promise(resolve => setTimeout(resolve, 1000)); // 1秒待機
-  
+
   console.log('ログインボタンを探します');
   await page.waitForSelector('button[type="button"]:not([disabled])');
   console.log('ログインボタンが有効になりました');
-  
+
   const buttons = await page.$$('button[type="button"]');
   console.log('見つかったボタン数:', buttons.length);
-  
+
   let loginClicked = false;
   for (let i = 0; i < buttons.length; i++) {
     const btn = buttons[i];
@@ -315,7 +371,7 @@ async function login(page, email, password) {
         // 方法1: ボタンクリック
         await btn.click();
         console.log('ログインボタンをクリックしました');
-        
+
         // 方法2: フォーム送信も試す（ボタンクリックが失敗した場合のバックアップ）
         try {
           await page.evaluate(() => {
@@ -330,68 +386,89 @@ async function login(page, email, password) {
         }
         console.log('クリック後のURL:', await page.url());
         console.log('クリック後のタイトル:', await page.title());
-        
+
         // ログイン処理の待機
         console.log('ログイン処理の待機を開始します（10秒待機）');
         await new Promise(resolve => setTimeout(resolve, 10000));
         console.log('待機後のURL:', await page.url());
         console.log('待機後のタイトル:', await page.title());
-        
+
         // URLが変わったかチェック
         const currentUrl = await page.url();
         if (currentUrl.includes('/login')) {
-          console.log('警告: まだログインページにいます。ログインが失敗している可能性があります');
+          console.log(
+            '警告: まだログインページにいます。ログインが失敗している可能性があります'
+          );
         } else {
-          console.log('ログインページから移動しました。ログインが成功している可能性があります');
+          console.log(
+            'ログインページから移動しました。ログインが成功している可能性があります'
+          );
         }
-        
+
         // ログインエラーメッセージの確認
         console.log('ログインエラーメッセージを確認します');
-        const errorMessages = await page.$$eval('.error, .alert, .warning, [class*="error"], [class*="alert"], [class*="warning"]', elements => 
-          elements.map(el => el.textContent.trim()).filter(text => text.length > 0)
+        const errorMessages = await page.$$eval(
+          '.error, .alert, .warning, [class*="error"], [class*="alert"], [class*="warning"]',
+          elements =>
+            elements
+              .map(el => el.textContent.trim())
+              .filter(text => text.length > 0)
         );
         if (errorMessages.length > 0) {
           console.log('エラーメッセージが見つかりました:', errorMessages);
-          
+
           // アカウントロックエラーの場合
-          if (errorMessages.some(msg => msg.includes('ロック') || msg.includes('一時的'))) {
+          if (
+            errorMessages.some(
+              msg => msg.includes('ロック') || msg.includes('一時的')
+            )
+          ) {
             console.log('【重要】アカウントが一時的にロックされています');
             console.log('【対処法】以下のいずれかを実行してください:');
-            console.log('1. 手動でnote.comにログインしてアカウントロックを解除');
+            console.log(
+              '1. 手動でnote.comにログインしてアカウントロックを解除'
+            );
             console.log('2. 数時間待ってから再実行');
             console.log('3. CircleCIの実行頻度を下げる（1日1-2回程度）');
-            throw new Error('アカウントが一時的にロックされています。手動でロックを解除するか、時間をおいてから再実行してください。');
+            throw new Error(
+              'アカウントが一時的にロックされています。手動でロックを解除するか、時間をおいてから再実行してください。'
+            );
           }
         } else {
           console.log('エラーメッセージは見つかりませんでした');
         }
-        
+
         // ページの状態をより詳しく確認
         console.log('ページの状態を確認します');
         const pageContent = await page.content();
         if (pageContent.includes('ログインに失敗')) {
           console.log('ログイン失敗メッセージが検出されました');
-        // } else if (pageContent.includes('CAPTCHA') || pageContent.includes('captcha')) {
-        //   console.log('CAPTCHAが検出されました');
-        //   console.log('【重要】CAPTCHAが表示されています');
-        //   console.log('【対処法】手動でログインしてCAPTCHAを解決するか、実行頻度を下げてください');
-        //   throw new Error('CAPTCHAが検出されました。手動でログインしてCAPTCHAを解決してください。');
-        } else if (pageContent.includes('セキュリティ') || pageContent.includes('security')) {
+          // } else if (pageContent.includes('CAPTCHA') || pageContent.includes('captcha')) {
+          //   console.log('CAPTCHAが検出されました');
+          //   console.log('【重要】CAPTCHAが表示されています');
+          //   console.log('【対処法】手動でログインしてCAPTCHAを解決するか、実行頻度を下げてください');
+          //   throw new Error('CAPTCHAが検出されました。手動でログインしてCAPTCHAを解決してください。');
+        } else if (
+          pageContent.includes('セキュリティ') ||
+          pageContent.includes('security')
+        ) {
           console.log('セキュリティチェックが検出されました');
         } else {
           console.log('特別なエラーメッセージは検出されませんでした');
         }
-        
+
         // ログイン後のページ遷移を待機（複数の方法で検出）
         try {
           console.log('方法1: ユーザーアイコンを検索中...');
-          await page.waitForSelector('img.a-userIcon--medium', { timeout: 30000 });
+          await page.waitForSelector('img.a-userIcon--medium', {
+            timeout: 30000,
+          });
           console.log('ユーザーアイコンを検出しました');
         } catch (e1) {
           console.log('ユーザーアイコン検出に失敗:', e1.message);
           console.log('現在のURL:', await page.url());
           console.log('現在のタイトル:', await page.title());
-          
+
           try {
             console.log('方法2: ログインページからのリダイレクトを確認中...');
             await page.waitForFunction(
@@ -403,17 +480,23 @@ async function login(page, email, password) {
           } catch (e2) {
             console.log('リダイレクト検出に失敗:', e2.message);
             console.log('現在のURL:', await page.url());
-            
+
             try {
               console.log('方法3: ダッシュボード要素を検索中...');
-              await page.waitForSelector('[data-testid="dashboard"], .o-dashboard, .dashboard', { timeout: 30000 });
+              await page.waitForSelector(
+                '[data-testid="dashboard"], .o-dashboard, .dashboard',
+                { timeout: 30000 }
+              );
               console.log('ダッシュボード要素を検出しました');
             } catch (e3) {
               console.log('ダッシュボード要素検出に失敗:', e3.message);
-              
+
               try {
                 console.log('方法4: トップページ要素を検索中...');
-                await page.waitForSelector('.o-topPage, .top-page, [data-testid="top"]', { timeout: 30000 });
+                await page.waitForSelector(
+                  '.o-topPage, .top-page, [data-testid="top"]',
+                  { timeout: 30000 }
+                );
                 console.log('トップページ要素を検出しました');
               } catch (e4) {
                 console.log('トップページ要素検出に失敗:', e4.message);
@@ -425,7 +508,7 @@ async function login(page, email, password) {
             }
           }
         }
-        
+
         console.log('ログイン成功を確認しました');
         loginClicked = true;
       } catch (e) {
@@ -433,7 +516,9 @@ async function login(page, email, password) {
         // スクリーンショットとHTMLを保存
         try {
           await page.screenshot({ path: 'login_error.png' });
-          console.log('ログイン失敗時のスクリーンショットを保存しました（login_error.png）');
+          console.log(
+            'ログイン失敗時のスクリーンショットを保存しました（login_error.png）'
+          );
         } catch (screenshotErr) {
           console.error('スクリーンショット保存に失敗:', screenshotErr);
         }
@@ -455,7 +540,9 @@ async function login(page, email, password) {
     console.error('ログインボタンが見つからずクリックできませんでした');
     try {
       await page.screenshot({ path: 'login_btn_notfound.png' });
-      console.log('ログインボタン未検出時のスクリーンショットを保存しました（login_btn_notfound.png）');
+      console.log(
+        'ログインボタン未検出時のスクリーンショットを保存しました（login_btn_notfound.png）'
+      );
     } catch (screenshotErr) {
       console.error('スクリーンショット保存に失敗:', screenshotErr);
     }
@@ -467,13 +554,13 @@ async function login(page, email, password) {
     }
     throw new Error('ログインボタンが見つかりませんでした');
   }
-  
+
   console.log('=== ログイン処理完了 ===');
   console.log('ログイン完了');
   // ログイン後のURLとタイトルを出力
   console.log('ログイン後の現在のURL:', await page.url());
   console.log('ログイン後の現在のタイトル:', await page.title());
-  
+
   // ログイン完了時の環境変数再確認
   // console.log('=== ログイン完了時環境変数再確認 ===');
   // if (process.env.NOTE_EMAIL) {
@@ -497,31 +584,43 @@ async function login(page, email, password) {
   //   console.log('NOTE_PASSWORD存在: false');
   // }
   // console.log('=== ログイン完了時環境変数再確認完了 ===');
-  
+
   // ユーザーアイコンが表示されているかチェック（ログイン判定）
   const userIcon = await page.$('img.a-userIcon--medium');
   if (userIcon) {
     // ユーザーアイコンの画像URLを取得してログ出力
     const iconUrl = await userIcon.evaluate(el => el.src);
-    console.log('ユーザーアイコンが検出されました。ログイン成功です。画像URL:', iconUrl);
+    console.log(
+      'ユーザーアイコンが検出されました。ログイン成功です。画像URL:',
+      iconUrl
+    );
   } else {
-    console.error('ユーザーアイコンが見つかりません。ログインに失敗した可能性があります。');
+    console.error(
+      'ユーザーアイコンが見つかりません。ログインに失敗した可能性があります。'
+    );
     try {
       await page.screenshot({ path: 'login_noicon.png' });
-      console.log('ユーザーアイコン未検出時のスクリーンショットを保存しました（login_noicon.png）');
+      console.log(
+        'ユーザーアイコン未検出時のスクリーンショットを保存しました（login_noicon.png）'
+      );
     } catch (screenshotErr) {
       console.error('スクリーンショット保存に失敗:', screenshotErr);
     }
     try {
       const html = await page.content();
-      console.error('ユーザーアイコン未検出時のHTMLの一部:', html.slice(0, 2000));
+      console.error(
+        'ユーザーアイコン未検出時のHTMLの一部:',
+        html.slice(0, 2000)
+      );
     } catch (htmlErr) {
       console.error('HTML取得に失敗:', htmlErr);
     }
     process.exit(1);
   }
   // ログイン直後にユーザーポップアップがあれば閉じる
-  const popupCloseBtn = await page.$('button.o-userPopup__close[aria-label="閉じる"]');
+  const popupCloseBtn = await page.$(
+    'button.o-userPopup__close[aria-label="閉じる"]'
+  );
   if (popupCloseBtn) {
     console.log('ユーザーポップアップが表示されているため閉じます');
     await popupCloseBtn.click();
@@ -538,7 +637,9 @@ export { login };
 // 投稿画面遷移
 async function goToNewPost(page) {
   console.log('ユーザーポップアップがあれば閉じます');
-  const closePopupBtn = await page.$('button.o-userPopup__close[aria-label="閉じる"]');
+  const closePopupBtn = await page.$(
+    'button.o-userPopup__close[aria-label="閉じる"]'
+  );
   if (closePopupBtn) {
     await closePopupBtn.click();
     await new Promise(resolve => setTimeout(resolve, 500));
@@ -572,7 +673,12 @@ async function goToNewPost(page) {
       // }
       // 全リンクを出力
       try {
-        const links = await page.$$eval('a', as => as.map(a => ({href: a.getAttribute('href'), text: a.textContent.trim()})));
+        const links = await page.$$eval('a', as =>
+          as.map(a => ({
+            href: a.getAttribute('href'),
+            text: a.textContent.trim(),
+          }))
+        );
         // console.log('投稿ボタンクリック後の全リンク:', links);
       } catch (e) {
         console.error('全リンク出力に失敗:', e);
@@ -589,17 +695,23 @@ async function goToNewPost(page) {
   }
   if (!clicked) {
     const html = await page.content();
-    console.error('表示されている投稿ボタンが見つかりませんでした。HTMLの一部:', html.slice(0, 1000));
+    console.error(
+      '表示されている投稿ボタンが見つかりませんでした。HTMLの一部:',
+      html.slice(0, 1000)
+    );
     throw new Error('表示されている投稿ボタンが見つかりませんでした');
   }
 
   // 投稿ボタンクリック後、新しく記事を書くボタンが表示されるかどうかを確認
-  console.log('投稿ボタンクリック後、新しく記事を書くボタンが表示されるか確認します...');
+  console.log(
+    '投稿ボタンクリック後、新しく記事を書くボタンが表示されるか確認します...'
+  );
   // クリック直後に1.5秒待機
   await new Promise(resolve => setTimeout(resolve, 1500));
 
   let newNoteButton = null;
-  for (let i = 0; i < 5; i++) { // 最大5回リトライ（1秒ごと）
+  for (let i = 0; i < 5; i++) {
+    // 最大5回リトライ（1秒ごと）
     newNoteButton = await page.$('a[href="/notes/new"]');
     if (newNoteButton) break;
     await new Promise(resolve => setTimeout(resolve, 1000));
@@ -609,7 +721,9 @@ async function goToNewPost(page) {
     await newNoteButton.click();
   } else {
     // 従来のテキストメニューを探す
-    console.log('新しく記事を書くボタンが表示されませんでした。従来のテキストメニューをリトライで探します...');
+    console.log(
+      '新しく記事を書くボタンが表示されませんでした。従来のテキストメニューをリトライで探します...'
+    );
     let found = false;
     for (let i = 0; i < 5; i++) {
       try {
@@ -623,7 +737,10 @@ async function goToNewPost(page) {
     }
     if (!found) {
       const html = await page.content();
-      console.error('従来のテキストメニューが見つかりませんでした。HTMLの一部:', html.slice(0, 1000));
+      console.error(
+        '従来のテキストメニューが見つかりませんでした。HTMLの一部:',
+        html.slice(0, 1000)
+      );
       throw new Error('新規投稿画面への遷移に失敗しました');
     }
   }
@@ -647,8 +764,12 @@ async function fillArticle(page, title, body) {
     throw new Error('タイトル入力欄が見つかりませんでした');
   }
   console.log('本文入力欄を探します');
-  await page.waitForSelector('div.ProseMirror.note-common-styles__textnote-body[contenteditable="true"]');
-  const bodyArea = await page.$('div.ProseMirror.note-common-styles__textnote-body[contenteditable="true"]');
+  await page.waitForSelector(
+    'div.ProseMirror.note-common-styles__textnote-body[contenteditable="true"]'
+  );
+  const bodyArea = await page.$(
+    'div.ProseMirror.note-common-styles__textnote-body[contenteditable="true"]'
+  );
   if (bodyArea) {
     await bodyArea.focus();
     await bodyArea.click({ clickCount: 3 });
@@ -698,7 +819,8 @@ async function closeDialogs(page) {
       break;
     }
   }
-  if (!closed1) throw new Error('「閉じる」ボタン（1回目）が見つかりませんでした');
+  if (!closed1)
+    throw new Error('「閉じる」ボタン（1回目）が見つかりませんでした');
   await new Promise(resolve => setTimeout(resolve, 500));
   // 2回目（モーダル内）
   console.log('「閉じる」ボタン（2回目/モーダル内）を探します...');
@@ -718,7 +840,9 @@ async function closeDialogs(page) {
     if (closed2) break;
   }
   if (!closed2) {
-    console.warn('「閉じる」ボタン（2回目/モーダル内）が見つかりませんでしたが、処理を続行します');
+    console.warn(
+      '「閉じる」ボタン（2回目/モーダル内）が見つかりませんでしたが、処理を続行します'
+    );
   }
   await new Promise(resolve => setTimeout(resolve, 500));
 }
@@ -736,7 +860,8 @@ function parseUnsubmittedArticles(tablePath) {
   const draftDateIdx = header.findIndex(h => h === '下書き保存日');
   if (fileNameIdx === -1 || draftDateIdx === -1) return [];
   const result = [];
-  for (let i = 2; i < tableLines.length; i++) { // データ行のみ
+  for (let i = 2; i < tableLines.length; i++) {
+    // データ行のみ
     const cols = tableLines[i].split('|').map(c => c.trim());
     if (!cols[draftDateIdx] && cols[fileNameIdx]) {
       // posts/ で始まらない場合は自動で付与
@@ -780,10 +905,10 @@ function updateDraftDate(tablePath, rowIndex, dateStr) {
 // メイン処理
 async function main() {
   console.log('Puppeteer起動オプションを取得します');
-  
+
   // Puppeteer設定を取得
   const { puppeteer, launchOptions } = await getPuppeteerConfig();
-  
+
   // メイン処理開始時の環境変数確認
   // console.log('=== メイン処理開始時環境変数確認 ===');
   // if (process.env.NOTE_EMAIL) {
@@ -807,7 +932,7 @@ async function main() {
   //   console.log('NOTE_PASSWORD存在: false');
   // }
   // console.log('=== メイン処理開始時環境変数確認完了 ===');
-  
+
   const options = await launchOptions();
   console.log('Puppeteerを起動します');
   const browser = await puppeteer.launch(options);
@@ -871,12 +996,14 @@ async function main() {
 }
 
 // Lambda用のhandler関数をエクスポート
-export const handler = async (event) => {
+export const handler = async event => {
   return await main();
 };
 
 // ESモジュールでは require.main === module は使用できないため、
 // import.meta.url を使用してメインモジュールかどうかを判定
 if (import.meta.url === `file://${process.argv[1]}`) {
-  main().then(() => console.log('完了')).catch(console.error);
-} 
+  main()
+    .then(() => console.log('完了'))
+    .catch(console.error);
+}

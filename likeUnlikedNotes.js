@@ -23,14 +23,17 @@ import { runWithCore } from '@aa-0921/note-auto-core';
       'SOS 助けて 辛い 苦しい 痛い 泣きたい 叫びたい 逃げたい',
       '消えたい 死にたい 生きたい 頑張りたい 変わりたい 成長したい 幸せになりたい 愛されたい',
       '認められたい 理解されたい 支えられたい 守られたい 癒されたい 休みたい 眠りたい 忘れたい',
-      '許したい 許されたい 謝りたい 感謝したい ありがとう ごめんなさい 大丈夫'
-    ].join(' ').trim().split(/\s+/);
+      '許したい 許されたい 謝りたい 感謝したい ありがとう ごめんなさい 大丈夫',
+    ]
+      .join(' ')
+      .trim()
+      .split(/\s+/);
 
     await core.runLikeUnlikedNotes({
       background: wantsBackground,
       maxLikes: 24,
       // コア側で options.searchWords を優先使用
-      searchWords
+      searchWords,
     });
     console.log('いいね処理が完了しました');
   });

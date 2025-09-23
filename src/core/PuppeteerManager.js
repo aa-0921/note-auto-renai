@@ -16,11 +16,11 @@ export default class PuppeteerManager {
     try {
       // ESモジュール用の動的import関数
       const { puppeteer, launchOptions } = await this.getPuppeteerConfig();
-      
+
       const options = await launchOptions();
       this.logger.info('Puppeteerを起動します');
       this.browser = await puppeteer.launch(options);
-      
+
       return true;
     } catch (error) {
       this.logger.error('Puppeteer初期化に失敗しました:', error);
@@ -30,7 +30,7 @@ export default class PuppeteerManager {
 
   async getPuppeteerConfig() {
     const isLambda = !!process.env.AWS_LAMBDA_FUNCTION_NAME;
-    
+
     if (isLambda) {
       // Lambda本番用
       const puppeteerCore = await import('puppeteer-core');
@@ -42,7 +42,7 @@ export default class PuppeteerManager {
           defaultViewport: chromium.default.defaultViewport,
           executablePath: await chromium.default.executablePath,
           headless: chromium.default.headless,
-        })
+        }),
       };
     } else {
       // ローカルテスト用
@@ -51,7 +51,8 @@ export default class PuppeteerManager {
         puppeteer: puppeteerModule.default,
         launchOptions: async () => ({
           headless: this.background ? 'new' : false,
-          executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+          executablePath:
+            '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
           args: [
             '--no-sandbox',
             '--disable-setuid-sandbox',
@@ -73,11 +74,11 @@ export default class PuppeteerManager {
             '--disable-ipc-flooding-protection',
             '--no-first-run',
             '--no-default-browser-check',
-            '--disable-background-networking'
+            '--disable-background-networking',
           ],
           defaultViewport: null,
-          protocolTimeout: 30000 // 30秒のプロトコルタイムアウト
-        })
+          protocolTimeout: 30000, // 30秒のプロトコルタイムアウト
+        }),
       };
     }
   }
@@ -86,15 +87,17 @@ export default class PuppeteerManager {
     if (!this.browser) {
       throw new Error('Puppeteerが初期化されていません');
     }
-    
+
     this.page = await this.browser.newPage();
-    
+
     // User-AgentとAccept-Languageを設定
-    await this.page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36');
+    await this.page.setUserAgent(
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'
+    );
     await this.page.setExtraHTTPHeaders({
-      'Accept-Language': 'ja-JP,ja;q=0.9,en-US;q=0.8,en;q=0.7'
+      'Accept-Language': 'ja-JP,ja;q=0.9,en-US;q=0.8,en;q=0.7',
     });
-    
+
     return this.page;
   }
 
@@ -106,15 +109,18 @@ export default class PuppeteerManager {
     this.logger.info('=== ログイン処理開始 ===');
     this.logger.info('現在のURL:', await this.page.url());
     this.logger.info('現在のタイトル:', await this.page.title());
-    
+
     this.logger.info('noteログインページへ遷移します');
-    await this.page.goto('https://note.com/login?redirectPath=https%3A%2F%2Fnote.com%2F', { 
-      waitUntil: 'networkidle2', 
-      timeout: 60000 
-    });
-    
+    await this.page.goto(
+      'https://note.com/login?redirectPath=https%3A%2F%2Fnote.com%2F',
+      {
+        waitUntil: 'networkidle2',
+        timeout: 60000,
+      }
+    );
+
     this.logger.info('メールアドレスとパスワードを入力します');
-    
+
     // メールアドレス入力
     const emailField = await this.page.$('#email');
     if (emailField) {
@@ -123,9 +129,9 @@ export default class PuppeteerManager {
     } else {
       throw new Error('メールアドレス入力フィールドが見つかりません');
     }
-    
+
     await new Promise(resolve => setTimeout(resolve, 1000));
-    
+
     // パスワード入力
     const passwordField = await this.page.$('#password');
     if (passwordField) {
@@ -134,28 +140,30 @@ export default class PuppeteerManager {
     } else {
       throw new Error('パスワード入力フィールドが見つかりません');
     }
-    
+
     await new Promise(resolve => setTimeout(resolve, 1000));
-    
+
     // ログインボタンクリック
     this.logger.info('ログインボタンを探します');
     await this.page.waitForSelector('button[type="button"]:not([disabled])');
-    
+
     const buttons = await this.page.$$('button[type="button"]');
     let loginClicked = false;
-    
+
     for (const btn of buttons) {
       const text = await (await btn.getProperty('innerText')).jsonValue();
       if (text && text.trim() === 'ログイン') {
         await btn.click();
         this.logger.info('ログインボタンをクリックしました');
-        
+
         // ログイン処理の待機
         await new Promise(resolve => setTimeout(resolve, 10000));
-        
+
         // ログイン成功の確認
         try {
-          await this.page.waitForSelector('img.a-userIcon--medium', { timeout: 30000 });
+          await this.page.waitForSelector('img.a-userIcon--medium', {
+            timeout: 30000,
+          });
           this.logger.info('ログイン成功を確認しました');
           loginClicked = true;
           break;
@@ -165,11 +173,11 @@ export default class PuppeteerManager {
         }
       }
     }
-    
+
     if (!loginClicked) {
       throw new Error('ログインボタンが見つからずクリックできませんでした');
     }
-    
+
     this.logger.info('=== ログイン処理完了 ===');
   }
 
