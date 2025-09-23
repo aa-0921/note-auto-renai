@@ -24,10 +24,6 @@ export default class DefaultConfigs {
         enabled: true,
         doc_id: "",
         worksheet: "posts"
-      },
-      overrides: {
-        seasonal_topic: "恋愛・人間関係",
-        tags: ["#人間関係", "#メンタル", "#自己肯定感", "#引き寄せ", "#引き寄せの法則", "#裏技", "#PR"]
       }
     };
   }
