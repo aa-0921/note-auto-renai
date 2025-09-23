@@ -10,7 +10,14 @@
     "lint": "eslint . --ext .js",
     "lint:fix": "eslint . --ext .js --fix",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "autoCreateAndDraftNote": "node scripts/autoCreateAndDraftNote.js",
+    "autoPublishNotes": "node scripts/autoPublishNotes.js",
+    "likeUnlikedNotes": "node scripts/likeUnlikedNotes.js",
+    "likeNotesByUrl": "node scripts/likeNotesByUrl.js",
+    "followFromArticles": "node scripts/followFromArticles.js",
+    "noteAutoDraftAndSheetUpdate": "node scripts/noteAutoDraftAndSheetUpdate.js",
+    "likeAsGuestByAccounts": "node likeAsGuestByAccounts.js"
   },
   "keywords": [
     "note",
