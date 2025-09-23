@@ -59,28 +59,28 @@ export default class UserAgentManager {
   static getUserAgentByType(type) {
     const filteredAgents = userAgents.filter(agent => {
       switch (type.toLowerCase()) {
-        case 'chrome':
-          return agent.includes('Chrome') && !agent.includes('Edg');
-        case 'firefox':
-          return agent.includes('Firefox');
-        case 'safari':
-          return agent.includes('Safari') && !agent.includes('Chrome');
-        case 'edge':
-          return agent.includes('Edg');
-        case 'mobile':
-          return (
-            agent.includes('Mobile') ||
+      case 'chrome':
+        return agent.includes('Chrome') && !agent.includes('Edg');
+      case 'firefox':
+        return agent.includes('Firefox');
+      case 'safari':
+        return agent.includes('Safari') && !agent.includes('Chrome');
+      case 'edge':
+        return agent.includes('Edg');
+      case 'mobile':
+        return (
+          agent.includes('Mobile') ||
             agent.includes('iPhone') ||
             agent.includes('iPad')
-          );
-        case 'windows':
-          return agent.includes('Windows');
-        case 'macos':
-          return agent.includes('Macintosh');
-        case 'linux':
-          return agent.includes('Linux') && !agent.includes('Android');
-        default:
-          return true;
+        );
+      case 'windows':
+        return agent.includes('Windows');
+      case 'macos':
+        return agent.includes('Macintosh');
+      case 'linux':
+        return agent.includes('Linux') && !agent.includes('Android');
+      default:
+        return true;
       }
     });
 

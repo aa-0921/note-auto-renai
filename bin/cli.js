@@ -67,34 +67,34 @@ async function main() {
 
     // コマンド実行
     switch (command) {
-      case 'like-unliked':
-        await core.runLikeUnlikedNotes(options);
-        break;
-      case 'publish':
-        await core.runAutoPublishNotes(options);
-        break;
-      case 'follow':
-        await core.runFollowFromArticles(options);
-        break;
-      case 'like-url': {
-        const url = args.find(arg => arg.startsWith('https://'));
-        if (!url) {
-          console.error('エラー: URLを指定してください');
-          console.error(
-            '例: npx note-core like-url --bg https://note.com/example'
-          );
-          process.exit(1);
-        }
-        await core.runLikeNotesByUrl(url, options);
-        break;
-      }
-      case 'create-draft':
-        await core.runAutoCreateAndDraftNote(options);
-        break;
-      default:
-        console.error(`エラー: 不明なコマンド "${command}"`);
-        console.error('利用可能なコマンド:', Object.keys(commands).join(', '));
+    case 'like-unliked':
+      await core.runLikeUnlikedNotes(options);
+      break;
+    case 'publish':
+      await core.runAutoPublishNotes(options);
+      break;
+    case 'follow':
+      await core.runFollowFromArticles(options);
+      break;
+    case 'like-url': {
+      const url = args.find(arg => arg.startsWith('https://'));
+      if (!url) {
+        console.error('エラー: URLを指定してください');
+        console.error(
+          '例: npx note-core like-url --bg https://note.com/example'
+        );
         process.exit(1);
+      }
+      await core.runLikeNotesByUrl(url, options);
+      break;
+    }
+    case 'create-draft':
+      await core.runAutoCreateAndDraftNote(options);
+      break;
+    default:
+      console.error(`エラー: 不明なコマンド "${command}"`);
+      console.error('利用可能なコマンド:', Object.keys(commands).join(', '));
+      process.exit(1);
     }
 
     // クリーンアップ
