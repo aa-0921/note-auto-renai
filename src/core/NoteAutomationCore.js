@@ -135,6 +135,9 @@ export default class NoteAutomationCore {
       // 新規投稿画面へ遷移
       await this.notePublisher.goToNewPost(page);
       
+      // サムネイル画像アップロード
+      await this.notePublisher.dragAndDropToAddButton(page);
+      
       // 記事タイトル・本文を入力
       await this.notePublisher.fillArticle(page, title, processedArticle);
       

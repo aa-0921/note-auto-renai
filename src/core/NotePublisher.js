@@ -17,8 +17,6 @@ export default class NotePublisher {
     this.logger = new Logger();
   }
 
-  // getSearchWords は廃止（各リポジトリ側で必須指定）
-
   // ログイン処理（既存コードから移植）
   async login(page, email, password) {
     this.logger.info('=== ログイン処理開始 ===');
@@ -156,6 +154,165 @@ export default class NotePublisher {
     
     await page.waitForNavigation();
     this.logger.info('新規投稿画面に遷移しました');
+  }
+
+  // サムネイル画像をランダム選択（各リポジトリ側のthumbnailsディレクトリを使用）
+  getRandomThumbnail() {
+    // 各リポジトリ側のthumbnailsディレクトリを探す
+    // プロセス実行時のカレントディレクトリから相対的に探す
+    const possiblePaths = [
+      path.join(process.cwd(), 'thumbnails'),
+      path.join(__dirname, '../../../thumbnails'), // note-auto-renai側
+      path.join(__dirname, '../../thumbnails')      // フォールバック
+    ];
+    
+    let dir = null;
+    for (const possiblePath of possiblePaths) {
+      if (fs.existsSync(possiblePath)) {
+        dir = possiblePath;
+        break;
+      }
+    }
+    
+    if (!dir) {
+      throw new Error(`サムネイル画像ディレクトリが見つかりません。探したパス: ${possiblePaths.join(', ')}`);
+    }
+    
+    const files = fs.readdirSync(dir).filter(f => /\.(jpg|jpeg|png|gif)$/i.test(f));
+    if (files.length === 0) throw new Error(`サムネイル画像がありません: ${dir}`);
+    
+    // より強力なランダム化：複数の手法を組み合わせ
+    // 1. 現在時刻のミリ秒をシードとして使用
+    const now = Date.now();
+    const seed1 = now % files.length;
+    
+    // 2. プロセスの開始時間も組み合わせ
+    const seed2 = Math.floor(process.uptime() * 1000) % files.length;
+    
+    // 3. 複数回のランダム処理を組み合わせ
+    let randomIndex = Math.floor(Math.random() * files.length);
+    randomIndex = (randomIndex + seed1) % files.length;
+    randomIndex = (randomIndex + Math.floor(Math.random() * files.length)) % files.length;
+    randomIndex = (randomIndex + seed2) % files.length;
+    
+    // 4. さらにランダムシャッフルを追加
+    for (let i = 0; i < 3; i++) {
+      randomIndex = (randomIndex + Math.floor(Math.random() * files.length)) % files.length;
+    }
+    
+    const file = files[randomIndex];
+    this.logger.info(`サムネイル選択: ${randomIndex}/${files.length-1} -> ${file} (from: ${dir})`);
+    return path.join(dir, file);
+  }
+
+  // Puppeteerで画像ドラッグ＆ドロップ（画像を追加ボタンに対して）
+  async dragAndDropToAddButton(page) {
+    try {
+      const dropSelector = 'button[aria-label="画像を追加"]';
+      await page.waitForSelector(dropSelector, { timeout: 5000 });
+
+      const filePath = this.getRandomThumbnail();
+      const fileName = path.basename(filePath);
+      const fileData = fs.readFileSync(filePath);
+      const fileBase64 = fileData.toString('base64');
+      this.logger.info('ドラッグ＆ドロップでアップロードする画像ファイル:', filePath);
+
+      await page.evaluate(async (dropSelector, fileName, fileBase64) => {
+        const dropArea = document.querySelector(dropSelector);
+        if (!dropArea) {
+          throw new Error('ドロップエリアが見つかりません');
+        }
+        const bstr = atob(fileBase64);
+        let n = bstr.length;
+        const u8arr = new Uint8Array(n);
+        while(n--) u8arr[n] = bstr.charCodeAt(n);
+        const file = new File([u8arr], fileName, { type: "image/jpeg" });
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+        // dragover
+        const dragOverEvent = new DragEvent('dragover', {
+          dataTransfer,
+          bubbles: true,
+          cancelable: true
+        });
+        dropArea.dispatchEvent(dragOverEvent);
+        // drop
+        const dropEvent = new DragEvent('drop', {
+          dataTransfer,
+          bubbles: true,
+          cancelable: true
+        });
+        dropArea.dispatchEvent(dropEvent);
+      }, dropSelector, fileName, fileBase64);
+      this.logger.info('ドラッグ＆ドロップによる画像アップロードを実行しました:', filePath);
+
+      // 画像アップロード後の「保存」ボタンをモーダル内で探して複合マウスイベントでクリック
+      try {
+        // --- 画像アップロード後の保存処理を安定化するための待機処理 ---
+        // 1. 画像プレビュー(imgタグ)がモーダル内に表示されるまで待機
+        //    これにより、画像アップロードが完了してから保存ボタンを押すことができる
+        this.logger.info('画像プレビュー(imgタグ)がモーダル内に表示されるのを待機します...');
+        await page.waitForSelector('.ReactModal__Content img', { timeout: 15000 });
+        this.logger.info('画像プレビュー(imgタグ)が表示されました');
+
+        // 2. 「保存」ボタンが有効（disabled属性やaria-disabledがfalse）になるまで待機
+        //    これにより、ボタンが押せる状態になるまで確実に待つことができる
+        this.logger.info('「保存」ボタンが有効になるのを待機します...');
+        await page.waitForFunction(() => {
+          const modal = document.querySelector('.ReactModal__Content');
+          if (!modal) return false;
+          const btns = Array.from(modal.querySelectorAll('button'));
+          return btns.some(btn => btn.innerText.trim() === '保存' && !btn.disabled && btn.getAttribute('aria-disabled') !== 'true');
+        }, { timeout: 15000 });
+        this.logger.info('「保存」ボタンが有効になりました');
+
+        // 3. モーダル内の全ボタンを取得し、デバッグ出力
+        const modalButtons = await page.$$('.ReactModal__Content button');
+        this.logger.info('モーダル内のボタン数:', modalButtons.length);
+        for (let i = 0; i < modalButtons.length; i++) {
+          const html = await modalButtons[i].evaluate(el => el.outerHTML);
+          this.logger.info(`モーダル内ボタン[${i}] outerHTML:`, html);
+        }
+        let clicked = false;
+        for (const btn of modalButtons) {
+          // ボタンのinnerTextをデバッグ出力
+          const text = await btn.evaluate(el => el.innerText.trim());
+          this.logger.info('モーダル内ボタンテキスト:', text);
+          if (text === '保存') {
+            // クリック前に画面内にスクロール
+            await btn.evaluate(el => el.scrollIntoView({ behavior: 'auto', block: 'center' }));
+            // ボタンの有効状態を再確認
+            const isDisabled = await btn.evaluate(el => el.disabled || el.getAttribute('aria-disabled') === 'true');
+            this.logger.info('保存ボタンのdisabled状態:', isDisabled);
+            if (isDisabled) {
+              this.logger.error('保存ボタンが無効化されています');
+              continue;
+            }
+            // PuppeteerのElementHandle.click()でクリック（delay付き）
+            // これにより、実際のユーザー操作に近い形でクリックイベントが発火する
+            await btn.click({ delay: 100 });
+            clicked = true;
+            break;
+          }
+        }
+        if (clicked) {
+          this.logger.info('画像アップロード後の「保存」ボタン（モーダル内）をElementHandle.click()でクリックしました');
+          // クリック後、モーダルが消える/非表示になるまで待機
+          // これにより、保存処理が完了し次の処理に進めることを保証する
+          await page.waitForFunction(() => {
+            const modal = document.querySelector('.ReactModal__Content');
+            return !modal || modal.offsetParent === null || window.getComputedStyle(modal).display === 'none' || window.getComputedStyle(modal).opacity === '0';
+          }, { timeout: 15000 });
+          this.logger.info('画像アップロード後のモーダルが閉じました');
+        } else {
+          this.logger.error('画像アップロード後の「保存」ボタン（モーダル内）が見つかりませんでした');
+        }
+      } catch (e) {
+        this.logger.error('画像アップロード後の「保存」ボタン（モーダル内）のクリック処理中にエラー:', e);
+      }
+    } catch (e) {
+      this.logger.error('ドラッグ＆ドロップ画像アップロード中にエラー:', e);
+    }
   }
 
   // 記事入力
@@ -707,4 +864,9 @@ export const saveDraft = async (page) => {
 export const closeDialogs = async (page) => {
   const publisher = new NotePublisher({}, null);
   return await publisher.closeDialogs(page);
+};
+
+export const dragAndDropToAddButton = async (page) => {
+  const publisher = new NotePublisher({}, null);
+  return await publisher.dragAndDropToAddButton(page);
 };

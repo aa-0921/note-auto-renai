@@ -20,7 +20,6 @@ export default class DefaultConfigs {
         login_method: "email_password",
         cookie_secret_name: "NOTE_COOKIE"
       },
-      // 検索ワードはアカウント側スクリプトから options.searchWords で注入
       sheets: {
         enabled: true,
         doc_id: "",

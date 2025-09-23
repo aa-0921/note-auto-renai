@@ -24,7 +24,8 @@ export {
   goToNewPost,
   fillArticle,
   saveDraft,
-  closeDialogs
+  closeDialogs,
+  dragAndDropToAddButton
 } from './core/NotePublisher.js';
 
 export {
