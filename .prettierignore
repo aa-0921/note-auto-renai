@@ -7,3 +7,8 @@ build/
 *.min.css
 package-lock.json
 yarn.lock
+
+# Markdownファイルをフォーマット対象外に
+*.md
+posts/
+docs/
