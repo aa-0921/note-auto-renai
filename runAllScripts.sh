@@ -1,17 +1,28 @@
 #!/bin/bash
 
-echo "=== フォロー処理開始 ==="
-node follow/followFromArticles.js --bg
-echo "=== フォロー処理完了 ==="
+set -euo pipefail
 
-echo "=== いいね処理開始 ==="
-echo "1. counselor_risa のいいね処理"
-node likeNotesByUrl.js --bg https://note.com/counselor_risa
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+cd "$SCRIPT_DIR"
 
-echo "2. investment_happy のいいね処理"
-node likeNotesByUrl.js --bg https://note.com/investment_happy
+echo "=== 全自動処理開始 ==="
 
-echo "3. enginner_skill のいいね処理"
-node likeNotesByUrl.js --bg https://note.com/enginner_skill
+run_step() {
+  local title="$1"
+  shift
+  echo
+  echo "---- ${title} 開始 ----"
+  echo "コマンド: $*"
+  "$@"
+  echo "---- ${title} 完了 ----"
+}
 
+# scripts/ 配下の代表的な処理をすべて順次実行
+run_step "下書きノート作成 (autoCreateAndDraftNote)" node scripts/autoCreateAndDraftNote.js
+run_step "ノート自動公開 (autoPublishNotes)" node scripts/autoPublishNotes.js
+run_step "ゲストいいね (likeAsGuestByAccounts)" node scripts/likeAsGuestByAccounts.js
+run_step "記事からフォロー (followFromArticles)" node scripts/followFromArticles.js
+
+
+echo
 echo "=== 全処理完了 ==="
