@@ -15,8 +15,7 @@ export { default as runWithCore } from './utils/runWithCore.js';
 export { runWithCore as bootstrapWithCore } from './utils/runWithCore.js';
 export { parseBackgroundFlag, extractNoteUrl } from './utils/Args.js';
 
-// 設定のエクスポート
-export { default as DefaultConfigs } from './config/DefaultConfigs.js';
+// 設定のエクスポート（不要のため削除）
 
 // 個別機能のエクスポート（既存スクリプトとの互換性のため）
 export {
