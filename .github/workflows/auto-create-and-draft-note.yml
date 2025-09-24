@@ -5,13 +5,16 @@ name: Auto Create And Draft Note
 
 on:
   schedule:
-    # JST 11:45, 17:45, 23:45（UTC換算で2:45, 8:45, 14:45）
-
-    - cron: '15 1 * * *' # JST 10:15 一時的に追加
-
-    - cron: '45 2 * * *' # JST 11:45
-    - cron: '45 8 * * *' # JST 17:45
-    - cron: '45 14 * * *' # JST 23:45
+    # JST 6:00〜24:00の間で1日8回実行（2時間15分間隔）
+    - cron: '0 21 * * *'   # JST 06:00
+    - cron: '15 23 * * *'  # JST 08:15
+    - cron: '30 1 * * *'   # JST 10:30
+    - cron: '45 3 * * *'   # JST 12:45
+    - cron: '0 6 * * *'    # JST 15:00
+    - cron: '15 8 * * *'   # JST 17:15
+    - cron: '30 10 * * *'  # JST 19:30
+    - cron: '45 12 * * *'  # JST 21:45
+    - cron: '0 15 * * *'   # JST 24:00 (翌日00:00)
   workflow_dispatch: # 手動実行
 
 jobs:
