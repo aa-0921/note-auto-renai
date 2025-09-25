@@ -251,93 +251,93 @@ jobs:
 workflows:
   version: 2
 
-  # 記事公開用のワークフロー（1日5回）
-  scheduled-auto-publish-notes:
-    triggers:
-      - schedule:
-          cron: '45 2,8,14 * * *' # JST 11:45, 17:45, 23:45
-          filters:
-            branches:
-              only:
-                - main
-      - schedule:
-          cron: '0 22 * * *' # JST 7:00
-          filters:
-            branches:
-              only:
-                - main
-      - schedule:
-          cron: '0 6 * * *' # JST 15:00
-          filters:
-            branches:
-              only:
-                - main
-    jobs:
-      - run-auto-publish-notes:
-          filters:
-            branches:
-              only:
-                - main
+  # 記事公開用のワークフロー（1日5回）- 定期実行停止
+  # scheduled-auto-publish-notes:
+  #   triggers:
+  #     - schedule:
+  #         cron: '45 2,8,14 * * *' # JST 11:45, 17:45, 23:45
+  #         filters:
+  #           branches:
+  #             only:
+  #               - main
+  #     - schedule:
+  #         cron: '0 22 * * *' # JST 7:00
+  #         filters:
+  #           branches:
+  #             only:
+  #               - main
+  #     - schedule:
+  #         cron: '0 6 * * *' # JST 15:00
+  #         filters:
+  #           branches:
+  #             only:
+  #               - main
+  #   jobs:
+  #     - run-auto-publish-notes:
+  #         filters:
+  #           branches:
+  #             only:
+  #               - main
 
-  # 記事作成用のワークフロー（1日5回）
-  scheduled-auto-create-note:
-    triggers:
-      - schedule:
-          cron: '0 22 * * *' # JST 7:00
-          filters:
-            branches:
-              only:
-                - main
-      - schedule:
-          cron: '45 2,8,14 * * *' # JST 11:45, 17:45, 23:45
-          filters:
-            branches:
-              only:
-                - main
-      - schedule:
-          cron: '0 6 * * *' # JST 15:00
-          filters:
-            branches:
-              only:
-                - main
-    jobs:
-      - run-auto-create-note:
-          filters:
-            branches:
-              only:
-                - main
+  # 記事作成用のワークフロー（1日5回）- 定期実行停止
+  # scheduled-auto-create-note:
+  #   triggers:
+  #     - schedule:
+  #         cron: '0 22 * * *' # JST 7:00
+  #         filters:
+  #           branches:
+  #             only:
+  #               - main
+  #     - schedule:
+  #         cron: '45 2,8,14 * * *' # JST 11:45, 17:45, 23:45
+  #         filters:
+  #           branches:
+  #             only:
+  #               - main
+  #     - schedule:
+  #         cron: '0 6 * * *' # JST 15:00
+  #         filters:
+  #           branches:
+  #             only:
+  #               - main
+  #   jobs:
+  #     - run-auto-create-note:
+  #         filters:
+  #           branches:
+  #             only:
+  #               - main
 
-  # フォロー用のワークフロー（1日8回、3時間ごと）
-  scheduled-follow-from-articles:
-    triggers:
-      - schedule:
-          cron: '0 0,3,6,9,12,15,18,21 * * *' # 3時間ごと
-          filters:
-            branches:
-              only:
-                - main
-    jobs:
-      - run-follow-from-articles:
-          filters:
-            branches:
-              only:
-                - main
+  # フォロー用のワークフロー（1日8回、3時間ごと）- 定期実行停止
+  # scheduled-follow-from-articles:
+  #   triggers:
+  #     - schedule:
+  #         cron: '0 0,3,6,9,12,15,18,21 * * *' # 3時間ごと
+  #         filters:
+  #           branches:
+  #             only:
+  #               - main
+  #   jobs:
+  #     - run-follow-from-articles:
+  #         filters:
+  #           branches:
+  #             only:
+  #               - main
 
-  # いいね用のワークフロー（1日6回、4時間ごと）
-  scheduled-like-notes:
-    triggers:
-      - schedule:
-          cron: '30 1,5,9,13,17,21 * * *' # 4時間ごと
-          filters:
-            branches:
-              only:
-                - main
-    jobs:
-      - run-like-notes:
-          filters:
-            branches:
-              only:
-                - main
+  # いいね用のワークフロー（1日6回、4時間ごと）- 定期実行停止
+  # scheduled-like-notes:
+  #   triggers:
+  #     - schedule:
+  #         cron: '30 1,5,9,13,17,21 * * *' # 4時間ごと
+  #         filters:
+  #           branches:
+  #             only:
+  #               - main
+  #   jobs:
+  #     - run-like-notes:
+  #         filters:
+  #           branches:
+  #             only:
+  #               - main
 
   # Push時の実行用
   on-push:
