@@ -21,7 +21,6 @@ async function main() {
   // Kindleアフィリエイト設定（直接指定）
   const kindleAffiliateTag = 'note-enginner-22';
   const kindleAffiliateEnabled = true;
-  const kindleBannerImagePath = '';
 
   const core = new NoteAutomationCore(configPath);
   await core.initialize(background);
@@ -46,8 +45,7 @@ async function main() {
     // Kindleバナー画像の挿入とリンク適用（NotePublisherの専用メソッドを使用）
     await core.notePublisher.insertKindleBannerAndLink(page, {
       kindleAffiliateTag: kindleAffiliateTag,
-      kindleAffiliateEnabled: kindleAffiliateEnabled,
-      imagePath: kindleBannerImagePath
+      kindleAffiliateEnabled: kindleAffiliateEnabled
     });
 
     // 下書き保存→ダイアログを閉じる
