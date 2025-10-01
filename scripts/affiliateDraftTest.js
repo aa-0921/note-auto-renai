@@ -3,7 +3,7 @@
 // 実行例:
 //   node scripts/affiliateDraftTest.js --bg --config config/account.yaml
 // 必要環境変数: NOTE_EMAIL, NOTE_PASSWORD
-// 任意環境変数: KINDLE_BANNER_URL, KINDLE_BANNER_IMAGE_PATH
+// Kindleアフィリエイト設定は直接コード内で指定
 
 import 'dotenv/config';
 import NoteAutomationCore from '@aa-0921/note-auto-core';
@@ -18,8 +18,10 @@ async function main() {
   const background = process.argv.includes('--bg');
   const configPath = getArgValue('--config') || 'config/account.yaml';
 
-  const kindleBannerUrl = process.env.KINDLE_BANNER_URL || 'https://www.amazon.co.jp/kindle-dbs/hz/signup?tag=note-enginner-22';
-  const kindleBannerImagePath = process.env.KINDLE_BANNER_IMAGE_PATH || '';
+  // Kindleアフィリエイト設定（直接指定）
+  const kindleAffiliateTag = 'note-enginner-22';
+  const kindleAffiliateEnabled = true;
+  const kindleBannerImagePath = '';
 
   const core = new NoteAutomationCore(configPath);
   await core.initialize(background);
@@ -43,7 +45,8 @@ async function main() {
 
     // Kindleバナー画像の挿入とリンク適用（NotePublisherの専用メソッドを使用）
     await core.notePublisher.insertKindleBannerAndLink(page, {
-      url: kindleBannerUrl,
+      kindleAffiliateTag: kindleAffiliateTag,
+      kindleAffiliateEnabled: kindleAffiliateEnabled,
       imagePath: kindleBannerImagePath
     });
 
