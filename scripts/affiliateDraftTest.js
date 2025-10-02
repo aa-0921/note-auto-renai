@@ -19,7 +19,7 @@ async function main() {
   const configPath = getArgValue('--config') || 'config/account.yaml';
 
   // Kindleアフィリエイト設定（直接指定）
-  const kindleAffiliateTag = 'note-enginner-22';
+  const affiliateTag = 'note-enginner-22';
   const kindleAffiliateEnabled = true;
 
   const core = new NoteAutomationCore(configPath);
@@ -44,7 +44,7 @@ async function main() {
 
     // Kindleバナー画像の挿入とリンク適用（NotePublisherの専用メソッドを使用）
     await core.notePublisher.insertKindleBannerAndLink(page, {
-      kindleAffiliateTag: kindleAffiliateTag,
+      affiliateTag: affiliateTag,
       kindleAffiliateEnabled: kindleAffiliateEnabled
     });
 

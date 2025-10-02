@@ -365,7 +365,7 @@ import { runWithCore } from '@aa-0921/note-auto-core';
       'Amazon のアソシエイトとして、「恋愛・人間関係カウンセラーRisa」は適格販売により収入を得ています。';
 
     // Kindleアフィリエイト設定（直接指定）
-    const kindleAffiliateTag = 'counselor888a-22';
+    const affiliateTag = 'counselor888a-22';
     const kindleAffiliateEnabled = true;
 
     // 記事の自動生成と下書き保存機能を実行
@@ -383,7 +383,7 @@ import { runWithCore } from '@aa-0921/note-auto-core';
       magazinePromotion,
       amazonAssociateText,
       // Kindleアフィリエイト設定
-      kindleAffiliateTag,
+      affiliateTag,
       kindleAffiliateEnabled,
     });
     console.log('記事の自動生成と下書き保存が完了しました');
