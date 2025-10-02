@@ -141,6 +141,7 @@ import { runWithCore } from '@aa-0921/note-auto-core';
 
     // Kindleアフィリエイト設定（直接指定）
     const affiliateTag = 'counselor888a-22';
+    const audibleAffiliateEnabled = true;
     const kindleAffiliateEnabled = true;
 
     // ----------------------------------------------------------------------------------
@@ -382,8 +383,9 @@ import { runWithCore } from '@aa-0921/note-auto-core';
       affiliateLinks,
       magazinePromotion,
       amazonAssociateText,
-      // Kindleアフィリエイト設定
+      // Audible・Kindleアフィリエイト設定
       affiliateTag,
+      audibleAffiliateEnabled,
       kindleAffiliateEnabled,
     });
     console.log('記事の自動生成と下書き保存が完了しました');

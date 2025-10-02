@@ -18,8 +18,9 @@ async function main() {
   const background = process.argv.includes('--bg');
   const configPath = getArgValue('--config') || 'config/account.yaml';
 
-  // Kindleアフィリエイト設定（直接指定）
+  // Audible・Kindleアフィリエイト設定（直接指定）
   const affiliateTag = 'note-enginner-22';
+  const audibleAffiliateEnabled = true;
   const kindleAffiliateEnabled = true;
 
   const core = new NoteAutomationCore(configPath);
@@ -38,9 +39,15 @@ async function main() {
     await core.notePublisher.dragAndDropToAddButton(page);
 
     // タイトルと本文（簡易文言）
-    const title = 'Kindleバナー挿入テスト';
-    const body = 'この下にKindleのバナー画像を挿入し、その画像にリンクを適用します。';
+    const title = 'Audible・Kindleバナー挿入テスト';
+    const body = 'この下にAudibleとKindleのバナー画像を挿入します。';
     await core.notePublisher.fillArticle(page, title, body);
+
+    // Audibleバナー画像の挿入とリンク適用（NotePublisherの専用メソッドを使用）
+    await core.notePublisher.insertAudibleBannerAndLink(page, {
+      affiliateTag: affiliateTag,
+      audibleAffiliateEnabled: audibleAffiliateEnabled
+    });
 
     // Kindleバナー画像の挿入とリンク適用（NotePublisherの専用メソッドを使用）
     await core.notePublisher.insertKindleBannerAndLink(page, {
