@@ -2,7 +2,7 @@
 // 商品まとめ記事の自動生成と下書き保存（変数定義のみ）
 
 import { runWithCore } from '@aa-0921/note-auto-core';
-import { productAffiliateLinks, affiliateConfig } from './autoCreateAndDraftNote.js';
+import { affiliateLinks, affiliateConfig } from './affiliateConfig.js';
 
 (async () => {
   await runWithCore(async ({ core, wantsBackground }) => {
@@ -38,7 +38,7 @@ import { productAffiliateLinks, affiliateConfig } from './autoCreateAndDraftNote
     await core.runCreateProductRecommendationNote({
       background: wantsBackground,
       title,
-      productLinks: productAffiliateLinks,
+      productLinks: affiliateLinks,
       affiliateConfig,
       intro,
       closing,
