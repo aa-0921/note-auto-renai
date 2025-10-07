@@ -37,14 +37,15 @@ ai:
 
   # ----すべて同じmodelを指定する場合↓model （これを指定する場合はmodelsは不要）-------------------------------------
 
-  model: 'meituan/longcat-flash-chat'
+  # model: 'meituan/longcat-flash-chat'
+  model: 'nvidia/nemotron-nano-9b-v2:free'
 
   # ----記事作成・リライト・タグ生成それぞれで別のmodelを指定する場合↓models（これを指定する場合はmodel は不要）-----
   # 新しい個別モデル指定
-  models:
-    article: 'meituan/longcat-flash-chat' # 記事作成用
-    rewrite: 'meituan/longcat-flash-chat' # リライト用
-    tags: 'meituan/longcat-flash-chat' # タグ生成用
+  # models:
+  #   article: 'meituan/longcat-flash-chat' # 記事作成用
+  #   rewrite: 'meituan/longcat-flash-chat' # リライト用
+  #   tags: 'meituan/longcat-flash-chat' # タグ生成用
     # ---------------------------------------------------------
   # フォールバックモデル設定（429エラー時）
   # fallback_models:
