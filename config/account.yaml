@@ -20,13 +20,13 @@ ai:
   # const MODEL = 'meta-llama/llama-4-maverick:free';
 
   # ↓少し遅いがまあまあ文章作成能力も高そう
-  # const MODEL = 'deepseek/deepseek-chat-v3-0324:free';
+  # const MODEL: 'deepseek/deepseek-chat-v3-0324:free'
 
   # ↓記事は作れるが、ちょっとクオリティが低いかも（ランキング2位までしか作れない）
   # export const MODEL = 'x-ai/grok-4-fast:free'
 
   # ↓記事のクオリティが良く、使える
-  # const MODEL = 'deepseek/deepseek-chat-v3.1:free'
+  # const MODEL: 'deepseek/deepseek-chat-v3.1:free'
 
   # const MODEL = 'google/gemini-pro'; // 必要に応じて変更
   # const MODEL = 'google/gemini-2.5-pro-exp-03-25';
@@ -34,6 +34,8 @@ ai:
   # const MODEL = 'google/gemini-2.0-flash-exp:free';
   # ↓気になる
   # nvidia/nemotron-nano-9b-v2:free
+
+
 
   # ----すべて同じmodelを指定する場合↓model （これを指定する場合はmodelsは不要）-------------------------------------
 
@@ -47,6 +49,17 @@ ai:
 
   # 文書のクオリティは悪くなさそう
   model: 'alibaba/tongyi-deepresearch-30b-a3b:free'
+
+  # model: 'openai/gpt-oss-20b:free'
+  # model: 'z-ai/glm-4.5-air:free'
+  # model: 'deepseek/deepseek-chat-v3-0324:free'
+  # model: 'moonshotai/kimi-k2:free'
+  # model: 'cognitivecomputations/dolphin-mistral-24b-venice-edition:free'
+  # model: 'google/gemma-3n-e2b-it:free'
+  # model: 'qwen/qwen3-coder:free'
+  # model: 'tencent/hunyuan-a13b-instruct:free'
+  # model: 'tngtech/deepseek-r1t2-chimera:free'
+
 
   # ----記事作成・リライト・タグ生成それぞれで別のmodelを指定する場合↓models（これを指定する場合はmodel は不要）-----
   # 新しい個別モデル指定
@@ -62,8 +75,8 @@ ai:
   #   tags: 'x-ai/grok-4-fast:free'
 
   # または全機能共通のフォールバックモデル
-  fallback_model:
-    'nvidia/nemotron-nano-9b-v2:free'
+  # fallback_model: 'nvidia/nemotron-nano-9b-v2:free'
+  fallback_model: 'google/gemini-2.5-pro-exp-03-25'
     # ---------------------------------------------------------
   # ーーcore側の実装参考ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
   # 各機能用のモデル設定（個別指定可能）
