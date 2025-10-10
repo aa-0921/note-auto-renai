@@ -45,7 +45,7 @@ ai:
   # model: 'nvidia/nemotron-nano-9b-v2:free'
 
   # 404！なくなった？→使えた（20251010）クオリティ低くなった？？
-  model: 'deepseek/deepseek-chat-v3.1:free'
+  # model: 'deepseek/deepseek-chat-v3.1:free'
 
   # 文書のクオリティが少し悪い・429に引っかかりにくいかも？
   # model: 'alibaba/tongyi-deepresearch-30b-a3b:free'
@@ -59,6 +59,7 @@ ai:
   # model: 'qwen/qwen3-coder:free'
   # model: 'tencent/hunyuan-a13b-instruct:free'
   # model: 'tngtech/deepseek-r1t2-chimera:free'
+  model: 'meta-llama/llama-4-maverick:free'
 
 
   # ----記事作成・リライト・タグ生成それぞれで別のmodelを指定する場合↓models（これを指定する場合はmodel は不要）-----

@@ -2,6 +2,11 @@
 // OpenRouterのAPIキー情報とレート制限状況を確認するスクリプト
 // 実行例: node scripts/checkOpenRouterLimit.js
 
+
+// https://www.reddit.com/r/openrouter/comments/1jeknm9/when_do_free_daily_limits_reset/?tl=ja
+// ↓ "X-RateLimit-Reset":"1760140800000"} を見ればリセット時間がわかると書いてあるがどうだろうか
+// レスポンスデータ（error）: {"message":"Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day","code":429,"metadata":{"headers":{"X-RateLimit-Limit":"50","X-RateLimit-Remaining":"0","X-RateLimit-Reset":"1760140800000"},"provider_name":null}}
+
 import 'dotenv/config';
 
 async function checkOpenRouterLimit() {
@@ -103,6 +108,21 @@ async function checkOpenRouterLimit() {
     console.log('\n【注意事項】');
     console.log('  ・ 残高がマイナスの場合、無料モデルでも402エラーが発生');
     console.log('  ・ クレジットを追加すると再び使用可能に');
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
+
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    console.log('🔄 モデルごとのレート制限について');
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    console.log('【重要】OpenRouterでは各モデルごとに異なるレート制限があります\n');
+    console.log('✅ モデルごとに制限が異なる仕組み:');
+    console.log('  ・ 複数のアカウントやAPIキーを作っても制限は変わりません');
+    console.log('  ・ 制限はグローバル（アカウント全体）で管理されています');
+    console.log('  ・ ただし、モデルごとに異なるレート制限が設定されています\n');
+    console.log('💡 制限回避の方法:');
+    console.log('  ・ あるモデルが制限に達した場合、別のモデルを使用することで負荷を分散できます');
+    console.log('  ・ 例: google/gemini-2.0-flash-exp:free が制限に達したら');
+    console.log('      → meta-llama/llama-3.2-3b-instruct:free や他のモデルを使用\n');
+    console.log('📚 詳細: https://openrouter.ai/docs/api-reference/limits');
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
 
     // クレジット残高の警告
