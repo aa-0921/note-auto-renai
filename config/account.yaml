@@ -44,11 +44,11 @@ ai:
   # ↓記事のクオリティが最悪
   # model: 'nvidia/nemotron-nano-9b-v2:free'
 
-  # 404！なくなった？
-  # model: 'deepseek/deepseek-chat-v3.1:free'
+  # 404！なくなった？→使えた（20251010）クオリティ低くなった？？
+  model: 'deepseek/deepseek-chat-v3.1:free'
 
-  # 文書のクオリティは悪くなさそう
-  model: 'alibaba/tongyi-deepresearch-30b-a3b:free'
+  # 文書のクオリティが少し悪い・429に引っかかりにくいかも？
+  # model: 'alibaba/tongyi-deepresearch-30b-a3b:free'
 
   # model: 'openai/gpt-oss-20b:free'
   # model: 'z-ai/glm-4.5-air:free'
