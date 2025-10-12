@@ -1,16 +1,15 @@
-name: Auto Publish Recommend Shopping Notes
+name: Auto Create Product Recommendation Note
 
 on:
   schedule:
-    # 月・水・金の17時（JST）に実行 = UTC 8:00
-    # - cron: '0 8 * * 1'   # 月曜日 JST 17:00
-    - cron: '0 8 * * 1'   # 月曜日 JST 17:00
-    - cron: '0 8 * * 3'   # 水曜日 JST 17:00
-    - cron: '0 8 * * 5'   # 金曜日 JST 17:00
+    # 月・水・金の15時（JST）に実行 = UTC 6:00
+    - cron: '0 6 * * 1'   # 月曜日 JST 15:00
+    - cron: '0 6 * * 3'   # 水曜日 JST 15:00
+    - cron: '0 6 * * 5'   # 金曜日 JST 15:00
   workflow_dispatch:
 
 jobs:
-  auto-publish-recommend-shopping-notes:
+  auto-create-product-recommendation-note:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -34,9 +33,10 @@ jobs:
           cd ..
           # ローカルパッケージを直接参照してインストール
           npm install ./note-auto-core
-      - name: Run autoPublishProductNotes.js
+      - name: Run createProductRecommendationNote.js
         env:
           NOTE_EMAIL: ${{ secrets.NOTE_EMAIL }}
           NOTE_PASSWORD: ${{ secrets.NOTE_PASSWORD }}
-        run: node scripts/autoPublishProductNotes.js
+        run: node scripts/createProductRecommendationNote.js
+
 
