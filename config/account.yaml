@@ -17,7 +17,19 @@ ai:
 
   # ↓早いし、内容も問題なさそう
   # 2025/06/25 なぜか認証エラーで使えなくなった
+  # 2025/10/12 使えるクオリティもまあまあ
+  # ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+  # meta-llama/llama-4-maverick-17b-128e-instruct:free requires moderation on Meta. 
+  # Your input was flagged for "misc". 
+  # No credits were charged.
+  # ーーーーーーーーーーーーー
+  # Metaのコンテンツモデレーションシステムが入力をブロック
+  # フラグされた理由: "misc"（その他/分類不明）
+  # →つまりmetaの検査にプロンプトが引っかかっている
+
   # const MODEL = 'meta-llama/llama-4-maverick:free';
+
+  # ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
 
   # ↓少し遅いがまあまあ文章作成能力も高そう
   # const MODEL: 'deepseek/deepseek-chat-v3-0324:free'
@@ -51,7 +63,9 @@ ai:
   # model: 'alibaba/tongyi-deepresearch-30b-a3b:free'
 
   # model: 'openai/gpt-oss-20b:free'
-  # model: 'z-ai/glm-4.5-air:free'
+  # ↓429に引っかかりにくいかも？
+  # 2025/10/12 記事のクオリティまあまあ
+  model: 'z-ai/glm-4.5-air:free'
   # model: 'deepseek/deepseek-chat-v3-0324:free'
   # model: 'moonshotai/kimi-k2:free'
   # model: 'cognitivecomputations/dolphin-mistral-24b-venice-edition:free'
@@ -59,7 +73,7 @@ ai:
   # model: 'qwen/qwen3-coder:free'
   # model: 'tencent/hunyuan-a13b-instruct:free'
   # model: 'tngtech/deepseek-r1t2-chimera:free'
-  model: 'meta-llama/llama-4-maverick:free'
+  # model: 'meta-llama/llama-4-maverick:free'
 
 
   # ----記事作成・リライト・タグ生成それぞれで別のmodelを指定する場合↓models（これを指定する場合はmodel は不要）-----
@@ -77,6 +91,7 @@ ai:
 
   # または全機能共通のフォールバックモデル
   # fallback_model: 'nvidia/nemotron-nano-9b-v2:free'
+  # No endpoints found for google/gemini-2.5-pro-exp-03-25 になりがち
   fallback_model: 'google/gemini-2.5-pro-exp-03-25'
     # ---------------------------------------------------------
   # ーーcore側の実装参考ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
