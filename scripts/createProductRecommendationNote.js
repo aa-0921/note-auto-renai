@@ -38,7 +38,6 @@ import { affiliateLinks, affiliateConfig } from './affiliateConfig.js';
     await core.runCreateProductRecommendationNote({
       background: wantsBackground,
       title,
-      // productLinks: affiliateLinks,
       affiliateLinks,
       affiliateConfig,
       intro,
