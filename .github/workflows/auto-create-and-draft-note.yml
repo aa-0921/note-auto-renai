@@ -4,17 +4,17 @@
 name: Auto Create And Draft Note
 
 on:
-  # schedule:
-  #   # JST 6:00〜24:00の間で1日8回実行（2時間15分間隔）
-  #   - cron: '0 21 * * *'   # JST 06:00
-  #   - cron: '15 23 * * *'  # JST 08:15
-  #   - cron: '30 1 * * *'   # JST 10:30
-  #   - cron: '45 3 * * *'   # JST 12:45
-  #   - cron: '0 6 * * *'    # JST 15:00
-  #   - cron: '15 8 * * *'   # JST 17:15
-  #   - cron: '30 10 * * *'  # JST 19:30
-  #   - cron: '45 12 * * *'  # JST 21:45
-  #   - cron: '0 15 * * *'   # JST 24:00 (翌日00:00)
+  schedule:
+    # JST 6:00〜24:00の間で1日8回実行（2時間15分間隔）
+    - cron: '0 21 * * *'   # JST 06:00
+    - cron: '15 23 * * *'  # JST 08:15
+    - cron: '30 1 * * *'   # JST 10:30
+    - cron: '45 3 * * *'   # JST 12:45
+    - cron: '0 6 * * *'    # JST 15:00
+    - cron: '15 8 * * *'   # JST 17:15
+    - cron: '30 10 * * *'  # JST 19:30
+    - cron: '45 12 * * *'  # JST 21:45
+    - cron: '0 15 * * *'   # JST 24:00 (翌日00:00)
   workflow_dispatch: # 手動実行
 
 jobs:
