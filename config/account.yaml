@@ -74,6 +74,10 @@ ai:
   # model: 'tencent/hunyuan-a13b-instruct:free'
   # model: 'tngtech/deepseek-r1t2-chimera:free'
   # model: 'meta-llama/llama-4-maverick:free'
+  # model: 'qwen/qwen3-vl-8b-instruct'
+  # model: 'qwen/qwen3-vl-30b-a3b-instruct'
+  # model: 'qwen/qwen3-vl-235b-a22b-instruct'
+  # model: 'deepseek/deepseek-r1-0528:free'
 
 
   # ----記事作成・リライト・タグ生成それぞれで別のmodelを指定する場合↓models（これを指定する場合はmodel は不要）-----
