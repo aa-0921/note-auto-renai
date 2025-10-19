@@ -48,6 +48,9 @@ ai:
   # nvidia/nemotron-nano-9b-v2:free
 
 
+  # 文字が途中で切れるが、クオリティは良さそう→出力tokenを増やすとうまくいった
+  # model: 'z-ai/glm-4.5-air:free'
+
 
   # ----すべて同じmodelを指定する場合↓model （これを指定する場合はmodelsは不要）-------------------------------------
 
@@ -65,7 +68,9 @@ ai:
   # model: 'openai/gpt-oss-20b:free'
   # ↓429に引っかかりにくいかも？
   # 2025/10/12 記事のクオリティまあまあ
-  # model: 'z-ai/glm-4.5-air:free'
+  # 文字が途中で切れるが、クオリティは良さそう→出力tokenを増やすとうまくいった
+  model: 'z-ai/glm-4.5-air:free'
+
   # model: 'deepseek/deepseek-chat-v3.1:free'
 
   # model: 'deepseek/deepseek-chat-v3-0324:free'
@@ -80,7 +85,7 @@ ai:
   # model: 'qwen/qwen3-vl-30b-a3b-instruct'
   # model: 'qwen/qwen3-vl-235b-a22b-instruct'
   # model: 'deepseek/deepseek-r1-0528:free'
-  model: 'meituan/longcat-flash-chat:free'
+  # model: 'meituan/longcat-flash-chat:free'
 
 
   # ----記事作成・リライト・タグ生成それぞれで別のmodelを指定する場合↓models（これを指定する場合はmodel は不要）-----
@@ -124,7 +129,8 @@ ai:
 
   # ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
   temperature: 0.7
-  max_tokens: 1200
+  # max_tokens: 1200
+  max_tokens: 3000
 note:
   login_method: 'email_password'
   cookie_secret_name: 'NOTE_COOKIE'
