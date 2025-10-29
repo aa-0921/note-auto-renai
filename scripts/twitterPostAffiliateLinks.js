@@ -155,8 +155,13 @@ async function main() {
     const password = process.env.TWITTER_PASSWORD;
     const username = process.env.TWITTER_USER_NAME; // 追加認証用（オプション）
 
-    if (!email || !password) {
-      throw new Error('NOTE_EMAIL と TWITTER_PASSWORD の環境変数を設定してください');
+    // 個別にチェック
+    if (!email) {
+      throw new Error('NOTE_EMAIL 環境変数が設定されていません。.envファイルに NOTE_EMAIL=your-email@example.com を追加してください。');
+    }
+    
+    if (!password) {
+      throw new Error('TWITTER_PASSWORD 環境変数が設定されていません。.envファイルに TWITTER_PASSWORD=your-password を追加してください。');
     }
     
     if (!username) {
