@@ -15,12 +15,19 @@
 NOTE_EMAIL=your-email@example.com
 TWITTER_PASSWORD=your-twitter-password
 TWITTER_USER_NAME=your-twitter-username
+NOTE_ACCOUNT_NAME=counselor_risa  # noteのアカウント名（Twitter投稿用、必須）
 ```
 
 **注意事項：**
 - `NOTE_EMAIL`: Twitterアカウントに登録されているメールアドレス
 - `TWITTER_PASSWORD`: Twitterアカウントのパスワード
 - `TWITTER_USER_NAME`: Twitterのユーザー名（@なし）- 追加認証が必要な場合に使用（オプション）
+- `NOTE_ACCOUNT_NAME`: noteのアカウント名（@なし）- **必須**。未設定の場合はエラーになります
+
+**重要：** `NOTE_ACCOUNT_NAME` が設定されていない場合、スクリプトは以下のエラーで停止します：
+```
+Error: NOTE_ACCOUNT_NAME環境変数が設定されていません。.envファイルに NOTE_ACCOUNT_NAME=your_account_name を追加してください。
+```
 
 **追加認証について：**
 Twitterが「通常とは異なるログイン操作」を検出した場合、電話番号またはユーザー名の入力を求められることがあります。この場合、`TWITTER_USER_NAME`環境変数が必要です。

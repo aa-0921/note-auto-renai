@@ -8,9 +8,21 @@ import { affiliateLinks, affiliateConfig } from './affiliateConfig.js';
  * affiliateConfig.jsの内容からTwitter用のツイートを作成
  */
 
+// noteアカウントURLを生成
+function getNoteAccountUrl() {
+  const accountName = process.env.NOTE_ACCOUNT_NAME;
+  
+  if (!accountName) {
+    throw new Error('NOTE_ACCOUNT_NAME環境変数が設定されていません。.envファイルに NOTE_ACCOUNT_NAME=your_account_name を追加してください。');
+  }
+  
+  return `https://note.com/${accountName}`;
+}
+
 // アフィリエイトリンクからTwitter用のツイートを生成する関数
 export function createTweetsFromAffiliateLinks() {
   const tweets = [];
+  const noteUrl = getNoteAccountUrl();
 
   affiliateLinks.forEach((linkContent, index) => {
     // 各アフィリエイトリンクをTwitterの280文字制限に合わせて調整
@@ -48,13 +60,13 @@ export function createTweetsFromAffiliateLinks() {
     
     // ツイート本文を構築（280文字以内に収める）
     const tweetParts = [
+      `note → ${noteUrl}`,
+      '',
       title,
       '',
       ...descriptionLines,
       '',
       urlLine,
-      // '', // ハッシュタグの行を削除
-      // hashtags, // ハッシュタグを削除
     ];
 
     let tweet = tweetParts.join('\n');
@@ -62,6 +74,8 @@ export function createTweetsFromAffiliateLinks() {
     // 280文字を超える場合は説明文を削減
     if (tweet.length > 280) {
       const shortTweetParts = [
+        `note → ${noteUrl}`,
+        '',
         title,
         '',
         descriptionLines[0], // 最初の1行のみ
@@ -74,6 +88,8 @@ export function createTweetsFromAffiliateLinks() {
     // それでも280文字を超える場合は、説明文を完全に削除
     if (tweet.length > 280) {
       tweet = [
+        `note → ${noteUrl}`,
+        '',
         title,
         '',
         urlLine,
@@ -95,11 +111,14 @@ export function createTweetsFromAffiliateLinks() {
  * @param {string} title - 商品タイトル
  * @param {string} url - AmazonアフィリエイトURL
  * @param {Array<string>} descriptions - 説明文の配列
- * @param {string} hashtags - ハッシュタグ
  * @returns {string} ツイート本文
  */
 export function createCustomTweet({ title, url, descriptions = [] }) {
+  const noteUrl = getNoteAccountUrl();
+  
   const tweetParts = [
+    `note → ${noteUrl}`,
+    '',
     title,
     '',
     ...descriptions.slice(0, 2), // 最大2行まで
@@ -112,6 +131,8 @@ export function createCustomTweet({ title, url, descriptions = [] }) {
   // 280文字制限のチェック
   if (tweet.length > 280) {
     const shortTweetParts = [
+      `note → ${noteUrl}`,
+      '',
       title,
       '',
       descriptions[0] || '',
@@ -123,6 +144,8 @@ export function createCustomTweet({ title, url, descriptions = [] }) {
 
   if (tweet.length > 280) {
     tweet = [
+      `note → ${noteUrl}`,
+      '',
       title,
       '',
       url,

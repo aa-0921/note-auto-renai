@@ -28,6 +28,7 @@ npm install
 # note.com認証情報
 NOTE_EMAIL=your-email@example.com
 NOTE_PASSWORD=your-password
+NOTE_ACCOUNT_NAME=counselor_risa  # noteのアカウント名（Twitter投稿用、必須）
 
 # Twitter認証情報
 TWITTER_PASSWORD=your-twitter-password
@@ -36,6 +37,8 @@ TWITTER_USER_NAME=your-twitter-username  # 追加認証用（オプション）
 # AI API設定
 OPENROUTER_API_KEY=your-api-key
 ```
+
+**重要：** Twitter投稿機能を使用する場合、`NOTE_ACCOUNT_NAME` は必須です。未設定の場合はエラーになります。
 
 ## 📚 使用方法
 
