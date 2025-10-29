@@ -18,7 +18,8 @@
     "followFromArticles": "node scripts/followFromArticles.js",
     "noteAutoDraftAndSheetUpdate": "node scripts/noteAutoDraftAndSheetUpdate.js",
     "likeAsGuestByAccounts": "node scripts/likeAsGuestByAccounts.js",
-    "createAmazonTopSellersRankingNote": "node scripts/createAmazonTopSellersRankingNote.js"
+    "createAmazonTopSellersRankingNote": "node scripts/createAmazonTopSellersRankingNote.js",
+    "twitterPostAffiliateLinks": "node scripts/twitterPostAffiliateLinks.js"
   },
   "keywords": [
     "note",
