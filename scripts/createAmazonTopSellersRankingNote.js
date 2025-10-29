@@ -1,8 +1,8 @@
-// createAmazonRankingNote.js
-// Amazonランキング記事の自動生成と直接投稿
+// createAmazonTopSellersRankingNote.js
+// Amazon売れ筋ランキング記事の自動生成と直接投稿
 
 import { runWithCore } from '@aa-0921/note-auto-core';
-import { amazonRankingLinks } from './affiliateConfig.js';
+import { amazonTopSellersRankingLinks } from './affiliateConfig.js';
 
 (async () => {
   await runWithCore(async ({ core, wantsBackground }) => {
@@ -12,9 +12,8 @@ import { amazonRankingLinks } from './affiliateConfig.js';
     // 導入文
     const intro = [
       '🉐Amazon売れ筋ランキング🆙',
-      '売上に基づいた最も人気の商品。 頻繁に更新されます。',
-      'Amazonで販売されているすべての商品の最新販売数と累計販売数を反映して、1時間ごとに更新されます。',
-      '---',
+      '売上に基づいた最も人気の商品のランキングで、頻繁に更新されます！',
+      'Amazonで販売されているすべての商品の最新販売数と累計販売数を反映して、1時間ごとに更新されます！',
       '',
       'こんにちは！💕',
       '',
@@ -43,12 +42,12 @@ import { amazonRankingLinks } from './affiliateConfig.js';
     await core.runCreateAndPublishAmazonRankingNote({
       background: wantsBackground,
       title,
-      rankingLinks: amazonRankingLinks,
+      rankingLinks: amazonTopSellersRankingLinks,
       intro,
       closing,
     });
 
-    console.log('✅ Amazonランキング記事を投稿しました');
+    console.log('✅ Amazon売れ筋ランキング記事を投稿しました');
   });
 })();
 

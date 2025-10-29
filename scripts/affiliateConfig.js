@@ -360,9 +360,9 @@ export const affiliateLinks = [
   // ーーーー↑↑↑2025/10/17追加ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
 ];
 
-// Amazonランキングページリンク配列
-// 定期的に投稿するAmazonの各カテゴリのランキングページリンク
-export const amazonRankingLinks = [
+// Amazon売れ筋ランキングページリンク配列
+// 定期的に投稿するAmazonの各カテゴリの売れ筋ランキングページリンク
+export const amazonTopSellersRankingLinks = [
   [
     '',
     '🎬　📺　🎬　📺　🎬　📺　🎬　📺　🎬　📺　🎬　📺　🎬　📺　🎬',
