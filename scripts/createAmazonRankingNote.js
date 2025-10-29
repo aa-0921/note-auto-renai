@@ -7,14 +7,13 @@ import { amazonRankingLinks } from './affiliateConfig.js';
 (async () => {
   await runWithCore(async ({ core, wantsBackground }) => {
     // リポジトリ固有の設定
-    const title = '🛍️✨ Amazonランキング　人気商品チェック！';
+    const title = '🛍️✨ Amazon売れ筋ランキング　人気商品チェック！';
 
     // 導入文
     const intro = [
-      'Amazonランキングについて',
-      '',
+      '🉐Amazon売れ筋ランキング🆙',
+      '売上に基づいた最も人気の商品。 頻繁に更新されます。',
       'Amazonで販売されているすべての商品の最新販売数と累計販売数を反映して、1時間ごとに更新されます。',
-      '',
       '---',
       '',
       'こんにちは！💕',
@@ -25,7 +24,6 @@ import { amazonRankingLinks } from './affiliateConfig.js';
       'ぜひチェックして、あなたにぴったりの商品を見つけてください！😊',
       '',
       '---',
-      '',
     ].join('\n');
 
     // 締めの文章
