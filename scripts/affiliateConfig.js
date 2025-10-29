@@ -723,4 +723,3 @@ export const amazonTopSellersRankingLinks = [
     '',
   ].join('\n'),
 ];
-
