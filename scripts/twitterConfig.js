@@ -192,8 +192,9 @@ export const twitterPostConfig = {
   // 1回の実行で投稿する最大数
   maxPostsPerRun: 3,
   
-  // ヘッドレスモード（false = ブラウザを表示）
-  headless: false,
+  // ヘッドレスモード
+  // GitHub Actions環境では自動的にtrueに、ローカル環境ではfalse（ブラウザを表示）
+  headless: process.env.CI === 'true' || process.env.GITHUB_ACTIONS === 'true',
   
   // デバッグモード
   debug: true,
