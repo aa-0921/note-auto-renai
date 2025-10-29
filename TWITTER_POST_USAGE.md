@@ -40,6 +40,60 @@ Twitterが「通常とは異なるログイン操作」を検出した場合、�
 npm install
 ```
 
+### 3. 実装の詳細
+
+このスクリプトは、`@aa-0921/note-auto-core` の `TwitterPostRunner` ユーティリティを使用して実装されています。
+
+**主な機能:**
+- ✅ コマンドライン引数の自動解析
+- ✅ 環境変数の自動チェック
+- ✅ Puppeteerの自動初期化とクリーンアップ
+- ✅ Twitterへの自動ログイン
+- ✅ 複数ツイートの自動投稿
+- ✅ 投稿前のプレビュー表示
+
+**実装はわずか30行程度:**
+
+```javascript
+import { parseTwitterArgs, runTwitterPost, Logger } from '@aa-0921/note-auto-core';
+import { getAllTweets, getRandomTweets, getTweetByIndex, twitterPostConfig } from './twitterConfig.js';
+
+const logger = new Logger();
+
+// ツイート取得ロジック（アプリ固有）
+function getTweetsToPost(options) {
+  switch (options.mode) {
+    case 'all': return getAllTweets();
+    case 'random': return getRandomTweets(options.count);
+    case 'single': return getTweetByIndex(options.indices[0]) ? [getTweetByIndex(options.indices[0])] : [];
+    default: return getRandomTweets(options.count);
+  }
+}
+
+// プレビュー表示（オプション）
+function showPreview(tweetsToPost) {
+  logger.info('=== 投稿内容プレビュー ===');
+  tweetsToPost.forEach((tweet, index) => {
+    logger.info(`[${index + 1}] ${tweet.productType}`);
+    logger.info(tweet.content);
+  });
+}
+
+// メイン処理
+async function main() {
+  const options = parseTwitterArgs(twitterPostConfig);
+  await runTwitterPost({
+    getTweetsCallback: getTweetsToPost,
+    options: options,
+    previewCallback: showPreview
+  });
+}
+
+main().catch(error => process.exit(1));
+```
+
+詳細は [note-auto-core の TwitterPostRunner ドキュメント](../note-auto-core/TWITTER_POST_RUNNER_USAGE.md) を参照してください。
+
 ## 📚 基本的な使い方
 
 ### 1. ランダムに3件投稿（デフォルト）
