@@ -43,22 +43,9 @@ export function createTweetsFromAffiliateLinks() {
       line.trim() !== ''
     ).slice(0, 2); // 最初の2行のみ
 
-    // ハッシュタグの生成
-    let hashtags = '#Amazon #おすすめ';
-    if (linkContent.includes('引き寄せ')) {
-      hashtags = '#読書 #自己啓発 #引き寄せの法則';
-    } else if (linkContent.includes('天然水') || linkContent.includes('炭酸水')) {
-      hashtags = '#健康 #水分補給';
-    } else if (linkContent.includes('トマトジュース')) {
-      hashtags = '#健康 #トマトジュース';
-    } else if (linkContent.includes('緑茶')) {
-      hashtags = '#健康 #お茶';
-    } else if (linkContent.includes('プロテイン')) {
-      hashtags = '#筋トレ #プロテイン #ダイエット';
-    } else if (linkContent.includes('発芽米')) {
-      hashtags = '#健康 #お米';
-    }
-
+    // ハッシュタグは一旦削除（投稿の邪魔になる可能性があるため）
+    // let hashtags = '#Amazon #おすすめ';
+    
     // ツイート本文を構築（280文字以内に収める）
     const tweetParts = [
       title,
@@ -66,8 +53,8 @@ export function createTweetsFromAffiliateLinks() {
       ...descriptionLines,
       '',
       urlLine,
-      '',
-      hashtags,
+      // '', // ハッシュタグの行を削除
+      // hashtags, // ハッシュタグを削除
     ];
 
     let tweet = tweetParts.join('\n');
@@ -80,8 +67,6 @@ export function createTweetsFromAffiliateLinks() {
         descriptionLines[0], // 最初の1行のみ
         '',
         urlLine,
-        '',
-        hashtags,
       ];
       tweet = shortTweetParts.join('\n');
     }
@@ -92,8 +77,6 @@ export function createTweetsFromAffiliateLinks() {
         title,
         '',
         urlLine,
-        '',
-        hashtags,
       ].join('\n');
     }
 
@@ -115,15 +98,13 @@ export function createTweetsFromAffiliateLinks() {
  * @param {string} hashtags - ハッシュタグ
  * @returns {string} ツイート本文
  */
-export function createCustomTweet({ title, url, descriptions = [], hashtags = '#Amazon' }) {
+export function createCustomTweet({ title, url, descriptions = [] }) {
   const tweetParts = [
     title,
     '',
     ...descriptions.slice(0, 2), // 最大2行まで
     '',
     url,
-    '',
-    hashtags,
   ];
 
   let tweet = tweetParts.join('\n');
@@ -136,8 +117,6 @@ export function createCustomTweet({ title, url, descriptions = [], hashtags = '#
       descriptions[0] || '',
       '',
       url,
-      '',
-      hashtags,
     ];
     tweet = shortTweetParts.join('\n');
   }
@@ -147,8 +126,6 @@ export function createCustomTweet({ title, url, descriptions = [], hashtags = '#
       title,
       '',
       url,
-      '',
-      hashtags,
     ].join('\n');
   }
 
