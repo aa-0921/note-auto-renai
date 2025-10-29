@@ -6,8 +6,15 @@ import { amazonTopSellersRankingLinks } from './affiliateConfig.js';
 
 (async () => {
   await runWithCore(async ({ core, wantsBackground }) => {
-    // リポジトリ固有の設定
-    const title = '🛍️✨ Amazon売れ筋ランキング　人気商品チェック！';
+    // タイトル候補からランダムに選択
+    const titleCandidates = [
+      '✨ Amazon売れ筋ランキング　カテゴリ別リンクまとめ',
+      '💕 Amazon売れ筋ランキング　人気商品をサクッとチェック',
+      '🉐 Amazon売れ筋ランキング　失敗しない商品選び',
+      '💡 Amazon売れ筋ランキング　人気商品で時短リサーチ',
+    ];
+    const title =
+      titleCandidates[Math.floor(Math.random() * titleCandidates.length)];
 
     // 導入文
     const intro = [
