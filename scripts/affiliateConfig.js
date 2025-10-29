@@ -360,3 +360,139 @@ export const affiliateLinks = [
   // ーーーー↑↑↑2025/10/17追加ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
 ];
 
+// Amazonランキングページリンク配列
+// 定期的に投稿するAmazonの各カテゴリのランキングページリンク
+export const amazonRankingLinks = [
+  [
+    '',
+    '🎬　📺　🎬　📺　🎬　📺　🎬　📺　🎬　📺　🎬　📺　🎬　📺　🎬',
+    `https://www.amazon.co.jp/gp/bestsellers/instant-video?&linkCode=ll2&tag=${affiliateTag}&linkId=c263feca3213807e4f9376b105c5701a&language=ja_JP&ref_=as_li_ss_tl`,
+    '👆Prime Videoの売れ筋ランキング',
+    '最新の人気映画やドラマをチェック！📺✨',
+    '今話題の作品がすぐに見つかります😊',
+    'あなたにぴったりの作品を見つけて、素敵な時間をお過ごしください💖',
+    '🎬　📺　🎬　📺　🎬　📺　🎬　📺　🎬　📺　🎬　📺　🎬　📺　🎬',
+    '',
+  ].join('\n'),
+
+  [
+    '',
+    '📚　📖　📚　📖　📚　📖　📚　📖　📚　📖　📚　📖　📚　📖　📚',
+    `https://www.amazon.co.jp/gp/bestsellers/digital-text?&linkCode=ll2&tag=${affiliateTag}&linkId=7a1f9ed695d6fe3825896c17e824a595&language=ja_JP&ref_=as_li_ss_tl`,
+    '👆Kindleストアの売れ筋ランキング',
+    '人気の電子書籍が一目でわかります📚✨',
+    '読書好きの方必見！今読むべき一冊がここに😊',
+    '通勤時間や寝る前のリラックスタイムに、ぜひどうぞ💖',
+    '📚　📖　📚　📖　📚　📖　📚　📖　📚　📖　📚　📖　📚　📖　📚',
+    '',
+  ].join('\n'),
+
+  [
+    '',
+    '🍽️　🍷　🍽️　🍷　🍽️　🍷　🍽️　🍷　🍽️　🍷　🍽️　🍷　🍽️　🍷　🍽️',
+    `https://www.amazon.co.jp/gp/bestsellers/food-beverage?&linkCode=ll2&tag=${affiliateTag}&linkId=2e1b3651ef6f32c56cdb8207b592c0d9&language=ja_JP&ref_=as_li_ss_tl`,
+    '👆食品・飲料・お酒の売れ筋ランキング',
+    '人気の食品・飲料・お酒をチェック！🍽️✨',
+    '美味しいグルメや話題のドリンクが見つかります😊',
+    '毎日の食卓を豊かにする商品がここに💖',
+    '🍽️　🍷　🍽️　🍷　🍽️　🍷　🍽️　🍷　🍽️　🍷　🍽️　🍷　🍽️　🍷　🍽️',
+    '',
+  ].join('\n'),
+
+  [
+    '',
+    '👗　👔　👗　👔　👗　👔　👗　👔　👗　👔　👗　👔　👗　👔　👗',
+    `https://www.amazon.co.jp/gp/bestsellers/fashion?&linkCode=ll2&tag=${affiliateTag}&linkId=6f0e81f3552a761f5abf95399ed10e01&language=ja_JP&ref_=as_li_ss_tl`,
+    '👆ファッションの売れ筋ランキング',
+    '今人気のファッションアイテムをチェック！👗✨',
+    'トレンドを押さえたコーディネートで、毎日をもっと楽しく😊',
+    '自分らしいスタイルを見つけてください💖',
+    '👗　👔　👗　👔　👗　👔　👗　👔　👗　👔　👗　👔　👗　👔　👗',
+    '',
+  ].join('\n'),
+
+  [
+    '',
+    '👜　🎒　👜　🎒　👜　🎒　👜　🎒　👜　🎒　👜　🎒　👜　🎒　👜',
+    `https://www.amazon.co.jp/gp/bestsellers/fashion/2221077051?&linkCode=ll2&tag=${affiliateTag}&linkId=d2f18b578c29638a9d3d2bc2024b2a2d&language=ja_JP&ref_=as_li_ss_tl`,
+    '👆バッグ・スーツケースの売れ筋ランキング',
+    '人気のバッグ・スーツケースをチェック！👜✨',
+    '通勤・通学から旅行まで、用途に合わせた商品が見つかります😊',
+    'あなたにぴったりのバッグを見つけてください💖',
+    '👜　🎒　👜　🎒　👜　🎒　👜　🎒　👜　🎒　👜　🎒　👜　🎒　👜',
+    '',
+  ].join('\n'),
+
+  [
+    '',
+    '💊　🏥　💊　🏥　💊　🏥　💊　🏥　💊　🏥　💊　🏥　💊　🏥　💊',
+    `https://www.amazon.co.jp/gp/bestsellers/hpc?&linkCode=ll2&tag=${affiliateTag}&linkId=92fbb8876beecfa0c8d990d9c045aa51&language=ja_JP&ref_=as_li_ss_tl`,
+    '👆ドラッグストアの売れ筋ランキング',
+    '人気の医薬品・健康グッズをチェック！💊✨',
+    '健康維持に役立つアイテムが満載です😊',
+    'あなたの健康をサポートする商品がここに💖',
+    '💊　🏥　💊　🏥　💊　🏥　💊　🏥　💊　🏥　💊　🏥　💊　🏥　💊',
+    '',
+  ].join('\n'),
+
+  [
+    '',
+    '💄　💅　💄　💅　💄　💅　💄　💅　💄　💅　💄　💅　💄　💅　💄',
+    `https://www.amazon.co.jp/gp/bestsellers/beauty?&linkCode=ll2&tag=${affiliateTag}&linkId=41b585044559d5f9a5e308febc42ab5c&language=ja_JP&ref_=as_li_ss_tl`,
+    '👆ビューティーの売れ筋ランキング',
+    '人気のコスメ・スキンケアをチェック！💄✨',
+    '美容に関心のある方必見！今注目のアイテムが見つかります😊',
+    '毎日のケアで、もっと輝く自分に💖',
+    '💄　💅　💄　💅　💄　💅　💄　💅　💄　💅　💄　💅　💄　💅　💄',
+    '',
+  ].join('\n'),
+
+  [
+    '',
+    '🧴　✨　🧴　✨　🧴　✨　🧴　✨　🧴　✨　🧴　✨　🧴　✨　🧴',
+    `https://www.amazon.co.jp/gp/bestsellers/beauty/5267100051?&linkCode=ll2&tag=${affiliateTag}&linkId=5941ef0b93df8de5883fb33154a4d5bc&language=ja_JP&ref_=as_li_ss_tl`,
+    '👆スキンケア・ボディケアの売れ筋ランキング',
+    '人気のスキンケア・ボディケアをチェック！🧴✨',
+    'お肌のケアに最適なアイテムが見つかります😊',
+    '美しい肌で毎日を輝かせましょう💖',
+    '🧴　✨　🧴　✨　🧴　✨　🧴　✨　🧴　✨　🧴　✨　🧴　✨　🧴',
+    '',
+  ].join('\n'),
+
+  [
+    '',
+    '💇　🌸　💇　🌸　💇　🌸　💇　🌸　💇　🌸　💇　🌸　💇　🌸　💇',
+    `https://www.amazon.co.jp/gp/bestsellers/beauty/5267102051?&linkCode=ll2&tag=${affiliateTag}&linkId=9cbcacaed8be9d7043974990311682ac&language=ja_JP&ref_=as_li_ss_tl`,
+    '👆ヘアケア・カラー・スタイリングの売れ筋ランキング',
+    '人気のヘアケア商品をチェック！💇✨',
+    '美しい髪を保つためのアイテムが満載です😊',
+    'あなたの髪に合った商品を見つけてください💖',
+    '💇　🌸　💇　🌸　💇　🌸　💇　🌸　💇　🌸　💇　🌸　💇　🌸　💇',
+    '',
+  ].join('\n'),
+
+  [
+    '',
+    '🐾　🐶　🐾　🐱　🐾　🐶　🐾　🐱　🐾　🐶　🐾　🐱　🐾　🐶　🐾',
+    `https://www.amazon.co.jp/gp/bestsellers/pet-supplies?&linkCode=ll2&tag=${affiliateTag}&linkId=155c4a6b79ccb29f8ec21982aadac6cb&language=ja_JP&ref_=as_li_ss_tl`,
+    '👆ペット用品の売れ筋ランキング',
+    '人気のペット用品をチェック！🐾✨',
+    '大切なペットのための商品が見つかります😊',
+    'ペットと一緒に幸せな毎日を過ごしましょう💖',
+    '🐾　🐶　🐾　🐱　🐾　🐶　🐾　🐱　🐾　🐶　🐾　🐱　🐾　🐶　🐾',
+    '',
+  ].join('\n'),
+
+  [
+    '',
+    '🌟　🏆　🌟　🏆　🌟　🏆　🌟　🏆　🌟　🏆　🌟　🏆　🌟　🏆　🌟',
+    `https://www.amazon.co.jp/gp/bestsellers?&linkCode=ll2&tag=${affiliateTag}&linkId=91814763b2cc7f6f2d8c601752849f97&language=ja_JP&ref_=as_li_ss_tl`,
+    '👆Amazon 全カテゴリ総合ランキング',
+    'Amazonで最も人気の商品をチェック！🌟✨',
+    'カテゴリごとに売れている商品が一目でわかります😊',
+    '話題の商品をいち早くチェックしましょう💖',
+    '🌟　🏆　🌟　🏆　🌟　🏆　🌟　🏆　🌟　🏆　🌟　🏆　🌟　🏆　🌟',
+    '',
+  ].join('\n'),
+];
+
