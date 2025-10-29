@@ -39,10 +39,10 @@ jobs:
           npm install ./note-auto-core
       - name: Run twitterPostAffiliateLinks.js
         env:
-          TWITTER_API_KEY: ${{ secrets.TWITTER_API_KEY }}
-          TWITTER_API_SECRET: ${{ secrets.TWITTER_API_SECRET }}
-          TWITTER_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
-          TWITTER_ACCESS_TOKEN_SECRET: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
+          NOTE_EMAIL: ${{ secrets.NOTE_EMAIL }}
+          TWITTER_PASSWORD: ${{ secrets.TWITTER_PASSWORD }}
+          TWITTER_USER_NAME: ${{ secrets.TWITTER_USER_NAME }}
+          NOTE_ACCOUNT_NAME: ${{ secrets.NOTE_ACCOUNT_NAME }}
         run: node scripts/twitterPostAffiliateLinks.js --random 3
 
 
