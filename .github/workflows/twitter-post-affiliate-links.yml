@@ -45,6 +45,16 @@ jobs:
           TWITTER_USER_NAME: ${{ secrets.TWITTER_USER_NAME }}
           NOTE_ACCOUNT_NAME: ${{ secrets.NOTE_ACCOUNT_NAME }}
         run: node scripts/twitterPostAffiliateLinks.js --random 3
+      
+      - name: Upload screenshots on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: twitter-screenshots
+          path: |
+            *.png
+            twitter-*.png
+          retention-days: 7
 
 
 
