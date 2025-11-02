@@ -1,0 +1,66 @@
+# .github/workflows/test-twitter-login.yml
+# Twitterログインテスト用のGitHub Actionsワークフロー
+
+name: Twitterログインテスト
+
+on:
+  # 手動実行
+  workflow_dispatch:
+  
+  # 定期実行（テスト用、必要に応じてコメントアウト）
+  # schedule:
+  #   - cron: '0 0 * * *'  # 毎日午前0時（UTC）
+
+jobs:
+  test-twitter-login:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Checkout note-auto-core
+        uses: actions/checkout@v4
+        with:
+          repository: aa-0921/note-auto-core
+          path: note-auto-core
+          ref: main
+          token: ${{ secrets.CORE_REPO_TOKEN }}
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+      
+      - name: Install dependencies
+        run: |
+          # note-auto-coreの依存関係をインストール
+          cd note-auto-core && npm install
+          cd ..
+          # ローカルパッケージを直接参照してインストール
+          npm install ./note-auto-core
+      
+      - name: Install Chromium
+        run: |
+          npx puppeteer browsers install chrome
+      
+      - name: Run Twitter login test
+        env:
+          CI: 'true'
+          NOTE_EMAIL: ${{ secrets.NOTE_EMAIL }}
+          TWITTER_PASSWORD: ${{ secrets.TWITTER_PASSWORD }}
+          TWITTER_USERNAME: ${{ secrets.TWITTER_USERNAME }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          node scripts/testTwitterLogin.js --bg
+      
+      - name: Upload screenshots on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: twitter-login-error-screenshots
+          path: |
+            *.png
+            twitter-*.png
+            twitter-*.jpg
+          retention-days: 7
