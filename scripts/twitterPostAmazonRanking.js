@@ -52,10 +52,12 @@ async function captureScreenshot(url) {
     
     logger.info('✅ ページの読み込みが完了しました');
     
-    // ビューポートサイズを設定（Twitter推奨サイズ）
+    // ビューポートサイズを設定（環境変数で調整可能／デフォルトは16:9で広め）
+    const viewportWidth = parseInt(process.env.TWITTER_SS_WIDTH || '1600', 10);
+    const viewportHeight = parseInt(process.env.TWITTER_SS_HEIGHT || '900', 10);
     await page.setViewport({
-      width: 1200,
-      height: 675, // 16:9比率
+      width: viewportWidth,
+      height: viewportHeight,
       deviceScaleFactor: 1,
     });
     
