@@ -2,7 +2,7 @@
 // scripts/manualTwitterLogin.js
 // 手動でTwitterにログインし、Cookieを保存するスクリプト
 
-import { runWithCore } from '@aa-0921/note-auto-core';
+import { runWithCore, TwitterPublisher } from '@aa-0921/note-auto-core';
 import dotenv from 'dotenv';
 import readline from 'readline';
 
@@ -28,8 +28,14 @@ console.log('');
 
 async function manualLogin() {
   try {
-    const { core, page } = arguments[0];
-    const twitterPublisher = core.getTwitterPublisher();
+    const { core } = arguments[0];
+    
+    // PuppeteerManagerとページを取得
+    const puppeteerManager = core.puppeteerManager;
+    const page = await puppeteerManager.createPage();
+    
+    // TwitterPublisherのインスタンスを作成
+    const twitterPublisher = new TwitterPublisher(core.configManager.config, puppeteerManager);
     
     // ブラウザ設定を最適化
     await twitterPublisher.setupPageForTwitter(page);
