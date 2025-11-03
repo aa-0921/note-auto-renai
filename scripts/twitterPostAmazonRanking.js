@@ -60,6 +60,18 @@ async function captureScreenshot(url) {
       height: viewportHeight,
       deviceScaleFactor: 1,
     });
+
+    // ズーム倍率（環境変数で調整可能、例: TWITTER_SS_ZOOM=1.2）
+    const zoomScale = parseFloat(process.env.TWITTER_SS_ZOOM || '1.0');
+    if (!Number.isNaN(zoomScale) && zoomScale !== 1) {
+      logger.info(`🔎 ページをズームします: ${zoomScale}x`);
+      await page.evaluate((z) => {
+        // Chromiumではzoomが安定
+        document.body.style.zoom = String(z);
+      }, zoomScale);
+      // レイアウト安定待ち
+      await new Promise(resolve => setTimeout(resolve, 500));
+    }
     
     // ページが完全にレンダリングされるまで少し待つ
     await new Promise(resolve => setTimeout(resolve, 2000));
