@@ -73,6 +73,13 @@ async function captureScreenshot(url) {
         '[id*="zg_banner_text"]', // Amazonのランキングバナー
         '.zg-banner-text', // クラス名
         '#zg-banner-headline', // ID
+        // ランキング一覧のグリッド本体
+        '[data-client-recs-list]',
+        'ol.p13n-gridRow',
+        'ol.a-ordered-list.p13n-gridRow',
+        '.p13n-desktop-grid',
+        '#gridItemRoot',
+        '.zg-grid-general-faceout',
       ];
       
       let scrolled = false;
@@ -120,6 +127,19 @@ async function captureScreenshot(url) {
         }
       }
       
+      // 追加のフォールバック: 最初のランキング商品カードの先頭までスクロール
+      if (!scrolled) {
+        const firstCard = await page.$('ol[class*="p13n-gridRow"] li, #gridItemRoot, .p13n-desktop-grid ol li');
+        if (firstCard) {
+          logger.info('✅ ランキングの最初のカードを発見: 先頭カードへスクロール');
+          await firstCard.evaluate(el => {
+            const y = el.getBoundingClientRect().top + window.pageYOffset - 50;
+            window.scrollTo({ top: y, behavior: 'smooth' });
+          });
+          scrolled = true;
+        }
+      }
+
       if (!scrolled) {
         // 見出しが見つからない場合は、デフォルトで300pxスクロール
         logger.info('⚠️  ランキング見出しが見つからなかったため、デフォルトでスクロールします');
