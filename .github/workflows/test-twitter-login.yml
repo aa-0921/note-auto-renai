@@ -50,6 +50,7 @@ jobs:
           NOTE_EMAIL: ${{ secrets.NOTE_EMAIL }}
           TWITTER_PASSWORD: ${{ secrets.TWITTER_PASSWORD }}
           TWITTER_USERNAME: ${{ secrets.TWITTER_USERNAME }}
+          TWITTER_COOKIES: ${{ secrets.TWITTER_COOKIES }}
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
         run: |
           node scripts/testTwitterLogin.js --bg
