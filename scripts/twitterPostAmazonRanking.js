@@ -52,18 +52,93 @@ async function captureScreenshot(url) {
     
     logger.info('✅ ページの読み込みが完了しました');
     
-    // ページが完全にレンダリングされるまで少し待つ
-    await new Promise(resolve => setTimeout(resolve, 3000));
-    
-    // スクリーンショットを撮影（ビューポートサイズを設定）
-    logger.info('📷 スクリーンショットを撮影しています...');
-    
     // ビューポートサイズを設定（Twitter推奨サイズ）
     await page.setViewport({
       width: 1200,
       height: 675, // 16:9比率
       deviceScaleFactor: 1,
     });
+    
+    // ページが完全にレンダリングされるまで少し待つ
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    // 「〇〇の売れ筋ランキング」部分までスクロール
+    logger.info('📜 ランキング見出しまでスクロールしています...');
+    
+    try {
+      // 複数のセレクタパターンを試す
+      const selectors = [
+        'h1:has-text("売れ筋ランキング")', // h1タグ
+        'h2:has-text("売れ筋ランキング")', // h2タグ
+        '[id*="zg_banner_text"]', // Amazonのランキングバナー
+        '.zg-banner-text', // クラス名
+        '#zg-banner-headline', // ID
+      ];
+      
+      let scrolled = false;
+      
+      // セレクタを順番に試す
+      for (const selector of selectors) {
+        try {
+          // has-text はPuppeteerでサポートされていないので、別の方法で
+          if (selector.includes('has-text')) {
+            // XPathで「売れ筋ランキング」を含むh1/h2を探す
+            const tag = selector.split(':')[0]; // h1 または h2
+            const elements = await page.$x(`//${tag}[contains(text(), "売れ筋ランキング")]`);
+            
+            if (elements.length > 0) {
+              logger.info(`✅ ランキング見出しを発見: ${tag}タグ`);
+              
+              // 要素までスクロール（少し上にマージンを持たせる）
+              await elements[0].evaluate(el => {
+                const y = el.getBoundingClientRect().top + window.pageYOffset - 50;
+                window.scrollTo({ top: y, behavior: 'smooth' });
+              });
+              
+              scrolled = true;
+              break;
+            }
+          } else {
+            // 通常のセレクタ
+            const element = await page.$(selector);
+            if (element) {
+              logger.info(`✅ ランキング要素を発見: ${selector}`);
+              
+              // 要素までスクロール（少し上にマージンを持たせる）
+              await element.evaluate(el => {
+                const y = el.getBoundingClientRect().top + window.pageYOffset - 50;
+                window.scrollTo({ top: y, behavior: 'smooth' });
+              });
+              
+              scrolled = true;
+              break;
+            }
+          }
+        } catch (e) {
+          // このセレクタでは見つからなかったので次を試す
+          continue;
+        }
+      }
+      
+      if (!scrolled) {
+        // 見出しが見つからない場合は、デフォルトで300pxスクロール
+        logger.info('⚠️  ランキング見出しが見つからなかったため、デフォルトでスクロールします');
+        await page.evaluate(() => {
+          window.scrollTo({ top: 300, behavior: 'smooth' });
+        });
+      }
+      
+      // スクロール後、少し待つ
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      logger.info('✅ スクロールが完了しました');
+    } catch (error) {
+      logger.warn('⚠️  スクロール中にエラーが発生しました:', error.message);
+      logger.info('デフォルトのスクロール位置を使用します');
+    }
+    
+    // スクリーンショットを撮影
+    logger.info('📷 スクリーンショットを撮影しています...');
     
     const screenshotBuffer = await page.screenshot({
       type: 'jpeg',
