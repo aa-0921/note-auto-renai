@@ -2,11 +2,9 @@
 // scripts/twitterPostAmazonRanking.js
 // Amazon売れ筋ランキングリンクをTwitterに投稿するスクリプト
 
-import { TwitterAPIClient, Logger } from '@aa-0921/note-auto-core';
+import { TwitterAPIClient, Logger, PuppeteerManager, ConfigManager } from '@aa-0921/note-auto-core';
 import { amazonTopSellersRankingLinks } from './affiliateConfig.js';
 import dotenv from 'dotenv';
-import axios from 'axios';
-import * as cheerio from 'cheerio';
 
 // .envファイルを読み込む
 dotenv.config();
@@ -22,106 +20,74 @@ function getRandomRankingLink() {
 }
 
 /**
- * URLからOGP画像を取得
- * @param {string} url - 画像を取得するURL
+ * Puppeteerを使ってAmazonランキングページのスクリーンショットを取得
+ * @param {string} url - スクリーンショットを取得するURL
  * @returns {Object|null} - {buffer: Buffer, mimeType: string} または null
  */
-async function fetchOgImage(url) {
+async function captureScreenshot(url) {
+  let puppeteerManager = null;
+  let page = null;
+  
   try {
-    logger.info('🔍 URLからOGP画像を取得しています...');
+    logger.info('📸 Puppeteerでスクリーンショットを取得します...');
     logger.info(`URL: ${url.substring(0, 80)}...`);
     
-    // AmazonのHTMLを取得
-    const response = await axios.get(url, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-        'Accept-Language': 'ja,en-US;q=0.9,en;q=0.8',
-      },
-      timeout: 30000, // 30秒タイムアウト
+    // ConfigManagerとPuppeteerManagerを初期化
+    const configManager = new ConfigManager();
+    puppeteerManager = new PuppeteerManager(configManager.config, true); // backgroundモード
+    
+    await puppeteerManager.initialize();
+    logger.info('✅ Puppeteerを初期化しました');
+    
+    // ページを作成
+    page = await puppeteerManager.createPage();
+    logger.info('✅ ページを作成しました');
+    
+    // Amazonのランキングページへ遷移
+    logger.info('🌐 Amazonランキングページへアクセスしています...');
+    await page.goto(url, {
+      waitUntil: 'networkidle2',
+      timeout: 60000, // 60秒タイムアウト
     });
     
-    // HTMLをパース
-    const $ = cheerio.load(response.data);
+    logger.info('✅ ページの読み込みが完了しました');
     
-    // デバッグ: 全てのmetaタグを確認
-    logger.info('🔍 ページ内のmetaタグを確認しています...');
-    const metaTags = [];
-    $('meta').each((i, elem) => {
-      const property = $(elem).attr('property');
-      const name = $(elem).attr('name');
-      const content = $(elem).attr('content');
-      if ((property || name) && content) {
-        if (property && (property.includes('og:') || property.includes('twitter:'))) {
-          metaTags.push(`${property}: ${content.substring(0, 100)}`);
-        }
-        if (name && name.includes('twitter:')) {
-          metaTags.push(`${name}: ${content.substring(0, 100)}`);
-        }
-      }
+    // ページが完全にレンダリングされるまで少し待つ
+    await new Promise(resolve => setTimeout(resolve, 3000));
+    
+    // スクリーンショットを撮影（ビューポートサイズを設定）
+    logger.info('📷 スクリーンショットを撮影しています...');
+    
+    // ビューポートサイズを設定（Twitter推奨サイズ）
+    await page.setViewport({
+      width: 1200,
+      height: 675, // 16:9比率
+      deviceScaleFactor: 1,
     });
     
-    if (metaTags.length > 0) {
-      logger.info(`見つかったメタタグ（${metaTags.length}件）:`);
-      metaTags.slice(0, 10).forEach(tag => logger.info(`  - ${tag}`));
-    } else {
-      logger.info('OGP/Twitterメタタグが見つかりませんでした');
-    }
-    
-    // OGP画像のURLを取得（複数のパターンを試す）
-    let imageUrl = $('meta[property="og:image"]').attr('content') ||
-                   $('meta[property="og:image:url"]').attr('content') ||
-                   $('meta[name="twitter:image"]').attr('content') ||
-                   $('meta[property="twitter:image"]').attr('content');
-    
-    // 画像が見つからない場合、ページ内の最初の大きな画像を探す
-    if (!imageUrl) {
-      logger.info('🔍 ページ内の画像要素を探しています...');
-      
-      // Amazonの商品画像や特定のクラスの画像を探す
-      const possibleImages = [
-        $('#landingImage').attr('src'),
-        $('.s-image').first().attr('src'),
-        $('img[data-a-dynamic-image]').first().attr('src'),
-        $('img.product-image').first().attr('src'),
-      ].filter(Boolean);
-      
-      if (possibleImages.length > 0) {
-        imageUrl = possibleImages[0];
-        logger.info(`✅ ページ内から画像を発見: ${imageUrl.substring(0, 80)}...`);
-      }
-    }
-    
-    if (!imageUrl) {
-      logger.warn('⚠️  OGP画像もページ内画像も見つかりませんでした');
-      return null;
-    }
-    
-    logger.info(`✅ OGP画像URLを取得しました: ${imageUrl.substring(0, 80)}...`);
-    
-    // 画像をダウンロード
-    logger.info('📥 画像をダウンロードしています...');
-    const imageResponse = await axios.get(imageUrl, {
-      responseType: 'arraybuffer',
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-      },
-      timeout: 30000,
+    const screenshotBuffer = await page.screenshot({
+      type: 'jpeg',
+      quality: 90,
+      fullPage: false, // ビューポート内のみ
     });
     
-    const imageBuffer = Buffer.from(imageResponse.data);
-    const mimeType = imageResponse.headers['content-type'] || 'image/jpeg';
-    logger.info(`✅ 画像をダウンロードしました（サイズ: ${(imageBuffer.length / 1024).toFixed(2)} KB, タイプ: ${mimeType}）`);
+    const mimeType = 'image/jpeg';
+    logger.info(`✅ スクリーンショットを取得しました（サイズ: ${(screenshotBuffer.length / 1024).toFixed(2)} KB, タイプ: ${mimeType}）`);
     
-    return { buffer: imageBuffer, mimeType };
+    return { buffer: screenshotBuffer, mimeType };
   } catch (error) {
-    logger.error('❌ OGP画像の取得に失敗しました:', error.message);
-    
-    if (error.response) {
-      logger.error(`HTTPステータス: ${error.response.status}`);
-    }
-    
+    logger.error('❌ スクリーンショットの取得に失敗しました:', error.message);
     return null;
+  } finally {
+    // クリーンアップ
+    if (puppeteerManager) {
+      try {
+        await puppeteerManager.cleanup();
+        logger.info('✅ Puppeteerをクリーンアップしました');
+      } catch (cleanupError) {
+        logger.error('⚠️  クリーンアップ中にエラーが発生しました:', cleanupError.message);
+      }
+    }
   }
 }
 
@@ -217,10 +183,10 @@ async function main() {
     logger.info(`文字数: ${tweetText.length}文字`);
     logger.info('');
     
-    // URLから画像を取得
+    // URLからスクリーンショットを取得
     logger.info('');
     logger.info('========================================');
-    logger.info('📷 画像取得処理');
+    logger.info('📷 スクリーンショット取得処理');
     logger.info('========================================');
     logger.info('');
     
@@ -228,7 +194,7 @@ async function main() {
     const lines = selectedLink.split('\n');
     const amazonUrl = lines[2]; // インデックス2がURL
     
-    const imageData = await fetchOgImage(amazonUrl);
+    const imageData = await captureScreenshot(amazonUrl);
     
     if (!imageData) {
       logger.warn('');
