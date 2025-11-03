@@ -47,14 +47,16 @@ function createTweetText(linkData) {
   // 最初の1〜2行のみ使用（280文字制限を考慮）
   const description = descriptionLines.slice(0, 2).join('\n');
   
-  // ツイート用テキストを生成（URLは1回のみ、280文字以内に収める）
+  // ツイート用テキストを生成（ハッシュタグ → 矢印 → URL）
   const tweetText = `${title}
 
 ${description}
 
-${url}
+#amazon #アマゾン #ランキング #ranking
 
-#amazon #アマゾン #ランキング #ranking`;
+↓↓↓↓
+
+${url}`;
   
   return tweetText;
 }
