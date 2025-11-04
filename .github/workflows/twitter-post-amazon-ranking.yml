@@ -52,15 +52,23 @@ jobs:
             libxrandr2 \
             libxshmfence1
 
-      - name: Configure npm auth for GitHub Packages (optional)
-        env:
-          NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          echo "//npm.pkg.github.com/:_authToken=${NPM_TOKEN}" >> ~/.npmrc
-          echo "@aa-0921:registry=https://npm.pkg.github.com" >> ~/.npmrc
-
       - name: Install dependencies (renai)
         run: npm ci
+
+      - name: Checkout note-auto-core
+        uses: actions/checkout@v4
+        with:
+          repository: aa-0921/note-auto-core
+          path: note-auto-core
+          ref: main
+          token: ${{ secrets.CORE_REPO_TOKEN }}
+
+      - name: Install core and link locally
+        run: |
+          cd note-auto-core
+          npm install
+          cd ..
+          npm install ./note-auto-core
 
       - name: Run script (schedule -> production)
         if: ${{ github.event_name == 'schedule' }}
