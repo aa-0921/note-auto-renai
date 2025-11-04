@@ -1,4 +1,4 @@
-name: Post Amazon Ranking to X every 3 hours
+name: Twitter Post Amazon Ranking
 
 on:
   schedule:
@@ -23,8 +23,23 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Checkout core (note-auto-core)
+        uses: actions/checkout@v4
+        with:
+          repository: aa-0921/note-auto-core
+          path: core
+
+      - name: Build local core package
+        run: |
+          cd core
+          npm ci
+          npm pack
+          ls -l *.tgz
+
+      - name: Install dependencies (renai)
+        run: |
+          npm ci
+          npm i ./core/*.tgz
 
       - name: Run script (schedule -> production)
         if: ${{ github.event_name == 'schedule' }}
