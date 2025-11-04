@@ -731,7 +731,7 @@ export const amazonWishlistRankingLinks = [
   [
     '',
     '🍽️　🍷　🍽️　🍷　🍽️　🍷　🍽️　🍷　🍽️　🍷　🍽️　🍷　🍽️　🍷　🍽️',
-    'https://www.amazon.co.jp/gp/most-wished-for/food-beverage?&linkCode=ll2&tag=${affiliateTag}&linkId=8d58016ae301ed0fd3a96e4f4b28b0c9&language=ja_JP&ref_=as_li_ss_tl',
+    `https://www.amazon.co.jp/gp/most-wished-for/food-beverage?&linkCode=ll2&tag=${affiliateTag}&linkId=8d58016ae301ed0fd3a96e4f4b28b0c9&language=ja_JP&ref_=as_li_ss_tl`,
     '👆食品・飲料・お酒のほしい物ランキング',
     '気になるグルメやドリンクをリストに保存🍽️✨',
     'タイムセールや値下げを見逃さないよう、候補をまとめて管理😊',
@@ -743,7 +743,7 @@ export const amazonWishlistRankingLinks = [
   [
     '',
     '👗　👔　👗　👔　👗　👔　👗　👔　👗　👔　👗　👔　👗　👔　👗',
-    'https://www.amazon.co.jp/gp/most-wished-for/fashion?&linkCode=ll2&tag=${affiliateTag}&linkId=b2d48f3503c406d6a1dd94c698955076&language=ja_JP&ref_=as_li_ss_tl',
+    `https://www.amazon.co.jp/gp/most-wished-for/fashion?&linkCode=ll2&tag=${affiliateTag}&linkId=b2d48f3503c406d6a1dd94c698955076&language=ja_JP&ref_=as_li_ss_tl`,
     '👆ファッションのほしい物ランキング',
     '欲しいファッションアイテムをウィッシュリストで管理👗✨',
     '季節のトレンドや定番アイテムを保存して、賢くお買い物😊',
@@ -755,7 +755,7 @@ export const amazonWishlistRankingLinks = [
   [
     '',
     '👜　🎒　👜　🎒　👜　🎒　👜　🎒　👜　🎒　👜　🎒　👜　🎒　👜',
-    'https://www.amazon.co.jp/gp/most-wished-for/fashion/2221077051?&linkCode=ll2&tag=${affiliateTag}&linkId=4cd4c7bd6233fc2081393e023d0e6660&language=ja_JP&ref_=as_li_ss_tl',
+    `https://www.amazon.co.jp/gp/most-wished-for/fashion/2221077051?&linkCode=ll2&tag=${affiliateTag}&linkId=4cd4c7bd6233fc2081393e023d0e6660&language=ja_JP&ref_=as_li_ss_tl`,
     '👆バッグ・スーツケースのほしい物ランキング',
     '気になるバッグやスーツケースをリストに保存👜✨',
     '通勤・通学から旅行まで、用途別に候補をまとめておくと便利😊',
@@ -767,7 +767,7 @@ export const amazonWishlistRankingLinks = [
   [
     '',
     '💊　🏥　💊　🏥　💊　🏥　💊　🏥　💊　🏥　💊　🏥　💊　🏥　💊',
-    'https://www.amazon.co.jp/gp/most-wished-for/hpc?&linkCode=ll2&tag=${affiliateTag}&linkId=e913d333a8d4f81103b7a3abed922dd8&language=ja_JP&ref_=as_li_ss_tl',
+    `https://www.amazon.co.jp/gp/most-wished-for/hpc?&linkCode=ll2&tag=${affiliateTag}&linkId=e913d333a8d4f81103b7a3abed922dd8&language=ja_JP&ref_=as_li_ss_tl`,
     '👆ドラッグストアのほしい物ランキング',
     '健康維持に役立つアイテムをリストで管理💊✨',
     '必要な医薬品や健康グッズをリストに保存しておくと便利😊',
@@ -779,7 +779,7 @@ export const amazonWishlistRankingLinks = [
   [
     '',
     '💄　💅　💄　💅　💄　💅　💄　💅　💄　💅　💄　💅　💄　💅　💄',
-    'https://www.amazon.co.jp/gp/most-wished-for/beauty?&linkCode=ll2&tag=${affiliateTag}&linkId=81df7e8e89afd3dfa8438b19acd8e821&language=ja_JP&ref_=as_li_ss_tl',
+    `https://www.amazon.co.jp/gp/most-wished-for/beauty?&linkCode=ll2&tag=${affiliateTag}&linkId=81df7e8e89afd3dfa8438b19acd8e821&language=ja_JP&ref_=as_li_ss_tl`,
     '👆ビューティーのほしい物ランキング',
     '気になるコスメ・スキンケアをウィッシュリストに追加💄✨',
     '口コミで人気のアイテムをまとめてチェックして、比較検討😊',
@@ -791,7 +791,7 @@ export const amazonWishlistRankingLinks = [
   [
     '',
     '🧴　✨　🧴　✨　🧴　✨　🧴　✨　🧴　✨　🧴　✨　🧴　✨　🧴',
-    'https://www.amazon.co.jp/gp/most-wished-for/beauty/5267100051?&linkCode=ll2&tag=${affiliateTag}&linkId=f37b91088b0d34107376d5a539299109&language=ja_JP&ref_=as_li_ss_tl',
+    `https://www.amazon.co.jp/gp/most-wished-for/beauty/5267100051?&linkCode=ll2&tag=${affiliateTag}&linkId=f37b91088b0d34107376d5a539299109&language=ja_JP&ref_=as_li_ss_tl`,
     '👆スキンケア・ボディケアのほしい物ランキング',
     'お肌やボディのケアアイテムをリストで管理🧴✨',
     '気になる商品を保存して、レビューや価格を比較しながら選べます😊',
@@ -803,7 +803,7 @@ export const amazonWishlistRankingLinks = [
   [
     '',
     '💇　🌸　💇　🌸　💇　🌸　💇　🌸　💇　🌸　💇　🌸　💇　🌸　💇',
-    'https://www.amazon.co.jp/gp/most-wished-for/beauty/5267102051?&linkCode=ll2&tag=${affiliateTag}&linkId=4cd2d1961d48ac3f7060bfcdb4ad0006&language=ja_JP&ref_=as_li_ss_tl',
+    `https://www.amazon.co.jp/gp/most-wished-for/beauty/5267102051?&linkCode=ll2&tag=${affiliateTag}&linkId=4cd2d1961d48ac3f7060bfcdb4ad0006&language=ja_JP&ref_=as_li_ss_tl`,
     '👆ヘアケア・カラー・スタイリングのほしい物ランキング',
     '髪のケア商品をウィッシュリストに保存💇✨',
     '気になる商品をリストで管理して、買い替え時期に備えましょう😊',
@@ -815,7 +815,7 @@ export const amazonWishlistRankingLinks = [
   [
     '',
     '🐾　🐶　🐾　🐱　🐾　🐶　🐾　🐱　🐾　🐶　🐾　🐱　🐾　🐶　🐾',
-    'https://www.amazon.co.jp/gp/most-wished-for/pet-supplies?&linkCode=ll2&tag=${affiliateTag}&linkId=d5aaa9063c8a6845ccde839c9b8b1275&language=ja_JP&ref_=as_li_ss_tl',
+    `https://www.amazon.co.jp/gp/most-wished-for/pet-supplies?&linkCode=ll2&tag=${affiliateTag}&linkId=d5aaa9063c8a6845ccde839c9b8b1275&language=ja_JP&ref_=as_li_ss_tl`,
     '👆ペット用品のほしい物ランキング',
     '大切なペットのためのグッズをリストで管理🐾✨',
     '消耗品の買い替えや新しいおもちゃの候補を保存しておくと便利😊',
@@ -827,7 +827,7 @@ export const amazonWishlistRankingLinks = [
   [
     '',
     '🌟　🏆　🌟　🏆　🌟　🏆　🌟　🏆　🌟　🏆　🌟　🏆　🌟　🏆　🌟',
-    'https://www.amazon.co.jp/gp/most-wished-for?&linkCode=ll2&tag=${affiliateTag}&linkId=892a6ded8361abff9b4189aa21aa18f8&language=ja_JP&ref_=as_li_ss_tl',
+    `https://www.amazon.co.jp/gp/most-wished-for?&linkCode=ll2&tag=${affiliateTag}&linkId=892a6ded8361abff9b4189aa21aa18f8&language=ja_JP&ref_=as_li_ss_tl`,
     '👆Amazon 全カテゴリのほしい物ランキング',
     'みんなが「ほしい！」とチェックしている注目アイテムが一目でわかります🌟✨',
     '気になった商品はほしい物リストに追加して、タイムセールや値下げを見逃さず😊',
@@ -839,7 +839,7 @@ export const amazonWishlistRankingLinks = [
   [
     '',
     '⏰　🔥　⏰　🔥　⏰　🔥　⏰　🔥　⏰　🔥　⏰　🔥　⏰　🔥　⏰',
-    'https://www.amazon.co.jp/events/monthlydealevent?&linkCode=ll2&tag=${affiliateTag}&linkId=ac59003761032c6ee5836db2a0890d5b&language=ja_JP&ref_=as_li_ss_tl',
+    `https://www.amazon.co.jp/events/monthlydealevent?&linkCode=ll2&tag=${affiliateTag}&linkId=ac59003761032c6ee5836db2a0890d5b&language=ja_JP&ref_=as_li_ss_tl`,
     '👆タイムセールのランキング',
     '期間限定セール商品をリストで管理⏰✨',
     '欲しい商品をリストに保存しておくと、セール開始を逃しません😊',
@@ -851,7 +851,7 @@ export const amazonWishlistRankingLinks = [
   [
     '',
     '📲　💻　📲　💻　📲　💻　📲　💻　📲　💻　📲　💻　📲　💻　📲',
-    'https://www.amazon.co.jp/gp/most-wished-for/amazon-devices?&linkCode=ll2&tag=${affiliateTag}&linkId=b5cbcad5a033c6bad2526c05ff792c7a&language=ja_JP&ref_=as_li_ss_tl',
+    `https://www.amazon.co.jp/gp/most-wished-for/amazon-devices?&linkCode=ll2&tag=${affiliateTag}&linkId=b5cbcad5a033c6bad2526c05ff792c7a&language=ja_JP&ref_=as_li_ss_tl`,
     '👆Amazonデバイス・アクセサリのほしい物ランキング',
     '気になるデバイスをリストで確認📲✨',
     '仕事にも娯楽にも使える便利なデバイスを比較検討😊',
@@ -863,7 +863,7 @@ export const amazonWishlistRankingLinks = [
   [
     '',
     '📚　📕　📚　📗　📚　📘　📚　📙　📚　📕　📚　📗　📚　📘　📚',
-    'https://www.amazon.co.jp/gp/most-wished-for/books?&linkCode=ll2&tag=${affiliateTag}&linkId=e53a0e8163b34f2a49ccba9345d85489&language=ja_JP&ref_=as_li_ss_tl',
+    `https://www.amazon.co.jp/gp/most-wished-for/books?&linkCode=ll2&tag=${affiliateTag}&linkId=e53a0e8163b34f2a49ccba9345d85489&language=ja_JP&ref_=as_li_ss_tl`,
     '👆本のほしい物ランキング',
     '読みたい本をウィッシュリストに追加📚✨',
     'ベストセラーから話題の新刊まで、気になる本をリストで管理😊',
@@ -875,7 +875,7 @@ export const amazonWishlistRankingLinks = [
   [
     '',
     '✏️　📐　✏️　📐　✏️　📐　✏️　📐　✏️　📐　✏️　📐　✏️　📐　✏️',
-    'https://www.amazon.co.jp/gp/most-wished-for/office-products?&linkCode=ll2&tag=${affiliateTag}&linkId=21e50d920d5c908df87f5c640db872ad&language=ja_JP&ref_=as_li_ss_tl',
+    `https://www.amazon.co.jp/gp/most-wished-for/office-products?&linkCode=ll2&tag=${affiliateTag}&linkId=21e50d920d5c908df87f5c640db872ad&language=ja_JP&ref_=as_li_ss_tl`,
     '👆文房具・オフィス用品のほしい物ランキング',
     '気になる文房具やオフィス用品をリストで管理✏️✨',
     '仕事や勉強の効率を上げるアイテムをまとめてチェック😊',
@@ -887,7 +887,7 @@ export const amazonWishlistRankingLinks = [
   [
     '',
     '🧸　🎮　🧸　🎮　🧸　🎮　🧸　🎮　🧸　🎮　🧸　🎮　🧸　🎮　🧸',
-    'https://www.amazon.co.jp/gp/most-wished-for/toys?&linkCode=ll2&tag=${affiliateTag}&linkId=bd31e71e16be20779f03e9a140ddd4bb&language=ja_JP&ref_=as_li_ss_tl',
+    `https://www.amazon.co.jp/gp/most-wished-for/toys?&linkCode=ll2&tag=${affiliateTag}&linkId=bd31e71e16be20779f03e9a140ddd4bb&language=ja_JP&ref_=as_li_ss_tl`,
     '👆おもちゃのほしい物ランキング',
     '子どもが喜ぶおもちゃをリストでストック🧸✨',
     '誕生日やイベントのギフト候補をまとめておけるので便利です😊',
@@ -899,7 +899,7 @@ export const amazonWishlistRankingLinks = [
   [
     '',
     '🏠　🍳　🏠　🍳　🏠　🍳　🏠　🍳　🏠　🍳　🏠　🍳　🏠　🍳　🏠',
-    'https://www.amazon.co.jp/gp/most-wished-for/kitchen?&linkCode=ll2&tag=${affiliateTag}&linkId=f8832d258427b90ae64d3a08d6c77dcc&language=ja_JP&ref_=as_li_ss_tl',
+    `https://www.amazon.co.jp/gp/most-wished-for/kitchen?&linkCode=ll2&tag=${affiliateTag}&linkId=f8832d258427b90ae64d3a08d6c77dcc&language=ja_JP&ref_=as_li_ss_tl`,
     '👆ホーム＆キッチンのほしい物ランキング',
     '快適な生活を彩るアイテムをリストで管理🏠✨',
     'キッチン用品から収納アイテムまで、気になる商品をまとめてチェック😊',
@@ -911,7 +911,7 @@ export const amazonWishlistRankingLinks = [
   [
     '',
     '🖼️　🕯️　🖼️　🕯️　🖼️　🕯️　🖼️　🕯️　🖼️　🕯️　🖼️　🕯️　🖼️　🕯️　🖼️',
-    'https://www.amazon.co.jp/gp/most-wished-for/kitchen/13945061?&linkCode=ll2&tag=${affiliateTag}&linkId=e807348222b391c491dd17925b0f2e13&language=ja_JP&ref_=as_li_ss_tl',
+    `https://www.amazon.co.jp/gp/most-wished-for/kitchen/13945061?&linkCode=ll2&tag=${affiliateTag}&linkId=e807348222b391c491dd17925b0f2e13&language=ja_JP&ref_=as_li_ss_tl`,
     '👆インテリアのほしい物ランキング',
     'お部屋を素敵に彩るアイテムをリストで管理🖼️✨',
     '気になるインテリアアイテムを保存して、理想の空間を作りましょう😊',
@@ -923,7 +923,7 @@ export const amazonWishlistRankingLinks = [
   [
     '',
     '🛋️　🪑　🛋️　🪑　🛋️　🪑　🛋️　🪑　🛋️　🪑　🛋️　🪑　🛋️　🪑　🛋️',
-    'https://www.amazon.co.jp/gp/most-wished-for/kitchen/16428011?&linkCode=ll2&tag=${affiliateTag}&linkId=85d3d8e06d4a88b6a1f3da60cc135977&language=ja_JP&ref_=as_li_ss_tl',
+    `https://www.amazon.co.jp/gp/most-wished-for/kitchen/16428011?&linkCode=ll2&tag=${affiliateTag}&linkId=85d3d8e06d4a88b6a1f3da60cc135977&language=ja_JP&ref_=as_li_ss_tl`,
     '👆家具のほしい物ランキング',
     '気になる家具をリストで管理🛋️✨',
     '快適な生活空間を作る家具を比較検討しながら選べます😊',
@@ -935,7 +935,7 @@ export const amazonWishlistRankingLinks = [
   [
     '',
     '🧹　🧺　🧹　🧺　🧹　🧺　🧹　🧺　🧹　🧺　🧹　🧺　🧹　🧺　🧹',
-    'https://www.amazon.co.jp/gp/most-wished-for/kitchen/13938541?&linkCode=ll2&tag=${affiliateTag}&linkId=32c4a03a7c62f63a2a7bef0120bf7062&language=ja_JP&ref_=as_li_ss_tl',
+    `https://www.amazon.co.jp/gp/most-wished-for/kitchen/13938541?&linkCode=ll2&tag=${affiliateTag}&linkId=32c4a03a7c62f63a2a7bef0120bf7062&language=ja_JP&ref_=as_li_ss_tl`,
     '👆生活雑貨のほしい物ランキング',
     '毎日の生活を便利にするアイテムをリストで管理🧹✨',
     '気になる生活雑貨を保存して、買い替え時期に備えましょう😊',
@@ -947,7 +947,7 @@ export const amazonWishlistRankingLinks = [
   [
     '',
     '🎮　👾　🎮　👾　🎮　👾　🎮　👾　🎮　👾　🎮　👾　🎮　👾　🎮',
-    'https://www.amazon.co.jp/gp/most-wished-for/videogames?&linkCode=ll2&tag=${affiliateTag}&linkId=f93c2b6dd5b997b98e651472e6c337d6&language=ja_JP&ref_=as_li_ss_tl',
+    `https://www.amazon.co.jp/gp/most-wished-for/videogames?&linkCode=ll2&tag=${affiliateTag}&linkId=f93c2b6dd5b997b98e651472e6c337d6&language=ja_JP&ref_=as_li_ss_tl`,
     '👆ゲームのほしい物ランキング',
     '気になるゲームをリストで管理🎮✨',
     '話題のタイトルから定番まで、欲しいゲームをまとめてチェック😊',
@@ -959,7 +959,7 @@ export const amazonWishlistRankingLinks = [
   [
     '',
     '📱　💻　📱　💻　📱　💻　📱　💻　📱　💻　📱　💻　📱　💻　📱',
-    'https://www.amazon.co.jp/gp/most-wished-for/computers?&linkCode=ll2&tag=${affiliateTag}&linkId=e984355b1568f0ea276c61c92a604c9e&language=ja_JP&ref_=as_li_ss_tl',
+    `https://www.amazon.co.jp/gp/most-wished-for/computers?&linkCode=ll2&tag=${affiliateTag}&linkId=e984355b1568f0ea276c61c92a604c9e&language=ja_JP&ref_=as_li_ss_tl`,
     '👆パソコン・周辺機器のほしい物ランキング',
     '気になるPC関連商品をリストで管理💻✨',
     '仕事効率化やテレワークに役立つアイテムを比較検討😊',
@@ -971,7 +971,7 @@ export const amazonWishlistRankingLinks = [
   [
     '',
     '🏠　🛋️　🏠　🛋️　🏠　🛋️　🏠　🛋️　🏠　🛋️　🏠　🛋️　🏠　🛋️　🏠',
-    'https://www.amazon.co.jp/gp/most-wished-for/kitchen?&linkCode=ll2&tag=${affiliateTag}&linkId=fcc7c083a5651a2daba413ac2943c5b6&language=ja_JP&ref_=as_li_ss_tl',
+    `https://www.amazon.co.jp/gp/most-wished-for/kitchen?&linkCode=ll2&tag=${affiliateTag}&linkId=fcc7c083a5651a2daba413ac2943c5b6&language=ja_JP&ref_=as_li_ss_tl`,
     '👆ホーム&キッチンのほしい物ランキング',
     '快適な生活を彩る人気商品をリストで管理🏠✨',
     'キッチン用品から収納アイテムまで、気になる商品をまとめてチェック😊',
