@@ -52,6 +52,13 @@ jobs:
             libxrandr2 \
             libxshmfence1
 
+      - name: Configure npm auth for GitHub Packages (optional)
+        env:
+          NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "//npm.pkg.github.com/:_authToken=${NPM_TOKEN}" >> ~/.npmrc
+          echo "@aa-0921:registry=https://npm.pkg.github.com" >> ~/.npmrc
+
       - name: Install dependencies (renai)
         run: npm ci
 
