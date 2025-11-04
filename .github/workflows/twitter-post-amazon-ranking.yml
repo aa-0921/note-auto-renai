@@ -1,0 +1,54 @@
+name: Post Amazon Ranking to X every 3 hours
+
+on:
+  schedule:
+    - cron: '0 */3 * * *'  # 3時間おき（UTC）
+  workflow_dispatch:
+    inputs:
+      dryrun:
+        description: 'Dryrun (true の場合は投稿しない)'
+        required: false
+        default: 'false'
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run script (schedule -> production)
+        if: ${{ github.event_name == 'schedule' }}
+        env:
+          TWITTER_API_KEY: ${{ secrets.TWITTER_API_KEY }}
+          TWITTER_API_SECRET: ${{ secrets.TWITTER_API_SECRET }}
+          TWITTER_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
+          TWITTER_ACCESS_TOKEN_SECRET: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
+        run: |
+          node scripts/twitterPostAmazonRanking.js
+
+      - name: Run script (manual)
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        env:
+          TWITTER_API_KEY: ${{ secrets.TWITTER_API_KEY }}
+          TWITTER_API_SECRET: ${{ secrets.TWITTER_API_SECRET }}
+          TWITTER_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
+          TWITTER_ACCESS_TOKEN_SECRET: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
+        run: |
+          if [ "${{ github.event.inputs.dryrun }}" = "true" ]; then
+            echo "Run in dryrun mode"
+            node scripts/twitterPostAmazonRanking.js --dryrun
+          else
+            node scripts/twitterPostAmazonRanking.js
+          fi
+
+
