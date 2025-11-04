@@ -13,6 +13,13 @@ on:
 jobs:
   post:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    concurrency:
+      group: twitter-post-amazon-ranking
+      cancel-in-progress: false
+    env:
+      TZ: Asia/Tokyo
 
     steps:
       - name: Checkout
@@ -22,24 +29,31 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'npm'
 
-      - name: Checkout core (note-auto-core)
-        uses: actions/checkout@v4
-        with:
-          repository: aa-0921/note-auto-core
-          path: core
-
-      - name: Build local core package
+      - name: Install Chrome dependencies for Puppeteer
         run: |
-          cd core
-          npm ci
-          npm pack
-          ls -l *.tgz
+          sudo apt-get update
+          sudo apt-get install -y \
+            ca-certificates \
+            fonts-liberation \
+            libasound2 \
+            libatk1.0-0 \
+            libatk-bridge2.0-0 \
+            libcups2 \
+            libdrm2 \
+            libxkbcommon0 \
+            libgtk-3-0 \
+            libgbm1 \
+            libnss3 \
+            libxcomposite1 \
+            libxdamage1 \
+            libxfixes3 \
+            libxrandr2 \
+            libxshmfence1
 
       - name: Install dependencies (renai)
-        run: |
-          npm ci
-          npm i ./core/*.tgz
+        run: npm ci
 
       - name: Run script (schedule -> production)
         if: ${{ github.event_name == 'schedule' }}
