@@ -1,0 +1,41 @@
+name: Auto Create Amazon Wishlist Ranking Note
+
+on:
+  schedule:
+    # 月水金の17時（JST）に実行 = UTC 8:00
+    - cron: '0 8 * * 1'   # 月曜日 JST 17:00
+    - cron: '0 8 * * 3'   # 水曜日 JST 17:00
+    - cron: '0 8 * * 5'   # 金曜日 JST 17:00
+  workflow_dispatch:
+
+jobs:
+  auto-create-amazon-wishlist-ranking-note:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Checkout note-auto-core
+        uses: actions/checkout@v4
+        with:
+          repository: aa-0921/note-auto-core
+          path: note-auto-core
+          ref: main
+          token: ${{ secrets.CORE_REPO_TOKEN }}
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+      - name: Install dependencies
+        run: |
+          # note-auto-coreの依存関係をインストール
+          cd note-auto-core && npm install
+          cd ..
+          # ローカルパッケージを直接参照してインストール
+          npm install ./note-auto-core
+      - name: Run createAmazonWishlistRankingNote.js
+        env:
+          NOTE_EMAIL: ${{ secrets.NOTE_EMAIL }}
+          NOTE_PASSWORD: ${{ secrets.NOTE_PASSWORD }}
+        run: node scripts/createAmazonWishlistRankingNote.js
+
