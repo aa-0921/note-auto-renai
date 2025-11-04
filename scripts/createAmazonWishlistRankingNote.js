@@ -41,7 +41,7 @@ import { amazonWishlistRankingLinks } from './affiliateConfig.js';
       '',
       '※ Amazon のアソシエイトとして、「恋愛・人間関係カウンセラーRisa」は適格販売により収入を得ています。',
       '',
-      '#Amazonランキング #ほしい物リスト #ウィッシュリスト #おすすめ #ショッピング #PR',
+      '#Amazonランキング #アマゾン #ranking #ほしい物リスト #買ってよかった #ウィッシュリスト #おすすめ #ショッピング #PR',
     ].join('\n');
 
     // コアライブラリのメソッドを呼び出し（Amazonランキング専用メソッド）
