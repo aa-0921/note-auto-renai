@@ -1,8 +1,8 @@
 name: Twitter Post Amazon Ranking
 
 on:
-  schedule:
-    - cron: '0 */3 * * *'  # 3時間おき（UTC）
+  # schedule:
+  #   - cron: '0 */3 * * *'  # 3時間おき（UTC）
   workflow_dispatch:
     inputs:
       dryrun:
