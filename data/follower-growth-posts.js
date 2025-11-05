@@ -173,6 +173,24 @@ export const posts = [
 
 #トリデン #ビタミンC #美白 #低刺激 #敏感肌 #ツヤ #保湿 #韓国コスメ #毎日ケア`,
     image: 'images/follower-growth/Torriden-serum.jpg'
+  },
+  {
+    title: 'リデンス『コレクターアンプル』抗酸化セラム 本音レビュー',
+    text: `【抗酸化でじわ透明感】
+
+抗酸化成分多めでトーンUP/透明感を実感。美白・色ムラに◎。朝もOKだが乾燥肌は保湿足し推奨。軽く浸透、ベタつきなし。
+
+#抗酸化 #美白 #透明感 #色ムラ #朝ケア #軽い使用感`,
+    image: 'images/follower-growth/Redence-Ampoule.jpg'
+  },
+  {
+    title: 'リデンス『コレクターアンプル』',
+    text: `【現実的な美白】
+
+深いシミ/肝斑は完全には消えないが、同価格帯より体感は高水準。メガ割ならコスパ激強、今買う価値あり。
+
+#美白 #シミケア #肝斑 #韓国コスメ #メガ割 #コスパ`,
+    image: 'images/follower-growth/Redence-Ampoule.jpg'
   }
 ];
 
