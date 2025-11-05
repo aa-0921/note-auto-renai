@@ -4,6 +4,10 @@ node_modules/
 logs/
 *.png
 *.jpg
+
+# follower-growth 画像は除外しない
+!images/follower-growth/*.jpg
+!images/follower-growth/*.png
 *.html
 
 # 画像フォルダの構造は残す（.gitkeeepのみ含める）
