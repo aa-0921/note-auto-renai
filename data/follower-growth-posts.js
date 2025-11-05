@@ -25,13 +25,13 @@ export const posts = [
 
 乾燥→PDRN。跡/毛穴/ハリ→レチ0.3。皮脂/赤み→アゼ15。速攻トーンUP/毛穴→ビタミン10。色素沈着→ダークスポット。透明感/ツヤ→桃70。揺らぎ→ドクダミ80。
 
-肌悩み別に選べばハズさない。迷ったらまず“土台”から整えるのが近道。`,
+肌悩み別に選べばハズさない。`,
     image: 'images/follower-growth/anua-serum.jpg'
   }
   ,
   {
     title: 'Anua｜PDRNヒアルロン酸カプセル100セラム本音レビュー',
-    text: `【水分ロックが段違い】💧\n\n内側しっとり、外側さらり。PDRN×ヒアルロン酸で一日中つっぱらない。\n\n3本使い切りで生理前も荒れにくく、乾燥小ジワふっくら。乾燥肌/インナードライの土台ケアに最適。\n\n結論：安定感が正義。買うならまずコレ。\n\n#Anua #PDRN`,
+    text: `【水分ロックが段違い】💧\n\n内側しっとり、外側さらり。PDRN×ヒアルロン酸で一日中つっぱらない。\n\n3本使い切りで生理前も荒れにくく、乾燥小ジワふっくら。\n\n結論：安定感が正義。買うならまずコレ。\n\n#Anua #PDRN`,
     image: 'images/follower-growth/anua-pdrn-hyaluron-serum.jpg'
   },
   {
@@ -51,7 +51,7 @@ export const posts = [
   },
   {
     title: 'Anua｜ダークスポットセラム',
-    text: `【色素沈着に狙い撃ち】🎯\n\nナイアシン10%×トラネキサム4%。\n\n跡/シミ/そばかすの“残る影”を点で狙い面で晴らす。\n\nまず部分塗り→全顔。停滞してた色ムラに手応え。\n\n#ダークスポット`,
+    text: `【色素沈着に狙い撃ち】🎯\n\nナイアシン10%×トラネキサム4%。\n\n跡/シミ/そばかすの“残る影”を点で狙い面で晴らす。\n\nまず部分塗り→全顔。停滞してた色ムラに手応え。　👉https://amzn.to/47qLyd \n\n#ダークスポット`,
     image: 'images/follower-growth/anua-niacinamide-txa-serum.jpg'
   },
   {
@@ -179,7 +179,7 @@ export const posts = [
     text: `【抗酸化でじわ透明感】
 
 抗酸化成分多めでトーンUP/透明感を実感。美白・色ムラに◎。朝もOKだが乾燥肌は保湿足し推奨。軽く浸透、ベタつきなし。
-
+👉https://amzn.to/4945wMk
 #抗酸化 #美白 #透明感 #色ムラ #朝ケア #軽い使用感`,
     image: 'images/follower-growth/Redence-Ampoule.jpg'
   },
