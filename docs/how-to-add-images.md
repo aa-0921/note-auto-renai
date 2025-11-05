@@ -40,10 +40,16 @@ cp ~/Downloads/anua-dokudami.png /Users/aa/projects/note-automation/note-auto-re
   title: 'Anua｜ドクダミ80モイスチャースージングアンプル',
   text: `【先回り鎮静】🌿\n季節の変わり目や生理前に"まずこれ"。...`,
   
-  // 画像パスを指定（絶対パス）
-  image: '/Users/aa/projects/note-automation/note-auto-renai/images/follower-growth/anua-dokudami.png'
+  // 画像パスを指定（相対パス・推奨）
+  image: 'images/follower-growth/anua-dokudami.png'
 }
 ```
+
+**ポイント**: 
+- ✅ **相対パス（推奨）**: `images/follower-growth/ファイル名.png`
+- ✅ **絶対パス**: `/Users/aa/projects/note-automation/note-auto-renai/images/follower-growth/ファイル名.png`
+
+相対パスを使うと、環境が変わっても動作します。プロジェクトルート（`note-auto-renai/`）を基準に解決されます。
 
 ### 4. DRYRUNモードで確認
 
@@ -55,8 +61,11 @@ node scripts/postFollowerGrowthTweet.js --dryrun
 以下のように表示されればOK：
 
 ```
-📷 画像: /Users/aa/projects/note-automation/note-auto-renai/images/follower-growth/anua-dokudami.png
+📷 画像（元）: images/follower-growth/anua-dokudami.png
+📷 画像（解決後）: /Users/aa/projects/note-automation/note-auto-renai/images/follower-growth/anua-dokudami.png
 ```
+
+相対パスの場合、元のパスと解決後の絶対パスの両方が表示されます。
 
 もし画像が見つからない場合：
 
@@ -79,7 +88,7 @@ node scripts/postFollowerGrowthTweet.js
 {
   title: 'Anua｜PDRN使用1ヶ月後のBefore/After',
   text: `【1ヶ月使用結果】\n肌のキメが整い、乾燥小ジワが目立たなく...`,
-  image: '/Users/aa/projects/note-automation/note-auto-renai/images/follower-growth/pdrn-beforeafter.png'
+  image: 'images/follower-growth/pdrn-beforeafter.png'
 }
 ```
 
@@ -89,7 +98,7 @@ node scripts/postFollowerGrowthTweet.js
 {
   title: 'Anua｜レチノール0.3セラム',
   text: `【速攻で実感】⚡️\nレチ0.3×ナイアシン×セラミド...`,
-  image: '/Users/aa/projects/note-automation/note-auto-renai/images/follower-growth/anua-retinol.png'
+  image: 'images/follower-growth/anua-retinol.png'
 }
 ```
 
@@ -99,7 +108,7 @@ node scripts/postFollowerGrowthTweet.js
 {
   title: 'デパコス vs プチプラ｜リップ比較',
   text: `【徹底比較】\nデパコス¥5,000 vs プチプラ¥1,200...`,
-  image: '/Users/aa/projects/note-automation/note-auto-renai/images/follower-growth/comparison-lipstick.png'
+  image: 'images/follower-growth/comparison-lipstick.png'
 }
 ```
 
@@ -109,7 +118,7 @@ node scripts/postFollowerGrowthTweet.js
 {
   title: 'Anua｜ドクダミのテクスチャー',
   text: `【テクスチャー解説】\nサラッと軽い、みずみずしい使用感...`,
-  image: '/Users/aa/projects/note-automation/note-auto-renai/images/follower-growth/anua-dokudami-texture.png'
+  image: 'images/follower-growth/anua-dokudami-texture.png'
 }
 ```
 
@@ -190,19 +199,24 @@ ls -lh /Users/aa/projects/note-automation/note-auto-renai/images/follower-growth
 
 ### Q2: 「画像ファイルが見つかりません」エラー
 
-A: 絶対パスで指定しているか確認してください。
+A: パスの指定方法を確認してください。
 
 ```javascript
+// ✅ 正しい（相対パス・推奨）
+image: 'images/follower-growth/anua-dokudami.png'
+
 // ✅ 正しい（絶対パス）
 image: '/Users/aa/projects/note-automation/note-auto-renai/images/follower-growth/anua-dokudami.png'
 
-// ❌ 間違い（相対パス）
+// ❌ 間違い（./ や ../ は不要）
 image: './images/follower-growth/anua-dokudami.png'
 image: '../images/follower-growth/anua-dokudami.png'
 
 // ❌ 間違い（サブディレクトリ忘れ）
-image: '/Users/aa/projects/note-automation/note-auto-renai/images/anua-dokudami.png'
+image: 'images/anua-dokudami.png'
 ```
+
+相対パスはプロジェクトルート（`note-auto-renai/`）から始まります。`./` や `../` は不要です。
 
 ### Q3: 画像が大きすぎる
 
@@ -247,15 +261,16 @@ images/follower-growth/*.jpeg
 - [ ] 画像サイズは 5MB 以下
 - [ ] 解像度は 1200px 程度
 - [ ] ファイル名は分かりやすい英数字
-- [ ] 絶対パスで指定
+- [ ] 相対パスまたは絶対パスで指定
 - [ ] DRYRUNモードで動作確認
 - [ ] 著作権・肖像権に問題なし
 
 ## 🚀 まとめ
 
 1. 画像を `images/follower-growth/` フォルダに配置
-2. `data/follower-growth-posts.js` で絶対パスを指定
-   - 形式: `/Users/aa/projects/note-automation/note-auto-renai/images/follower-growth/ファイル名.png`
+2. `data/follower-growth-posts.js` でパスを指定
+   - **相対パス（推奨）**: `images/follower-growth/ファイル名.png`
+   - **絶対パス**: `/Users/aa/projects/note-automation/note-auto-renai/images/follower-growth/ファイル名.png`
 3. `--dryrun` で動作確認
 4. 実際に投稿
 

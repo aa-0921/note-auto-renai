@@ -25,15 +25,22 @@ cp ~/Downloads/anua-dokudami.png /Users/aa/projects/note-automation/note-auto-re
 
 ### 2. データファイルで画像パスを指定
 
-`data/follower-growth-posts.js` で絶対パスを指定：
+`data/follower-growth-posts.js` でパスを指定：
 
 ```javascript
 {
   title: 'Anua｜ドクダミ80モイスチャースージングアンプル',
   text: `【先回り鎮静】🌿\n...`,
-  image: '/Users/aa/projects/note-automation/note-auto-renai/images/follower-growth/anua-dokudami.png'
+  
+  // 相対パス（推奨）
+  image: 'images/follower-growth/anua-dokudami.png'
+  
+  // または絶対パス
+  // image: '/Users/aa/projects/note-automation/note-auto-renai/images/follower-growth/anua-dokudami.png'
 }
 ```
+
+**ポイント**: 相対パスを使うと、環境が変わっても動作します。プロジェクトルート（`note-auto-renai/`）を基準に解決されます。
 
 ## 📸 推奨画像仕様
 
@@ -126,9 +133,11 @@ for f in *.png; do sips -Z 1200 "$f" --out "resized-$f"; done
 ## 💡 まとめ
 
 1. このフォルダに画像を配置
-2. `data/follower-growth-posts.js` で絶対パスを指定
+2. `data/follower-growth-posts.js` で相対パス（`images/follower-growth/ファイル名.png`）または絶対パスを指定
 3. ファイル名は英数字で分かりやすく
 4. 5MB以下、1200px推奨
+
+**相対パス推奨**: 環境が変わっても動作し、管理しやすい！
 
 画像付きツイートはエンゲージメントが3倍高い！
 
