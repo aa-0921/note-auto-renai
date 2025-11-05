@@ -191,6 +191,15 @@ export const posts = [
 
 #美白 #シミケア #肝斑 #韓国コスメ #メガ割 #コスパ`,
     image: 'images/follower-growth/Redence-Ampoule.jpg'
+  },
+  {
+    title: 'メディキューブ AGE-R ブースタープロ 本音レビュー',
+    text: `【ブースターで浸透最大化】
+
+美容液の入りが段違い。粒子が大きめなPDRN系とも好相性。パック上から当てる使い方も◎。効果を底上げしつつ、小ジワ/むくみケアにもマルチに対応。強度調整OKで自分仕様に。
+
+#メディキューブ #AGER #ブースタープロ #ブースター #浸透 #PDRN #小ジワ #むくみ #スキンケアギア`,
+    image: 'images/follower-growth/medicupe-pro.jpg'
   }
 ];
 
