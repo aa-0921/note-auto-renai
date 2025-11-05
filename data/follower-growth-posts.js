@@ -98,6 +98,7 @@ export const posts = [
     text: `【No.5 セラム】
 
 標準処方・こっくり質感。翌朝ふっくら、即効性は控えめ。乾燥肌向け、敏感肌は様子見。
+👉https://amzn.to/3JMBOky
 
 #numbuzin #5番 #セラム #乾燥肌 #トーンアップ #スキンケア #レビュー`,
     image: 'images/follower-growth/numbuzin-5.jpg'
@@ -107,6 +108,7 @@ export const posts = [
     text: `【ウルセラC】
 
 肌なじみ○、保湿やや弱め。軽質感でベタつかず、乾燥肌はクリーム併用推奨。淡く効く継続タイプ。
+👉https://amzn.to/4ornwoI
 
 #クオリティファースト #ウルセラC #VC #美容液 #ドラコス #正直レビュー #乾燥肌`,
     image: 'images/follower-growth/Quality-1st.jpg'
