@@ -16,6 +16,7 @@
 
 // - ハッシュタグは多め
 // - title/textを合わせて 全角140文字（半角280文字）に収まるように
+// - 適度に改行を入れて読みやすく
 
 export const posts = [
   {
@@ -127,6 +128,15 @@ export const posts = [
 
 #Anua #レチノール #ナイアシンアミド #毛穴 #ハリ #エイジング #夜ケア`,
     image: 'images/follower-growth/ANUA-reti.jpg'
+  },
+  {
+    title: 'Innisfree レチノールシカ 本音レビュー',
+    text: `【レチノールシカ】
+
+超マイルド。濃度は抑えめ(推定0.025〜0.1%)＋シカ/保湿で荒れにくい。夜→朝でしっとり整う。「攻めたいけど荒れたくない」人向け。スピードはAnuaに劣るが、じわじわキメUP。
+
+#Innisfree #レチノール #シカ #敏感肌 #夜ケア #じわ効き #キメ #保湿 #初心者`,
+    image: 'images/follower-growth/innisfree-reti.jpg'
   }
 ];
 
