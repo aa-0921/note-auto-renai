@@ -5,3 +5,6 @@ logs/
 *.png
 *.jpg
 *.html
+
+# 画像フォルダの構造は残す（.gitkeeepのみ含める）
+!images/**/.gitkeep
