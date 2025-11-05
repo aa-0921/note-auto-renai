@@ -2,7 +2,8 @@ name: Twitter Post Follower Growth
 
 on:
   schedule:
-    - cron: '0 */3 * * *'  # 3時間おき（UTC）
+    - cron: '0 */3 * * *'   # 3時間おき（UTC）
+    - cron: '30 */3 * * *'  # 3時間おきの30分ずらし（実質90分間隔）
   workflow_dispatch:
     inputs:
       dryrun:
