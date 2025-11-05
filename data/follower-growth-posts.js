@@ -28,37 +28,37 @@ export const posts = [
   {
     title: 'Anua｜PDRNヒアルロン酸カプセル100セラム本音レビュー',
     text: `【水分ロックが段違い】💧\n\n内側しっとり、外側さらり。PDRN×ヒアルロン酸で一日中つっぱらない。\n\n3本使い切りで生理前も荒れにくく、乾燥小ジワふっくら。乾燥肌/インナードライの土台ケアに最適。\n\n結論：安定感が正義。買うならまずコレ。\n\n#Anua #PDRN`,
-    image: 'images/follower-growth/anua-serum.jpg'
+    image: 'images/follower-growth/anua-pdrn-hyaluron-serum.jpg'
   },
   {
     title: 'Anua｜レチノール0.3ナイアシンリニューイングセラム',
     text: `【速攻で実感】⚡️\n\nレチ0.3×ナイアシン×セラミドで多角アプローチ。\n\n跡/毛穴/ハリ不足をケア。ざらつき消え、キメが詰まり輪郭シャープ。\n\n夜は少量→保湿重ねで刺激最小。攻めたい夜に。\n\n#レチノール #毛穴ケア`,
-    image: 'images/follower-growth/anua-serum.jpg'
+    image: 'images/follower-growth/ANUA-reti.jpg'
   },
   {
     title: 'Anua｜アゼライン酸15インテンスカーミングセラム',
     text: `【皮脂の切り札】🛡️\n\nアゼライン酸15%で朝のテカり・夕方のベタつき激減。\n\n赤み/ニキビ/跡にもマルチに効く。Tゾーンの崩れが減って触り心地つるん。\n\n結論：詰まらせない・増やさない。脂性/混合の味方。\n\n#アゼライン酸`,
-    image: 'images/follower-growth/anua-serum.jpg'
+    image: 'images/follower-growth/anua-azelaic-serum.jpg'
   },
   {
-    title: 'Anua｜ビタミン10 PORESTRIXセラム（新作）',
+    title: 'Anua｜ビタミン10 PORESTRIXセラム',
     text: `【毛穴キュッ、トーンUP】🍋\n\n使ってすぐ明るさが一段上がる速攻型。\n\nキメが締まり黒ずみが目立ちにくい。ピリつきにくく毎日ケアに◎。\n\nメイク前1滴で下地いらずのクリア感。写真映えも狙える。\n\n#ビタミンC #毛穴ケア`,
-    image: 'images/follower-growth/anua-serum.jpg'
+    image: 'images/follower-growth/anua-vitamin-serum.jpg'
   },
   {
     title: 'Anua｜ダークスポットセラム',
     text: `【色素沈着に狙い撃ち】🎯\n\nナイアシン10%×トラネキサム4%。\n\n跡/シミ/そばかすの“残る影”を点で狙い面で晴らす。\n\nまず部分塗り→全顔。停滞してた色ムラに手応え。\n\n#ダークスポット`,
-    image: 'images/follower-growth/anua-serum.jpg'
+    image: 'images/follower-growth/anua-niacinamide-txa-serum.jpg'
   },
   {
     title: 'Anua｜桃70ナイアシンセラム',
     text: `【ぷるツヤ透明感】🍑\n\nとろける質感で内側から発光。継続でワントーン明るく、メイク密着もUP。\n\n保湿×ブライトニングのバランス良し。脂性肌は量控えめに。\n\n結論：可愛い質感が続くご褒美。香りも心地よい。\n\n#桃セラム`,
-    image: 'images/follower-growth/anua-serum.jpg'
+    image: 'images/follower-growth/anua-peach-niacin-serum.jpg'
   },
   {
     title: 'Anua｜ドクダミ80モイスチャースージングアンプル',
     text: `【先回り鎮静】🌿\n\n季節の変わり目や生理前に“まずこれ”。\n\n赤み・ヒリつき前夜を落ち着かせ、保水力も底上げ。\n\n優しいのに結果◎。肌が荒れそうなサインに即投入。\n\n#ドクダミ`,
-    image: 'images/follower-growth/anua-serum.jpg'
+    image: 'images/follower-growth/anua-dokudami-heartleaf-serum.jpg'
   },
   {
     title: '組み合わせ｜レチノール × アゼライン酸（ニキビ特化）',
