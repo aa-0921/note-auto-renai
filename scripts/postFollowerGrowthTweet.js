@@ -27,9 +27,6 @@ const isDryrun = args.includes('--dryrun');
 // プロジェクトルートディレクトリ（相対パスを解決するための基準）
 const PROJECT_ROOT = path.resolve(__dirname, '..');
 
-// 投稿履歴ファイルのパス
-const HISTORY_FILE = path.join(__dirname, '../data/post-history.json');
-
 async function main() {
   try {
     logger.info('========================================');
@@ -44,7 +41,6 @@ async function main() {
 
     // RandomPostServiceを使用して投稿
     const service = new RandomPostService(logger, {
-      historyFile: HISTORY_FILE,
       baseDir: PROJECT_ROOT  // 相対パスを解決するための基準ディレクトリ
     });
 
