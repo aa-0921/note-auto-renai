@@ -2,9 +2,8 @@ name: Twitter Post Follower Growth
 
 on:
   schedule:
-    - cron: '0 0,3,6,9,12,15,18,21 * * *'    # 00:00/03:00/06:00/…（UTC）
-    - cron: '30 1,4,7,10,13,16,19,22 * * *' # 01:30/04:30/07:30/…（UTC）
-  workflow_dispatch:
+    - cron: '0 21-23,0-12 * * *'  # JST 06:00〜21:00（1時間おき）
+    - cron: '30 21-23,0-12 * * *' # JST 06:30〜21:30（30分ずれの計16回）  workflow_dispatch:
     inputs:
       dryrun:
         description: 'Dryrun (true の場合は投稿しない)'
