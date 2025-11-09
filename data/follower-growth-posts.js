@@ -282,6 +282,20 @@ PDRNで水分土台を作って、レチで回転UP。
 
 効果を底上げしつつ、小ジワやむくみケアにもマルチに対応。強度調整OKで自分仕様にできるよ🎀`,
     image: 'images/follower-growth/medicupe-pro.jpg'
+  },
+  {
+    title: 'メディキューブ PDRNピンクアンプル',
+    text: `乾燥の毛穴目立ちはマジでコレ。肌プリプリになって毛穴消える🎀 https://amzn.to/4qVnbfK`,
+    image: 'images/follower-growth/medicube-pink-peptide-serum.jpg'
+  },
+  {
+    title: 'リジュラン公式 REJURAN ゴールドセット',
+    text: `🎀高校の頃から悩んでたプツプツが1週間で超綺麗になくなった！
+
+肌のざらつき消えて、使い出してからメイクノリめちゃくちゃ良い🥹🥹
+
+マジこれ一生使う。水越みさと様が使ってるのも納得だよ🎀 https://amzn.to/3Lt8yzY`,
+    image: 'images/follower-growth/rejuran-gold-set.jpg'
   }
 ];
 
