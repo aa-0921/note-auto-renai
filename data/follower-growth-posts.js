@@ -296,6 +296,42 @@ PDRNで水分土台を作って、レチで回転UP。
 
 マジこれ一生使う。水越みさと様が使ってるのも納得だよ🎀 https://amzn.to/3Lt8yzY`,
     image: 'images/follower-growth/rejuran-gold-set.jpg'
+  },
+  {
+    title: 'トリデン セルメイジング コラーゲン リップエッセンス',
+    text: `🎀リップエッセンス使ってみた！
+
+うるおい、ハリ、弾力ヤバい。唇に優しく密着してベタつかず、なめらかな仕上がりになった。
+
+1本で唇の乾燥をケアできて、うるおい弾むようなぷるんとした唇になったよ🎀 https://amzn.to/4oZXAjS`,
+    image: 'images/follower-growth/torriden-lip-essence.jpg'
+  },
+  {
+    title: 'トリデン Torriden ダイブインマスク',
+    text: `🎀つっぱり感じたらコレ使ってる！
+
+とにかく保湿！複数の分子サイズのヒアルロン酸が肌を徹底的に潤してくれる。
+
+パック後は内側からふかふかのモチ肌になって、乾燥知らずになったよ🎀 https://amzn.to/3JPmHH8`,
+    image: 'images/follower-growth/hyaluronic-serum-pack.jpg'
+  },
+  {
+    title: 'トリデン Torriden バランスフルシカ マスク',
+    text: `🎀ゆらぎ肌の救世主になった！
+
+生理前やうっかり日焼け後、肌のバランスが崩れた時に助かる
+
+CICA配合で敏感になった肌をいたわってくれて、荒れにくくなったよ🎀 https://amzn.to/3WLD4HO`,
+    image: 'images/follower-growth/cica-serum-pack.jpg'
+  },
+  {
+    title: 'トリデン(Torriden) セルメイジング ビタC ブライトニングマスク',
+    text: `🎀透明感の化身になれた！
+
+たっぷりのビタミンCと話題の美容成分がてんこもり。
+
+パック後は肌のトーンが整って内側から輝く水光肌になった。低刺激だから敏感肌でも使えるのが神🎀 https://amzn.to/4853eLN`,
+    image: 'images/follower-growth/vitamin-c-serum-pack.jpg'
   }
 ];
 
