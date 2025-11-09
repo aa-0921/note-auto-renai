@@ -9,7 +9,6 @@
 ## 特徴
 
 - **ランダム選択**: 投稿リストからランダムに1つ選択
-- **重複回避**: 一度投稿した内容は履歴に記録し、全て投稿するまで重複しない
 - **画像対応**: テキストのみ / 画像付き 両対応
 - **DRYRUNモード**: 実際に投稿せずに動作確認可能
 
@@ -20,8 +19,7 @@ note-auto-renai/
 ├── scripts/
 │   └── postFollowerGrowthTweet.js    # メインスクリプト
 ├── data/
-│   ├── follower-growth-posts.js      # 投稿データ（編集可能）
-│   └── post-history.json             # 投稿履歴（自動生成）
+│   └── follower-growth-posts.js      # 投稿データ（編集可能）
 └── docs/
     └── twitter-post-from-list.md     # このファイル
 ```
@@ -105,26 +103,6 @@ node scripts/postFollowerGrowthTweet.js
 
 ランダムに選択された投稿がTwitterに投稿されます。
 
-## 投稿履歴
-
-### 履歴ファイル
-
-`data/post-history.json` に投稿済みのインデックスが記録されます。
-
-```json
-[0, 3, 7, 9]
-```
-
-### 履歴のリセット
-
-全ての投稿が完了すると、自動的に履歴がリセットされ、再度最初から投稿できます。
-
-手動でリセットする場合は、ファイルを削除してください：
-
-```bash
-rm data/post-history.json
-```
-
 ## GitHub Actionsでの自動化
 
 ### ワークフローファイル例
@@ -174,14 +152,6 @@ jobs:
           else
             node scripts/postFollowerGrowthTweet.js
           fi
-
-      - name: Commit post history
-        run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git add data/post-history.json
-          git diff --quiet && git diff --staged --quiet || git commit -m "chore: 投稿履歴を更新"
-          git push
 ```
 
 ## レート制限対応
@@ -210,11 +180,7 @@ image: '/Users/aa/projects/note-automation/note-auto-renai/images/sample.png'
 image: './images/sample.png'
 ```
 
-### Q2: 同じ投稿が何度も選ばれる
-
-A: `data/post-history.json` が正しく更新されていない可能性があります。ファイルの書き込み権限を確認してください。
-
-### Q3: レート制限エラー
+### Q2: レート制限エラー
 
 A: 1日17件の制限に達しています。リセット時間（約16時間後）まで待機してください。
 
