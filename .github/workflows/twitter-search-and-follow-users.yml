@@ -1,0 +1,88 @@
+name: Twitter Search and Follow Users
+
+on:
+  # schedule:
+  #   # JST 9時、12時、18時、21時に実行（UTCベース）
+  #   # JST = UTC + 9時間
+  #   - cron: '0 0 * * *'   # JST 09:00 (UTC 00:00)
+  #   - cron: '0 3 * * *'   # JST 12:00 (UTC 03:00)
+  #   - cron: '0 9 * * *'   # JST 18:00 (UTC 09:00)
+  #   - cron: '0 12 * * *'  # JST 21:00 (UTC 12:00)
+  workflow_dispatch:
+    inputs:
+      searchQuery:
+        description: '検索クエリ（例: フォロバ100）'
+        required: false
+        default: 'フォロバ100'
+      dryrun:
+        description: 'DRYRUNモード（実際にはフォローしない）'
+        required: false
+        default: 'false'
+        type: boolean
+
+jobs:
+  search-and-follow:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    concurrency:
+      group: twitter-search-and-follow-users
+      cancel-in-progress: false
+    env:
+      TZ: Asia/Tokyo
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies (renai)
+        run: npm ci
+
+      - name: Checkout note-auto-core
+        uses: actions/checkout@v4
+        with:
+          repository: aa-0921/note-auto-core
+          path: note-auto-core
+          ref: main
+          token: ${{ secrets.CORE_REPO_TOKEN }}
+
+      - name: Install core and link locally
+        run: |
+          cd note-auto-core
+          npm install
+          cd ..
+          npm install ./note-auto-core
+
+      - name: Run script (schedule -> production)
+        if: ${{ github.event_name == 'schedule' }}
+        env:
+          TWITTER_API_KEY: ${{ secrets.TWITTER_API_KEY }}
+          TWITTER_API_SECRET: ${{ secrets.TWITTER_API_SECRET }}
+          TWITTER_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
+          TWITTER_ACCESS_TOKEN_SECRET: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
+          TWITTER_BEARER_TOKEN: ${{ secrets.TWITTER_BEARER_TOKEN }}
+        run: |
+          node scripts/searchAndFollowUsers.js "フォロバ100"
+
+      - name: Run script (manual)
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        env:
+          TWITTER_API_KEY: ${{ secrets.TWITTER_API_KEY }}
+          TWITTER_API_SECRET: ${{ secrets.TWITTER_API_SECRET }}
+          TWITTER_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
+          TWITTER_ACCESS_TOKEN_SECRET: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
+          TWITTER_BEARER_TOKEN: ${{ secrets.TWITTER_BEARER_TOKEN }}
+        run: |
+          if [ "${{ github.event.inputs.dryrun }}" = "true" ]; then
+            echo "Run in dryrun mode"
+            node scripts/searchAndFollowUsers.js "${{ github.event.inputs.searchQuery || 'フォロバ100' }}" --dryrun
+          else
+            node scripts/searchAndFollowUsers.js "${{ github.event.inputs.searchQuery || 'フォロバ100' }}"
+          fi
+
