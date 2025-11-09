@@ -14,7 +14,6 @@
  * image: 'images/follower-growth/vt-pdrn-capsule-cream.jpg'
  */
 
-// - ハッシュタグは多め
 // - title/textを合わせて 全角140文字（半角280文字）に収まるように
 // - 適度に改行を入れて読みやすく
 
