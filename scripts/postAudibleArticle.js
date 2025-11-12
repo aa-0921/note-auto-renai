@@ -3,7 +3,7 @@
 // Audible記事を定期自動投稿するスクリプト
 
 import { Logger, postAudibleArticle, runWithCore } from '@aa-0921/note-auto-core';
-import { audibleArticleSections, audibleArticleTitles, audibleArticleHeaderSections } from './audibleArticleContent.js';
+import { audibleArticleSections, audibleArticleTitles, audibleArticleHeaderSections, audibleArticleFooterHashtags } from './audibleArticleContent.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -30,6 +30,7 @@ async function main() {
       core,
       sections: audibleArticleSections,
       headerSections: audibleArticleHeaderSections,
+      footerHashtags: audibleArticleFooterHashtags,
       titles: audibleArticleTitles,
       selectCount,
       thumbnailDir: 'thumbnails',
