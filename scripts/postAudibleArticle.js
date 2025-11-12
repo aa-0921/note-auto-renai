@@ -4,6 +4,7 @@
 
 import { Logger, postAudibleArticle, runWithCore } from '@aa-0921/note-auto-core';
 import { audibleArticleSections, audibleArticleTitles, audibleArticleHeaderSections, audibleArticleFooterHashtags } from './audibleArticleContent.js';
+import { affiliateConfig } from './affiliateConfig.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -34,6 +35,7 @@ async function main() {
       titles: audibleArticleTitles,
       selectCount,
       thumbnailDir: 'thumbnails',
+      affiliateTag: affiliateConfig.affiliateTag,
       dryrun,
       logger,
     });
