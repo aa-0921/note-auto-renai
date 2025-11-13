@@ -34,7 +34,7 @@ async function main() {
       footerHashtags: audibleArticleFooterHashtags,
       titles: audibleArticleTitles,
       selectCount,
-      thumbnailDir: 'thumbnails',
+      thumbnailDir: 'thumbnails/audible',
       affiliateTag: affiliateConfig.affiliateTag,
       dryrun,
       logger,
