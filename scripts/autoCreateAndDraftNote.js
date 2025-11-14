@@ -261,6 +261,7 @@ export { affiliateConfig, affiliateLinks };
       'https://note.com/counselor_risa/n/ncbb004d39d34',
       'https://note.com/counselor_risa/n/nf12c80060c09',
       'https://note.com/counselor_risa/n/n4c94cbc5b40a',
+      'https://note.com/counselor_risa/n/na8e2a969b19f',
     ];
 
     // 記事の自動生成と下書き保存機能を実行
