@@ -255,6 +255,14 @@ export { affiliateConfig, affiliateLinks };
     const amazonAssociateText =
       'Amazon のアソシエイトとして、「恋愛・人間関係カウンセラーRisa」は適格販売により収入を得ています。';
 
+    // おすすめ記事セクションの設定
+    const recommendedArticlesTitle = 'ぜひ読んでほしい🙇‍♂️他のおすすめ記事💕';
+    const recommendedArticlesUrls = [
+      'https://note.com/counselor_risa/n/ncbb004d39d34',
+      'https://note.com/counselor_risa/n/nf12c80060c09',
+      'https://note.com/counselor_risa/n/n4c94cbc5b40a',
+    ];
+
     // 記事の自動生成と下書き保存機能を実行
     await core.runAutoCreateAndDraftNote({
       background: wantsBackground,
@@ -273,6 +281,9 @@ export { affiliateConfig, affiliateLinks };
       affiliateTag: affiliateConfig.affiliateTag,
       audibleAffiliateEnabled: affiliateConfig.audibleAffiliateEnabled,
       kindleAffiliateEnabled: affiliateConfig.kindleAffiliateEnabled,
+      // おすすめ記事セクション設定
+      recommendedArticlesTitle,
+      recommendedArticlesUrls,
     });
     console.log('記事の自動生成と下書き保存が完了しました');
   });
