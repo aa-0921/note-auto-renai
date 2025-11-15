@@ -19,12 +19,21 @@ import { runWithCore, GoogleTrendArticleService, Logger } from '@aa-0921/note-au
     // coreから設定を取得（config/account.yamlから読み込まれた設定）
     const config = core.configManager.config;
     
+    // コマンドライン引数からskipPublishオプションを取得
+    const argv = process.argv.slice(2);
+    const skipPublish = argv.includes('--skip-publish') || argv.includes('--no-publish');
+    
+    if (skipPublish) {
+      logger.info('⏭️  投稿をスキップします（--skip-publish オプション）');
+    }
+    
     const trendService = new GoogleTrendArticleService(config, logger);
     
     try {
       // Googleトレンド記事を生成・投稿
       const result = await trendService.generateAndPublishTrendArticle({
         keyword: null, // 常に自動取得
+        skipPublish: skipPublish, // 投稿をスキップするかどうか
         aiOptions: {
           systemMessage: [
             'あなたは恋愛・人間関係の専門ライターです。',
