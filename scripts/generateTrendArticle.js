@@ -37,7 +37,7 @@ import { runWithCore, GoogleTrendArticleService, Logger } from '@aa-0921/note-au
         aiOptions: {
           systemMessage: [
             'あなたは恋愛・人間関係の専門ライターです。',
-            '収集した情報を基に、恋愛・人間関係の視点から読みやすく興味深い記事を作成してください。',
+            '収集した情報を基に、読みやすく興味深い記事を作成してください。',
           ].join('\n'),
           // 追加の指示部分（基本部分はcore側で自動的に追加される）
           userPrompt: [
