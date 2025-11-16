@@ -1,6 +1,6 @@
-# note-auto-renai
+# note-auto-hakushikisan
 
-恋愛・人間関係系note自動化スクリプト
+何でも知ってる博識さん系note自動化スクリプト
 
 ## 📝 概要
 
@@ -28,7 +28,7 @@ npm install
 # note.com認証情報
 NOTE_EMAIL=your-email@example.com
 NOTE_PASSWORD=your-password
-NOTE_ACCOUNT_NAME=counselor_risa  # noteのアカウント名（Twitter投稿用、必須）
+NOTE_ACCOUNT_NAME=hakushiki_san
 
 # Twitter認証情報
 TWITTER_PASSWORD=your-twitter-password

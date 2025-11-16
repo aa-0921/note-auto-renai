@@ -245,7 +245,7 @@ export { affiliateConfig, affiliateLinks };
       '',
       'ぜひ試してみてください！',
       '',
-      'https://note.com/counselor_risa/m/m72a580a7e712',
+      'https://note.com/counselor_risa/m/m72a580a7e712', // TODO: リポジトリ用にnoteアカウント名を変更してください
       '',
       '🐈　🐾　🐈‍⬛　🐾　🐈　🐾　🐈‍⬛　🐾　🐈　🐾　🐈‍⬛　🐾　🐈　🐾　🐈‍⬛　',
       '',
@@ -253,15 +253,15 @@ export { affiliateConfig, affiliateLinks };
 
     // アソシエイト表記文（参考実装の文言）
     const amazonAssociateText =
-      'Amazon のアソシエイトとして、「恋愛・人間関係カウンセラーRisa」は適格販売により収入を得ています。';
+      'Amazon のアソシエイトとして、「何でも知ってる博識さん」は適格販売により収入を得ています。';
 
     // おすすめ記事セクションの設定
     const recommendedArticlesTitle = 'ぜひ読んでほしい🙇‍♂️他のおすすめ記事💕';
     const recommendedArticlesUrls = [
-      'https://note.com/counselor_risa/n/ncbb004d39d34',
-      'https://note.com/counselor_risa/n/nf12c80060c09',
-      'https://note.com/counselor_risa/n/n4c94cbc5b40a',
-      'https://note.com/counselor_risa/n/na8e2a969b19f',
+      'https://note.com/counselor_risa/n/ncbb004d39d34', // TODO: リポジトリ用にnoteアカウント名を変更してください
+      'https://note.com/counselor_risa/n/nf12c80060c09', // TODO: リポジトリ用にnoteアカウント名を変更してください
+      'https://note.com/counselor_risa/n/n4c94cbc5b40a', // TODO: リポジトリ用にnoteアカウント名を変更してください
+      'https://note.com/counselor_risa/n/na8e2a969b19f', // TODO: リポジトリ用にnoteアカウント名を変更してください
     ];
 
     // 記事の自動生成と下書き保存機能を実行

@@ -1,7 +1,7 @@
 # config/account.yaml
-# 恋愛・人間関係アカウントの設定
+# 何でも知ってる博識さんアカウントの設定
 
-genre: 'renai'
+genre: 'note-auto-hakushikisan'
 locale: 'ja-JP'
 posting:
   time_window: ['09:00', '11:00']

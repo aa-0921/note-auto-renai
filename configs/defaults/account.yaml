@@ -1,7 +1,7 @@
 # configs/defaults/account.yaml
 # デフォルトのアカウント設定
 
-genre: 'renai' # 恋愛・人間関係
+genre: 'note-auto-hakushikisan' # 何でも知ってる博識さん
 locale: 'ja-JP'
 posting:
   time_window: ['09:00', '11:00']
@@ -19,7 +19,7 @@ sheets:
   doc_id: ''
   worksheet: 'posts'
 overrides:
-  seasonal_topic: '恋愛・人間関係'
+  seasonal_topic: '何でも知ってる博識さん'
   tags:
     [
       '#人間関係',

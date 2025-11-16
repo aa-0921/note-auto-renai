@@ -1,7 +1,7 @@
 {
-  "name": "note-auto-renai",
+  "name": "note-auto-hakushikisan",
   "version": "1.0.0",
-  "description": "恋愛・人間関係系note自動化スクリプト",
+  "description": "「何でも知ってる博識さん」note自動化スクリプト",
   "type": "module",
   "main": "scripts/autoCreateAndDraftNote.js",
   "scripts": {
@@ -24,7 +24,7 @@
   "keywords": [
     "note",
     "automation",
-    "renai",
+    "hakushiki",
     "love",
     "relationship"
   ],
@@ -52,6 +52,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/aa-0921/note-auto-renai.git"
+    "url": "https://github.com/aa-0921/note-auto-hakushikisan.git"
   }
 }
