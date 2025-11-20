@@ -60,7 +60,8 @@ export const posts = [
 3本使い切りで生理前も荒れにくくなって、乾燥小ジワもふっくらしてきた。
 
 安定感が正義🎀　https://amzn.to/3X00gCd`,
-    image: 'images/follower-growth/anua-pdrn-hyaluron-serum.jpg'
+    // image: 'images/follower-growth/anua-pdrn-hyaluron-serum.jpg'
+    image: ''
   },
   {
     title: 'Anua｜レチノール0.3ナイアシンリニューイングセラム',
@@ -69,7 +70,8 @@ export const posts = [
 跡や毛穴やハリ不足をケアして、ざらつき消えてキメが詰まって輪郭がシャープに。
 
 夜は少量で保湿重ねて刺激最小。攻めたい夜に使ってる🎀　https://amzn.to/4oOI2jm`,
-    image: 'images/follower-growth/ANUA-reti.jpg'
+    // image: 'images/follower-growth/ANUA-reti.jpg'
+    image: ''
   },
   {
     title: 'Anua｜アゼライン酸15インテンスカーミングセラム',
@@ -80,7 +82,8 @@ export const posts = [
 赤みやニキビや跡にもマルチに効いて、Tゾーンの崩れが減って触り心地つるん。
 
 脂性や混合の味方だよ🎀　https://amzn.to/4oHjbOc`,
-    image: 'images/follower-growth/anua-azelaic-serum.jpg'
+    // image: 'images/follower-growth/anua-azelaic-serum.jpg'
+    image: ''
   },
   {
     title: 'Anua｜ビタミン10 PORESTRIXセラム',
@@ -100,7 +103,8 @@ export const posts = [
 ナイアシン×トラネキサムで、シミやそばかすに効いた🎀
 
 停滞してた色ムラに手応えがあったよ🎀 https://amzn.to/4ibeNog`,
-    image: 'images/follower-growth/anua-niacinamide-txa-serum.jpg'
+    // image: 'images/follower-growth/anua-niacinamide-txa-serum.jpg'
+    image: ''
   },
   {
     title: 'Anua｜桃70ナイアシンセラム',
@@ -113,7 +117,8 @@ export const posts = [
 保湿×ブライトニングのバランス良し。脂性肌は量控えめにしてる。
 
 可愛い質感が続く。香りも心地よい🎀 https://amzn.to/4nZ3yAx`,
-    image: 'images/follower-growth/anua-peach-niacin-serum.jpg'
+    // image: 'images/follower-growth/anua-peach-niacin-serum.jpg'
+    image: ''
   },
   {
     title: 'Anua｜ドクダミ80モイスチャースージングアンプル',
@@ -124,7 +129,8 @@ export const posts = [
 赤みやヒリつきを落ち着かせて、保水力も底上げ
 
 肌が荒れそうな時に即投入してる🎀　https://amzn.to/49nqExa`,
-    image: 'images/follower-growth/anua-dokudami-heartleaf-serum.jpg'
+    // image: 'images/follower-growth/anua-dokudami-heartleaf-serum.jpg'
+    image: ''
   },
   {
     title: '組み合わせ｜レチノール × アゼライン酸（ニキビ特化）',
@@ -177,7 +183,8 @@ PDRNで水分土台を作って、レチで回転UP。
 多め連用でニキビ出たから少量推奨。潤い・メイクノリは◎。
 
 PDRNが肌の角層まで深く浸透🎀　https://amzn.to/3M8lewg`,
-    image: 'images/follower-growth/vt-pdrm-capsule-cream.jpg'
+    // image: 'images/follower-growth/vt-pdrm-capsule-cream.jpg'
+    image: ''
   },
   {
     title: 'numbuzin No.5（ナンバーズイン5番）セラム 本音レビュー',
@@ -186,7 +193,8 @@ PDRNが肌の角層まで深く浸透🎀　https://amzn.to/3M8lewg`,
 高濃縮グルタチオンとナイアシンアミドで、透明感のあるツヤ白玉肌🎀
 
 使ってみて分かったよ🎀 https://amzn.to/3XCczEU`,
-    image: 'images/follower-growth/numbuzin-5.jpg'
+    // image: 'images/follower-growth/numbuzin-5.jpg'
+    image: ''
   },
   {
     title: 'クオリティファースト ウルセラC 本音レビュー',
@@ -195,7 +203,8 @@ PDRNが肌の角層まで深く浸透🎀　https://amzn.to/3M8lewg`,
 肌なじみも良かった！毛穴に最強かも🎀
 
 使ってみて分かった🎀 https://amzn.to/44baovH`,
-    image: 'images/follower-growth/Quality-1st.jpg'
+    // image: 'images/follower-growth/Quality-1st.jpg'
+    image: ''
   },
   {
     title: 'メラノCC プレミアム美容液 本音レビュー',
@@ -204,7 +213,8 @@ PDRNが肌の角層まで深く浸透🎀　https://amzn.to/3M8lewg`,
 ニキビ跡が薄くなって部分使いで効果実感🎀
 
 https://amzn.to/4iaVcET`,
-    image: 'images/follower-growth/merano-cc.jpg'
+    // image: 'images/follower-growth/merano-cc.jpg'
+    image: ''
   },
   {
     title: 'Anua レチノール0.3% ナイアシンセラム 本音レビュー',
@@ -213,7 +223,8 @@ https://amzn.to/4iaVcET`,
 初期はピリつきや乾燥したから隔日で少量で保湿厚め。
 
 慣れるとハリ実感できたよ🎀 https://amzn.to/4pm9kNV`,
-    image: 'images/follower-growth/ANUA-reti.jpg'
+    // image: 'images/follower-growth/ANUA-reti.jpg'
+    image: ''
   },
   {
     title: 'Innisfree レチノールシカ 本音レビュー',
@@ -222,21 +233,24 @@ https://amzn.to/4iaVcET`,
 攻めたいけど荒れたくない人向け
 
 スピードはAnuaに劣るけど、じわじわキメUPできてる🎀 https://amzn.to/3K7k1oq`,
-    image: 'images/follower-growth/innisfree-reti.jpg'
+    // image: 'images/follower-growth/innisfree-reti.jpg'
+    image: ''
   },
   {
     title: 'エクセル ベース×クレド下地 比較',
     text: `🎀朝から昼過ぎも毛穴スッ、肌もちもち。乾燥ヨレ体質でも夜まで崩れにくい。
 
 クレド愛用してたけど、エクセルでも体感ほぼ一緒。差額は正直バグだよ🎀 https://amzn.to/48mBORK`,
-    image: 'images/follower-growth/excel-base.jpg'
+    // image: 'images/follower-growth/excel-base.jpg'
+    image: ''
   },
   {
     title: 'Anua ビタミン10 PORESTRIX 本音レビュー',
     text: `🎀高濃度VCで即トーンUPできた。毛穴や黒ずみもクリア感。
 
 サポート成分で安定感◎。コスパ的にも試す価値あるよ🎀 https://amzn.to/4oPrE20`,
-    image: 'images/follower-growth/anua-vitamin-serum.jpg'
+    // image: 'images/follower-growth/anua-vitamin-serum.jpg'
+    image: ''
   },
   {
     title: 'オバジC25 本音レビュー',
@@ -245,14 +259,16 @@ https://amzn.to/4iaVcET`,
 即効性◎で、毛穴やくすみやハリやシワにがっつり効いた。
 
 高価だけど攻めたい人に最適だよ🎀 https://amzn.to/4o2lnP6`,
-    image: 'images/follower-growth/obagi-C25.jpg'
+    // image: 'images/follower-growth/obagi-C25.jpg'
+    image: ''
   },
   {
     title: 'トリデン ブライトニングアンプル 本音レビュー',
     text: `🎀とろみ×低刺激で毎日使いやすい！敏感肌でも◎。
 
 保湿やツヤの延長でじわ明るくなった！🎀　https://amzn.to/44k8KIa`,
-    image: 'images/follower-growth/Torriden-serum.jpg'
+    // image: 'images/follower-growth/Torriden-serum.jpg'
+    image: ''
   },
   {
     title: 'リデンス『コレクターアンプル』抗酸化セラム 本音レビュー',
@@ -261,7 +277,8 @@ https://amzn.to/4iaVcET`,
 🎀抗酸化効果で透明感増した！
 
 朝もOKだけど乾燥肌は保湿足し推奨。軽く浸透、ベタつきなしだよ🎀　https://amzn.to/4pCUi6D`,
-    image: 'images/follower-growth/Redence-Ampoule.jpg'
+    // image: 'images/follower-growth/Redence-Ampoule.jpg'
+    image: ''
   },
   {
     title: 'リデンス『コレクターアンプル』',
@@ -277,12 +294,14 @@ https://amzn.to/4iaVcET`,
     text: `🎀美容液の入りが段違い。パック上から当てる使い方も◎。
 
 効果を底上げしつつ、小ジワやむくみケアにもマルチに対応。強度調整OKで自分仕様にできるよ🎀　https://amzn.to/4oXAavR`,
-    image: 'images/follower-growth/medicupe-pro.jpg'
+    // image: 'images/follower-growth/medicupe-pro.jpg'
+    image: ''
   },
   {
     title: 'メディキューブ PDRNピンクアンプル',
     text: `乾燥の毛穴目立ちはマジでコレ。肌プリプリになって毛穴消える🎀 https://amzn.to/4qVnbfK`,
-    image: 'images/follower-growth/medicube-pink-peptide-serum.jpg'
+    // image: 'images/follower-growth/medicube-pink-peptide-serum.jpg'
+    image: ''
   },
   {
     title: 'リジュラン公式 REJURAN ゴールドセット',
@@ -291,7 +310,8 @@ https://amzn.to/4iaVcET`,
 肌のざらつき消えて、使い出してからメイクノリめちゃくちゃ良い🥹🥹
 
 マジこれ一生使う。水越みさと様が使ってるのも納得だよ🎀 https://amzn.to/3Lt8yzY`,
-    image: 'images/follower-growth/rejuran-gold-set.jpg'
+    // image: 'images/follower-growth/rejuran-gold-set.jpg'
+    image: ''
   },
   {
     title: 'トリデン セルメイジング コラーゲン リップエッセンス',
@@ -300,7 +320,8 @@ https://amzn.to/4iaVcET`,
 うるおい、ハリ、弾力ヤバい。唇に優しく密着してベタつかず、なめらかな仕上がりになった。
 
 1本で唇の乾燥をケアできて、うるおい弾むようなぷるんとした唇になったよ🎀 https://amzn.to/4oZXAjS`,
-    image: 'images/follower-growth/torriden-lip-essence.jpg'
+    // image: 'images/follower-growth/torriden-lip-essence.jpg'
+    image: ''
   },
   {
     title: 'トリデン Torriden ダイブインマスク',
@@ -309,7 +330,8 @@ https://amzn.to/4iaVcET`,
 とにかく保湿！複数の分子サイズのヒアルロン酸が肌を徹底的に潤してくれる。
 
 パック後は内側からふかふかのモチ肌になって、乾燥知らずになったよ🎀 https://amzn.to/3JPmHH8`,
-    image: 'images/follower-growth/hyaluronic-serum-pack.jpg'
+    // image: 'images/follower-growth/hyaluronic-serum-pack.jpg'
+    image: ''
   },
   {
     title: 'トリデン Torriden バランスフルシカ マスク',
@@ -318,7 +340,8 @@ https://amzn.to/4iaVcET`,
 生理前やうっかり日焼け後、肌のバランスが崩れた時に助かる
 
 CICA配合で敏感になった肌をいたわってくれて、荒れにくくなったよ🎀 https://amzn.to/3WLD4HO`,
-    image: 'images/follower-growth/cica-serum-pack.jpg'
+    // image: 'images/follower-growth/cica-serum-pack.jpg'
+    image: ''
   },
   {
     title: 'トリデン(Torriden) セルメイジング ビタC ブライトニングマスク',
@@ -327,7 +350,8 @@ CICA配合で敏感になった肌をいたわってくれて、荒れにくく�
 たっぷりのビタミンCと話題の美容成分がてんこもり。
 
 パック後は肌のトーンが整って内側から輝く水光肌になった。低刺激だから敏感肌でも使えるのが神🎀 https://amzn.to/4853eLN`,
-    image: 'images/follower-growth/vitamin-c-serum-pack.jpg'
+    // image: 'images/follower-growth/vitamin-c-serum-pack.jpg'
+    image: ''
   },
   {
     title: 'トリデン シカクリーム',
@@ -336,6 +360,7 @@ CICA配合で敏感になった肌をいたわってくれて、荒れにくく�
 水分感たっぷりのジェルテクスチャーで使い心地最高すぎた…！
 
 鎮静効果だけでなく油分・水分のバランスまで整えてくれるのが最高🎀　https://amzn.to/3WMbhH3`,
+    // image: 'images/follower-growth/torriden-cream.jpg'
     image: ''
   },
   {
@@ -345,6 +370,7 @@ CICA配合で敏感になった肌をいたわってくれて、荒れにくく�
 くちびる乾燥しやすいので夜の保湿は欠かせない！
 
 こっくり系でしっかり潤って、朝起きたらぷるん唇になってる。ストックあと5本ある笑🎀 https://amzn.to/4osgBvj`,
+    // image: 'images/follower-growth/torriden-lip-essence.jpg'
     image: ''
   },
   {
@@ -354,6 +380,7 @@ CICA配合で敏感になった肌をいたわってくれて、荒れにくく�
 香りが高級化粧品で気品を感じる🎀
 とにかく手軽♥スプレーするだけでトナー+ミスト+セラム+エッセンスをまとめて一度にケアできる！
 メイクの上から使うのもOKで日中の保湿ケアにもおすすめ🎀 https://amzn.to/4qOThcV`,
+    // image: 'images/follower-growth/torriden-lip-essence.jpg'
     image: ''
   },
   {
@@ -363,6 +390,7 @@ CICA配合で敏感になった肌をいたわってくれて、荒れにくく�
 たっぷり水分系で優しく肌を整えてくれる。
 
 ゲル状のテクスチャーで、みずみずしい美容成分をたっぷりお肌に！🎀 https://amzn.to/43k0Jmc`,
+    // image: 'images/follower-growth/torriden-lip-essence.jpg'
     image: ''
   },
   {
@@ -374,6 +402,7 @@ CICA配合で敏感になった肌をいたわってくれて、荒れにくく�
 ゼリーのような質感で保湿してくれて肌の角層をコラーゲンや保湿成分で埋めてくれる感覚♡
 
 ナンバーズインの他のと比較しても圧倒的な保湿感🎀 https://amzn.to/49P8nsC`,
+    // image: 'images/follower-growth/torriden-lip-essence.jpg'
     image: ''
   },
   {
@@ -385,6 +414,7 @@ CICA配合で敏感になった肌をいたわってくれて、荒れにくく�
 ナンバーズイン公式の調査では毛穴の開きが39％改善されるというデータもあるらしい、毛穴の超特化型マスク♡
 
 https://amzn.to/4oUQVHC`,
+    // image: 'images/follower-growth/torriden-lip-essence.jpg'
     image: ''
   },
   {
@@ -396,6 +426,7 @@ https://amzn.to/4oUQVHC`,
 肌に乗せた瞬間ひんやりで、肌温度を一気に下げてくれる！
 
 すっきりとした使い心地・保湿成分・水分で、突然の肌荒れも整えてくれる。🎀 https://amzn.to/3JpFiJR`,
+    // image: 'images/follower-growth/torriden-lip-essence.jpg'
     image: ''
   },
   {
@@ -405,6 +436,7 @@ https://amzn.to/4oUQVHC`,
 赤み・黄ぐすみ・黒ずみの3つの方向から肌トーンを均一にしてくれる。
 
 ビタミンCがたっぷり配合されているのでみずみずしく肌のくすみを飛ばし、1トーン明るいキラキラ肌にしてくれる🎀 https://amzn.to/3JOmKmB`,
+    // image: 'images/follower-growth/torriden-lip-essence.jpg'
     image: ''
   },
   {
@@ -414,6 +446,7 @@ https://amzn.to/4oUQVHC`,
 私乾燥肌なのですが、全然崩れなくて艶キープできて最高でした。
 
 もっと早く知っていれば、、 https://amzn.to/4pkQ9UL`,
+    // image: 'images/follower-growth/torriden-lip-essence.jpg'
     image: ''
   },
   {
