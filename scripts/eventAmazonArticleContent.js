@@ -65,18 +65,17 @@ Fire TV StickやKindle、Echoシリーズなど、Amazon純正デバイスはブ
   },
 ];
 
-// 固定アフィリエイトリンク（必ず表示される2つ）
-const fixedLinkUrl = `https://www.amazon.co.jp/blackfriday?ref_=nav_cs_td_bf_dt_cr&linkCode=ll2&tag=${affiliateTag}&linkId=0f9989f6daa8f074182cafb0dfc61121&language=ja_JP&ref_=as_li_ss_tl`;
+// 固定アフィリエイトリンク（必ず表示される3つ）
+const fixedLinkBlackFridayMainUrl = `https://www.amazon.co.jp/blackfriday?&linkCode=ll2&tag=${affiliateTag}&linkId=213b50b8f3333d64c518a3817bcc1088&language=ja_JP&ref_=as_li_ss_tl`;
 const fixedLink80PercentUrl = `https://www.amazon.co.jp/blackfriday?ref_=nav_cs_td_bf_dt_cr&discounts-widget=%2522%257B%255C%2522state%255C%2522%253A%257B%255C%2522rangeRefinementFilters%255C%2522%253A%257B%255C%2522percentOff%255C%2522%253A%257B%255C%2522min%255C%2522%253A80%252C%255C%2522max%255C%2522%253A100%257D%257D%257D%252C%255C%2522version%255C%2522%253A1%257D%2522&linkCode=ll2&tag=${affiliateTag}&linkId=0f9989f6daa8f074182cafb0dfc61121&language=ja_JP&ref_=as_li_ss_tl`;
 const fixedLink60PercentUrl = `https://www.amazon.co.jp/blackfriday?ref_=nav_cs_td_bf_dt_cr&discounts-widget=%2522%257B%255C%2522state%255C%2522%253A%257B%255C%2522rangeRefinementFilters%255C%2522%253A%257B%255C%2522percentOff%255C%2522%253A%257B%255C%2522min%255C%2522%253A60%252C%255C%2522max%255C%2522%253A100%257D%257D%257D%252C%255C%2522version%255C%2522%253A1%257D%2522&linkCode=ll2&tag=${affiliateTag}&linkId=0f9989f6daa8f074182cafb0dfc61121&language=ja_JP&ref_=as_li_ss_tl`;
 
 export const eventAmazonArticleFixedAffiliateLinks = [
   `
 💰 🎁 💰 🎁 💰 🎁 💰 🎁 💰 🎁 💰 🎁 💰 🎁 💰 🎁 💰 🎁 💰 🎁
-[Amazonブラックフライデーセール会場はこちら！](${fixedLinkUrl})
-${fixedLinkUrl}
+[Amazonブラックフライデーセール会場はこちら！](${fixedLinkBlackFridayMainUrl})
+${fixedLinkBlackFridayMainUrl}
 💰 🎁 💰 🎁 💰 🎁 💰 🎁 💰 🎁 💰 🎁 💰 🎁 💰 🎁 💰 🎁 💰 🎁
-
 `,
   `
 💰 🎁 💰 🎁 💰 🎁 💰 🎁 💰 🎁 💰 🎁 💰 🎁 💰 🎁 💰 🎁 💰 🎁
@@ -116,8 +115,7 @@ ${randomLinkFoodUrl}
   `
 💊 🏥 💊 🏥 💊 🏥 💊 🏥 💊 🏥 💊 🏥 💊 🏥 💊 🏥 💊 🏥 💊 🏥
 [ドラッグストアのセール商品一覧](${randomLinkDrugstoreUrl})
-
-{randomLinkDrugstoreUrl}
+${randomLinkDrugstoreUrl}
 💊 🏥 💊 🏥 💊 🏥 💊 🏥 💊 🏥 💊 🏥 💊 🏥 💊 🏥 💊 🏥 💊 🏥
 `,
   `
