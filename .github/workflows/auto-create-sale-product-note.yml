@@ -1,0 +1,89 @@
+name: Auto Create Sale Product Note
+
+on:
+  schedule:
+    # 6時から深夜2時（翌日）までの間に11回投稿（2時間間隔）
+    # 日本時間（JST）はUTC+9なので、UTC時間で設定
+    - cron: '0 21 * * *'   # 6時 JST = 21:00 UTC（前日）
+    - cron: '0 23 * * *'   # 8時 JST = 23:00 UTC（前日）
+    - cron: '0 1 * * *'    # 10時 JST = 01:00 UTC（当日）
+    - cron: '0 3 * * *'    # 12時 JST = 03:00 UTC（当日）
+    - cron: '0 5 * * *'    # 14時 JST = 05:00 UTC（当日）
+    - cron: '0 7 * * *'    # 16時 JST = 07:00 UTC（当日）
+    - cron: '0 9 * * *'    # 18時 JST = 09:00 UTC（当日）
+    - cron: '0 11 * * *'   # 20時 JST = 11:00 UTC（当日）
+    - cron: '0 13 * * *'   # 22時 JST = 13:00 UTC（当日）
+    - cron: '0 15 * * *'   # 0時 JST（翌日）= 15:00 UTC（当日）
+    - cron: '0 17 * * *'   # 2時 JST（翌日）= 17:00 UTC（当日）
+  workflow_dispatch:
+    inputs:
+      sale_name:
+        description: 'セール名（例: 2025_11_BlackFridaySale）'
+        required: false
+        default: '2025_11_BlackFridaySale'
+
+jobs:
+  auto-create-sale-product-note:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    concurrency:
+      group: auto-create-sale-product-note
+      cancel-in-progress: false
+    env:
+      TZ: Asia/Tokyo
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Chrome dependencies for Puppeteer
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            ca-certificates \
+            fonts-liberation \
+            libasound2t64 \
+            libatk1.0-0 \
+            libatk-bridge2.0-0 \
+            libcups2 \
+            libdrm2 \
+            libxkbcommon0 \
+            libgtk-3-0 \
+            libgbm1 \
+            libnss3 \
+            libxcomposite1 \
+            libxdamage1 \
+            libxfixes3 \
+            libxrandr2 \
+            libxshmfence1
+
+      - name: Checkout note-auto-core
+        uses: actions/checkout@v4
+        with:
+          repository: aa-0921/note-auto-core
+          path: note-auto-core
+          ref: main
+          token: ${{ secrets.CORE_REPO_TOKEN }}
+
+      - name: Install dependencies
+        run: |
+          # note-auto-coreの依存関係をインストール
+          cd note-auto-core && npm install
+          cd ..
+          # ローカルパッケージを直接参照してインストール
+          npm install ./note-auto-core
+
+      - name: Run createSaleProductNote.js
+        env:
+          NOTE_EMAIL: ${{ secrets.NOTE_EMAIL }}
+          NOTE_PASSWORD: ${{ secrets.NOTE_PASSWORD }}
+          SALE_NAME: ${{ github.event.inputs.sale_name || '2025_11_BlackFridaySale' }}
+        run: node scripts/createSaleProductNote.js
+

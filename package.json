@@ -1,7 +1,7 @@
 {
   "name": "note-auto-hakushikisan",
   "version": "1.0.0",
-  "description": "「何でも知ってる博識さん」note自動化スクリプト",
+  "description": "「 🏅恋愛・人間関係カウンセラーRisa🏅 」note自動化スクリプト",
   "type": "module",
   "main": "scripts/autoCreateAndDraftNote.js",
   "scripts": {

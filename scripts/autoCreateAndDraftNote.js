@@ -253,7 +253,7 @@ export { affiliateConfig, affiliateLinks };
 
     // アソシエイト表記文（参考実装の文言）
     const amazonAssociateText =
-      'Amazon のアソシエイトとして、「何でも知ってる博識さん」は適格販売により収入を得ています。';
+      'Amazon のアソシエイトとして、「 🏅恋愛・人間関係カウンセラーRisa🏅 」は適格販売により収入を得ています。';
 
     // おすすめ記事セクションの設定
     const recommendedArticlesTitle = 'ぜひ読んでほしい🙇‍♂️他のおすすめ記事💕';
