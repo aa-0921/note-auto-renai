@@ -6,11 +6,16 @@ const affiliateTag = 'counselor888a-22';
 const audibleAffiliateEnabled = true;
 const kindleAffiliateEnabled = true;
 
+// アフィリエイト開示文に使用する名前（リポジトリ毎に変更可能）
+// この変数を変更することで、記事のアフィリエイト開示文に表示される名前を変更できます
+const associateName = '🏅恋愛・人間関係カウンセラーRisa🏅';
+
 // アフィリエイト設定をエクスポート
 export const affiliateConfig = {
   affiliateTag,
   audibleAffiliateEnabled,
   kindleAffiliateEnabled,
+  associateName,
 };
 
 // アフィリエイトリンク

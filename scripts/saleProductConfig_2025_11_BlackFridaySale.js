@@ -7,29 +7,17 @@ import { affiliateConfig } from './affiliateConfig.js';
 const { affiliateTag } = affiliateConfig;
 
 /**
- * セール商品まとめ用のアフィリエイトリンク配列（カテゴリ毎）
- * 各カテゴリは配列で、カテゴリ内に複数の商品リンクを配置可能
+ * セール商品まとめ用のアフィリエイトリンクオブジェクト（カテゴリ毎）
+ * カテゴリ名をキーとして、商品リンクの配列を値として持つ
  * 各商品リンクは {title, text, url} のオブジェクト形式
  * カテゴリの順番だけランダムで、すべてのアフィリエイトリンクを記事に記載
  */
-export const saleProductLinks = [
+export const saleProductLinks = {
   // ============================================
   // カテゴリ1: 食品・飲料
   // ============================================
-  [
-    // 商品1: 食品・飲料・お酒のセール商品
-    {
-      title: '👆食品・飲料・お酒のセール商品',
-      text: [
-        '🍽️　🍷　🍽️　🍷　🍽️　🍷　🍽️　🍷　🍽️　🍷　🍽️　🍷　🍽️　🍷　🍽️',
-        '今だけのお得な商品をチェック！🍽️✨',
-        '美味しいグルメや話題のドリンクが見つかります😊',
-        '毎日の食卓を豊かにする商品がここに💖',
-        '🍽️　🍷　🍽️　🍷　🍽️　🍷　🍽️　🍷　🍽️　🍷　🍽️　🍷　🍽️　🍷　🍽️',
-      ].join('\n'),
-      url: `https://www.amazon.co.jp/gp/bestsellers/food-beverage?&linkCode=ll2&tag=${affiliateTag}&linkId=2e1b3651ef6f32c56cdb8207b592c0d9&language=ja_JP&ref_=as_li_ss_tl`,
-    },
-    // 商品2: 大阪王将 肉餃子 50個入×3（合計150個）
+  '食品・飲料': [
+    // 商品1: 大阪王将 肉餃子 50個入×3（合計150個）
     {
       title: '👆大阪王将 肉餃子 50個入×３（合計150個） たれ×１８袋付 冷凍食品 ぎょうざ お取り寄せグルメ 業務用 おかず 冷凍餃子 冷凍惣菜',
       text: [
@@ -46,7 +34,7 @@ export const saleProductLinks = [
       ].join('\n'),
       url: `https://www.amazon.co.jp/dp/B00IG5KTAW?tag=${affiliateTag}&linkCode=ll2&linkId=e0c561995861e5585525110701f698f3&language=ja_JP&ref_=as_li_ss_tl`,
     },
-    // 商品3: カップヌードル レギュラー 20個
+    // 商品2: カップヌードル レギュラー 20個
     {
       title: '👆カップヌードル レギュラー 日清食品 カップ麺 78g×20個',
       text: [
@@ -63,7 +51,7 @@ export const saleProductLinks = [
       ].join('\n'),
       url: `https://www.amazon.co.jp/dp/B002P67WY4?tag=${affiliateTag}&linkCode=ll2&linkId=125e44e21dff25b6df231551fd562e7a&language=ja_JP&ref_=as_li_ss_tl`,
     },
-    // 商品4: 松屋 牛めしの具 30食
+    // 商品3: 松屋 牛めしの具 30食
     {
       title: '👆牛めしの具  【松屋】松屋No1 牛めしの具（プレミアム仕様） (1食 (x 30))［冷凍食品］',
       text: [
@@ -80,61 +68,127 @@ export const saleProductLinks = [
       ].join('\n'),
       url: `https://www.amazon.co.jp/dp/B01MUPEWSP?tag=${affiliateTag}&linkCode=ll2&linkId=d159b9779a6c7a42dafe1e18a8d8bb0a&language=ja_JP&ref_=as_li_ss_tl`,
     },
+    // 商品4: スーパードライ アサヒ ビール 350ml×24本
+    {
+      title: '👆スーパードライ アサヒ ビール 350ml×24本 辛口<生>',
+      text: [
+        '🍺　✨　🍺　✨　🍺　✨　🍺　✨　🍺　✨　🍺　✨　🍺　✨　🍺',
+        'これ、定番のおいしさで本当に良いです！😆✨',
+        '長年愛されている味で、変わらぬ美味しさが魅力です💪',
+        'スーパードライの味が特に人気で、のど越しやキレの良さが最高です⚡',
+        'セール時に買っておくことで、お得に飲めるので、まとめ買いしています😊',
+        '24本入りで、家族や友達が集まった時にも重宝します👍',
+        '価格が安いことも魅力で、コストパフォーマンスが良いので、よく買います💻',
+        '辛口<生>で、キレの良い味わいが楽しめて、本当に美味しいです🍺',
+        '冷蔵庫に常備しておくと、いつでも飲めて便利です💖',
+        '🍺　✨　🍺　✨　🍺　✨　🍺　✨　🍺　✨　🍺　✨　🍺　✨　🍺',
+      ].join('\n'),
+      url: `https://www.amazon.co.jp/dp/B0029ZFYJQ?tag=${affiliateTag}&linkCode=ll2&linkId=b1cd89c091af572532ba76ba88cc305a&language=ja_JP&ref_=as_li_ss_tl`,
+    },
+    // 商品5: 一番搾り キリン ビール350ml×24本
+    {
+      title: '👆一番搾り キリン ビール350ml×24本 生ビール',
+      text: [
+        '🍺　✨　🍺　✨　🍺　✨　🍺　✨　🍺　✨　🍺　✨　🍺　✨　🍺',
+        'これ、定番のキリン一番搾りで本当に良いです！😆✨',
+        '安定して美味しくて、飲みやすさも高く評価できて、毎日飲んでも飽きません💪',
+        'セール時に買っておくと、お得に飲めるので、まとめ買いしています⚡',
+        '丁度良い量で、どんな食事にも合わせやすいので、本当に便利です😊',
+        '24本入りで、家族や友達が集まった時にも重宝します👍',
+        '価格も手頃で、コストパフォーマンスが良いので、よく買います💻',
+        '生ビールで、キレの良い味わいが楽しめて、本当に美味しいです🍺',
+        '冷蔵庫に常備しておくと、いつでも飲めて便利です💖',
+        '🍺　✨　🍺　✨　🍺　✨　🍺　✨　🍺　✨　🍺　✨　🍺　✨　🍺',
+      ].join('\n'),
+      url: `https://www.amazon.co.jp/dp/B01BM9ECRE?tag=${affiliateTag}&linkCode=ll2&linkId=72959ae2d2c0135a4a25b283dfab7c7e&language=ja_JP&ref_=as_li_ss_tl`,
+    },
+    // 商品6: KIRIN本搾り チューハイ350ml×24本 グレープフルーツ
+    {
+      title: '👆KIRIN本搾り チューハイ350ml×24本 キリン 本搾りチューハイ グレープフルーツ サワー 酎ハイ お酒',
+      text: [
+        '🍹　✨　🍹　✨　🍹　✨　🍹　✨　🍹　✨　🍹　✨　🍹　✨　🍹',
+        'これ、本当に美味しいです！😆✨',
+        '果汁が多く含まれていて、居酒屋のチューハイに近い味わいで、本格的な感じがします💪',
+        'フルーティーな味で癖がなく、甘くないので何度でも飲みたくなります⚡',
+        '果実感たっぷりで安定の美味しさがあり、毎日飲んでも飽きません😊',
+        'ウォッカベースで程よいアルコールレベルなので、飲みやすくて重宝しています👍',
+        '24本入りで、家族や友達が集まった時にも重宝します💻',
+        'コストパフォーマンスが良いので、よく買っています🍹',
+        '冷蔵庫に常備しておくと、いつでも飲めて便利です💖',
+        '🍹　✨　🍹　✨　🍹　✨　🍹　✨　🍹　✨　🍹　✨　🍹　✨　🍹',
+      ].join('\n'),
+      url: `https://www.amazon.co.jp/dp/B001TRIKI2?tag=${affiliateTag}&linkCode=ll2&linkId=be08dbf3b45bc1fc7978d341aaa3ad90&language=ja_JP&ref_=as_li_ss_tl`,
+    },
+    // 商品7: by Amazon 会津産 無洗 精米 コシヒカリ 5kg
+    {
+      title: '👆【精米】Amazon限定ブランド 580.com 会津産 無洗 精米 コシヒカリ 5kg',
+      text: [
+        '🍚　✨　🍚　✨　🍚　✨　🍚　✨　🍚　✨　🍚　✨　🍚　✨　🍚',
+        'これ、本当に美味しいです！😆✨',
+        '美味しいと好評で、冷めても美味しいので、お弁当にも最適です💪',
+        '値段なりの質があり、安定供給されていることが安心感を与えてくれます⚡',
+        '無洗米であることや、炊きやすさ、炊き上がりの良さが評価できて、毎日のご飯が楽しみになります😊',
+        '特に福島産のコシヒカリは安全だと感じていて、安心して食べられます👍',
+        '価格面でもコストパフォーマンスが良いので、毎日食べても負担になりません💻',
+        '会津産コシヒカリは、日本穀物検定協会の米の食味ランキングで最高評価の「特A」を複数回獲得しているので、品質も期待以上です🍚',
+        '5kg入りで、家族で食べるのにちょうど良い量で、買い足しも簡単です💖',
+        '🍚　✨　🍚　✨　🍚　✨　🍚　✨　🍚　✨　🍚　✨　🍚　✨　🍚',
+      ].join('\n'),
+      url: `https://www.amazon.co.jp/dp/B00YC3M1K8?tag=${affiliateTag}&linkCode=ll2&linkId=7e844117541ed3af1d31ad340330efed&language=ja_JP&ref_=as_li_ss_tl`,
+    },
   ],
 
   // ============================================
   // カテゴリ2: ファッション
   // ============================================
-  [
-    // 商品1: ファッションのセール商品
+  'ファッション': [
+    // 商品1: アディダス アドバンコート スニーカー
     {
-      title: '👆ファッションのセール商品',
+      title: '👆[アディダス] スニーカー アドバンコート LIT48 EOT69 ライフスタイル グレーシックス',
       text: [
-        '👗　👔　👗　👔　👗　👔　👗　👔　👗　👔　👗　👔　👗　👔　👗',
-        '今人気のファッションアイテムをチェック！👗✨',
-        'トレンドを押さえたコーディネートで、毎日をもっと楽しく😊',
-        '自分らしいスタイルを見つけてください💖',
-        '👗　👔　👗　👔　👗　👔　👗　👔　👗　👔　👗　👔　👗　👔　👗',
+        '👟　✨　👟　✨　👟　✨　👟　✨　👟　✨　👟　✨　👟　✨　👟',
+        'これ、本当に履き心地が良いです！😆✨',
+        '見た目も可愛くて、シンプルでスタイリッシュなデザインが気に入っています💪',
+        'レザー調のデザインでスタイリッシュな作りながらも、動きやすいので、毎日履いています⚡',
+        'サイズ感も丁度良く、硬さも適度で、長時間履いていても疲れにくいです😊',
+        'どんなコーディネートにも合わせやすく、カジュアルから少しフォーマルな場面まで使えます👍',
+        'アディダスの品質で、長く使えそうで、コストパフォーマンスも良いです💻',
+        'グレーシックスの色合いが、どんな服にも合うので、本当に便利です👟',
+        '履き心地が良くて、見た目も可愛いので、お気に入りの一足です💖',
+        '👟　✨　👟　✨　👟　✨　👟　✨　👟　✨　👟　✨　👟　✨　👟',
       ].join('\n'),
-      url: `https://www.amazon.co.jp/gp/bestsellers/fashion?&linkCode=ll2&tag=${affiliateTag}&linkId=6f0e81f3552a761f5abf95399ed10e01&language=ja_JP&ref_=as_li_ss_tl`,
+      url: `https://www.amazon.co.jp/dp/B09VSXYD6N?tag=${affiliateTag}&linkCode=ll2&linkId=533760b0a27606ca074fd3b58f66e58a&language=ja_JP&ref_=as_li_ss_tl`,
     },
   ],
 
   // ============================================
   // カテゴリ3: バッグ・スーツケース
   // ============================================
-  [
-    // 商品1: バッグ・スーツケースのセール商品
+  'バッグ・スーツケース': [
+    // 商品1: New Trip スーツケース Mサイズ
     {
-      title: '👆バッグ・スーツケースのセール商品',
+      title: '👆[New Trip] スーツケース キャリーケース 拡張機能付き 機内持ち込み 軽量 大型 S/M/Lサイズ キャリーバッグ 耐衝撃 大容量 ファスナータイプ 静音 ダブルキャスター TSAロック 海外 旅行 ビジネス 出張 (ブラック、Mサイズ：4～7泊/60L)',
       text: [
-        '👜　🎒　👜　🎒　👜　🎒　👜　🎒　👜　🎒　👜　🎒　👜　🎒　👜',
-        '人気のバッグ・スーツケースをチェック！👜✨',
-        '通勤・通学から旅行まで、用途に合わせた商品が見つかります😊',
-        'あなたにぴったりのバッグを見つけてください💖',
-        '👜　🎒　👜　🎒　👜　🎒　👜　🎒　👜　🎒　👜　🎒　👜　🎒　👜',
+        '🧳　✨　🧳　✨　🧳　✨　🧳　✨　🧳　✨　🧳　✨　🧳　✨　🧳',
+        'これ、Amazonベストセラー1位だけあって、本当に良いです！😆✨',
+        '軽量で丈夫で収納力抜群で、コストパフォーマンスが良いので、本当に買って良かったです💪',
+        '色味も落ち着いていて、ブラックでどんなシーンにも合わせやすく、気に入っています⚡',
+        '高級感があって、カッコ良さがあるので、見た目も気に入っています😊',
+        '見た目が良く、高見えするので、ビジネスでの出張でも使えます👍',
+        '値段以上の品質で、価格以上の品質だと感じていて、本当に満足しています💻',
+        'サイズ感も丁度良く、Mサイズで4～7泊分の荷物が入るので、旅行に最適です🧳',
+        '拡張機能付きで、必要に応じて容量を増やせるので、本当に便利です💖',
+        '🧳　✨　🧳　✨　🧳　✨　🧳　✨　🧳　✨　🧳　✨　🧳　✨　🧳',
       ].join('\n'),
-      url: `https://www.amazon.co.jp/gp/bestsellers/fashion/2221077051?&linkCode=ll2&tag=${affiliateTag}&linkId=d2f18b578c29638a9d3d2bc2024b2a2d&language=ja_JP&ref_=as_li_ss_tl`,
+      url: `https://www.amazon.co.jp/dp/B0BQ3PH3W2?tag=${affiliateTag}&linkCode=ll2&linkId=e94769117818b281f8b41ec28f42c5ac&language=ja_JP&ref_=as_li_ss_tl`,
     },
   ],
 
   // ============================================
   // カテゴリ4: ドラッグストア
   // ============================================
-  [
-    // 商品1: ドラッグストアのセール商品
-    {
-      title: '👆ドラッグストアのセール商品',
-      text: [
-        '💊　🏥　💊　🏥　💊　🏥　💊　🏥　💊　🏥　💊　🏥　💊　🏥　💊',
-        '人気の医薬品・健康グッズをチェック！💊✨',
-        '健康維持に役立つアイテムが満載です😊',
-        'あなたの健康をサポートする商品がここに💖',
-        '💊　🏥　💊　🏥　💊　🏥　💊　🏥　💊　🏥　💊　🏥　💊　🏥　💊',
-      ].join('\n'),
-      url: `https://www.amazon.co.jp/gp/bestsellers/hpc?&linkCode=ll2&tag=${affiliateTag}&linkId=92fbb8876beecfa0c8d990d9c045aa51&language=ja_JP&ref_=as_li_ss_tl`,
-    },
-    // 商品2: バブ 5種類の香りお楽しみBOX 入浴剤 60錠
+  'ドラッグストア': [
+    // 商品1: バブ 5種類の香りお楽しみBOX 入浴剤 60錠
     {
       title: '👆バブ 5種類の香りお楽しみBOX 王道セレクト 入浴剤 60錠 [医薬部外品]',
       text: [
@@ -151,7 +205,7 @@ export const saleProductLinks = [
       ].join('\n'),
       url: `https://www.amazon.co.jp/dp/B0FNC7MH97?tag=${affiliateTag}&linkCode=ll2&linkId=1c69cac6cd527ac7d8edb2768ad9e137&language=ja_JP&ref_=as_li_ss_tl`,
     },
-    // 商品3: エペイオス 電動歯ブラシ
+    // 商品2: エペイオス 電動歯ブラシ
     {
       title: '👆【「家電批評」2025年連続ベストバイ一位受賞(四年連続) 殿堂入り】電動歯ブラシ エペイオス(Epeios) 音波歯ブラシ ソニック 歯ブラシ 電動 ブラシヘッド2本 IPX7 防水 歯磨き Type-C 充電式',
       text: [
@@ -168,7 +222,7 @@ export const saleProductLinks = [
       ].join('\n'),
       url: `https://www.amazon.co.jp/dp/B09Q8F12XD?tag=${affiliateTag}&linkCode=ll2&linkId=b0e5a848271135a2cb62e418bcda0f3b&language=ja_JP&ref_=as_li_ss_tl`,
     },
-    // 商品4: ブラウン モバイルシェーバー Braun mini
+    // 商品3: ブラウン モバイルシェーバー Braun mini
     {
       title: '👆ブラウン モバイルシェーバー Braun mini 電動 髭剃り メンズ 【Amazon.co.jp 限定】 M-1010 イエロー 小型 携帯用 旅行用',
       text: [
@@ -184,6 +238,23 @@ export const saleProductLinks = [
         '✂️　✨　✂️　✨　✂️　✨　✂️　✨　✂️　✨　✂️　✨　✂️　✨　✂️',
       ].join('\n'),
       url: `https://www.amazon.co.jp/dp/B09NR6YC6G?tag=${affiliateTag}&linkCode=ll2&linkId=8ebd6a8c87ee89af6b991321724889ad&language=ja_JP&ref_=as_li_ss_tl`,
+    },
+    // 商品4: ブラウン 電気シェーバー シリーズ9 SPORT 9360cc
+    {
+      title: '👆ブラウン 電気シェーバー シリーズ9 SPORT 電動 髭剃り メンズ 9360cc 【Amazon.co.jp 限定】6in1アルコール洗浄システム付 シェーバーケース付 ブラック',
+      text: [
+        '✂️　⚡　✂️　⚡　✂️　⚡　✂️　⚡　✂️　⚡　✂️　⚡　✂️　⚡　✂️',
+        'これ、友人が買って使っているのを見て、本当に良いと思いました！😆✨',
+        '綺麗に剃れると好評で、深剃りもできるので、肌がツルツルになります💪',
+        '肌に優しい使い心地で、肌に余計な負担がかからないので、毎日使っても安心です⚡',
+        '使用感も良く、以前使っていたシェーバーと比べて、肌が痛くなることがなくなったのが本当に嬉しいです😊',
+        '使用後に肌への負担が減ったので、敏感肌の私でも快適に使えます👍',
+        '6in1アルコール洗浄システムが付いていて、自動洗浄機能が本当に便利です💻',
+        'シェーバーケースも付いているので、旅行や出張の時にも持ち運びやすくて助かります✂️',
+        'ブラウンのシリーズ9だけあって、品質も期待以上で、長く使えそうです💖',
+        '✂️　⚡　✂️　⚡　✂️　⚡　✂️　⚡　✂️　⚡　✂️　⚡　✂️　⚡　✂️',
+      ].join('\n'),
+      url: `https://www.amazon.co.jp/dp/B0DSJB2627?tag=${affiliateTag}&linkCode=ll2&linkId=607c34eed9ca7253f1031b2b5dd84089&language=ja_JP&ref_=as_li_ss_tl`,
     },
     // 商品5: REYS レイズ ホエイ プロテイン
     {
@@ -202,7 +273,7 @@ export const saleProductLinks = [
       ].join('\n'),
       url: `https://www.amazon.co.jp/dp/B0C6X64277?tag=${affiliateTag}&linkCode=ll2&linkId=41a56cb9e03aa330c79ec4b064b55fcb&language=ja_JP&ref_=as_li_ss_tl`,
     },
-    // 商品6: ザバス(SAVAS) ホエイプロテイン100 リッチショコラ味
+    // 商品5: ザバス(SAVAS) ホエイプロテイン100 リッチショコラ味
     {
       title: '👆ザバス(SAVAS) ホエイプロテイン100 リッチショコラ味 1㎏ 明治【Amazon.co.jp限定】',
       text: [
@@ -224,38 +295,13 @@ export const saleProductLinks = [
   // ============================================
   // カテゴリ5: ビューティー
   // ============================================
-  [
-    // 商品1: ビューティーのセール商品
-    {
-      title: '👆ビューティーのセール商品',
-      text: [
-        '💄　💅　💄　💅　💄　💅　💄　💅　💄　💅　💄　💅　💄　💅　💄',
-        '人気のコスメ・スキンケアをチェック！💄✨',
-        '美容に関心のある方必見！今注目のアイテムが見つかります😊',
-        '毎日のケアで、もっと輝く自分に💖',
-        '💄　💅　💄　💅　💄　💅　💄　💅　💄　💅　💄　💅　💄　💅　💄',
-      ].join('\n'),
-      url: `https://www.amazon.co.jp/gp/bestsellers/beauty?&linkCode=ll2&tag=${affiliateTag}&linkId=41b585044559d5f9a5e308febc42ab5c&language=ja_JP&ref_=as_li_ss_tl`,
-    },
-  ],
+  'ビューティー': [],
 
   // ============================================
   // カテゴリ6: スキンケア・ボディケア
   // ============================================
-  [
-    // 商品1: スキンケア・ボディケアのセール商品
-    {
-      title: '👆スキンケア・ボディケアのセール商品',
-      text: [
-        '🧴　✨　🧴　✨　🧴　✨　🧴　✨　🧴　✨　🧴　✨　🧴　✨　🧴',
-        '人気のスキンケア・ボディケアをチェック！🧴✨',
-        'お肌のケアに最適なアイテムが見つかります😊',
-        '美しい肌で毎日を輝かせましょう💖',
-        '🧴　✨　🧴　✨　🧴　✨　🧴　✨　🧴　✨　🧴　✨　🧴　✨　🧴',
-      ].join('\n'),
-      url: `https://www.amazon.co.jp/gp/bestsellers/beauty/5267100051?&linkCode=ll2&tag=${affiliateTag}&linkId=5941ef0b93df8de5883fb33154a4d5bc&language=ja_JP&ref_=as_li_ss_tl`,
-    },
-    // 商品2: Anker Eufy Smart Scale P2 Pro 体重体組成計
+  'スキンケア・ボディケア': [
+    // 商品1: Anker Eufy Smart Scale P2 Pro 体重体組成計
     {
       title: '👆体重体組成計　Anker Eufy (ユーフィ) Smart Scale P2 Pro（体重体組成計）【アプリ対応 / Fitbit連携 / 体脂肪率 / BMI / 心拍数 / 筋肉量 / 基礎代謝量 / 水分量 / 体脂肪量 / 骨量 / 内臓脂肪 / タンパク質 / 骨格筋量 / 皮下脂肪 / 体内年齢 / ボディタイプ】',
       text: [
@@ -277,20 +323,8 @@ export const saleProductLinks = [
   // ============================================
   // カテゴリ7: ヘアケア
   // ============================================
-  [
-    // 商品1: ヘアケア・カラー・スタイリングのセール商品
-    {
-      title: '👆ヘアケア・カラー・スタイリングのセール商品',
-      text: [
-        '💇　🌸　💇　🌸　💇　🌸　💇　🌸　💇　🌸　💇　🌸　💇　🌸　💇',
-        '人気のヘアケア商品をチェック！💇✨',
-        '美しい髪を保つためのアイテムが満載です😊',
-        'あなたの髪に合った商品を見つけてください💖',
-        '💇　🌸　💇　🌸　💇　🌸　💇　🌸　💇　🌸　💇　🌸　💇　🌸　💇',
-      ].join('\n'),
-      url: `https://www.amazon.co.jp/gp/bestsellers/beauty/5267102051?&linkCode=ll2&tag=${affiliateTag}&linkId=9cbcacaed8be9d7043974990311682ac&language=ja_JP&ref_=as_li_ss_tl`,
-    },
-    // 商品2: MARO17 シャンプー パーフェクトウォッシュ
+  'ヘアケア': [
+    // 商品1: MARO17 シャンプー パーフェクトウォッシュ
     {
       title: '👆シャンプー　MARO17(マーロ17) シャンプー パーフェクトウォッシュ ジェントルミントの香り 詰替え用 600ml',
       text: [
@@ -312,56 +346,18 @@ export const saleProductLinks = [
   // ============================================
   // カテゴリ8: ペット用品
   // ============================================
-  [
-    // 商品1: ペット用品のセール商品
-    {
-      title: '👆ペット用品のセール商品',
-      text: [
-        '🐾　🐶　🐾　🐱　🐾　🐶　🐾　🐱　🐾　🐶　🐾　🐱　🐾　🐶　🐾',
-        '人気のペット用品をチェック！🐾✨',
-        '大切なペットのための商品が見つかります😊',
-        'ペットと一緒に幸せな毎日を過ごしましょう💖',
-        '🐾　🐶　🐾　🐱　🐾　🐶　🐾　🐱　🐾　🐶　🐾　🐱　🐾　🐶　🐾',
-      ].join('\n'),
-      url: `https://www.amazon.co.jp/gp/bestsellers/pet-supplies?&linkCode=ll2&tag=${affiliateTag}&linkId=155c4a6b79ccb29f8ec21982aadac6cb&language=ja_JP&ref_=as_li_ss_tl`,
-    },
-  ],
+  'ペット用品': [],
 
   // ============================================
   // カテゴリ9: タイムセール
   // ============================================
-  [
-    // 商品1: タイムセールランキング
-    {
-      title: '👆タイムセールランキング',
-      text: [
-        '⏰　🔥　⏰　🔥　⏰　🔥　⏰　🔥　⏰　🔥　⏰　🔥　⏰　🔥　⏰',
-        '今だけのお得な商品をチェック！⏰✨',
-        '期間限定のセール商品が見つかります😊',
-        'タイムセールを活用してお得にショッピング💖',
-        '⏰　🔥　⏰　🔥　⏰　🔥　⏰　🔥　⏰　🔥　⏰　🔥　⏰　🔥　⏰',
-      ].join('\n'),
-      url: `https://www.amazon.co.jp/events/monthlydealevent?bubble-id=url-param-bubble&linkCode=ll2&tag=${affiliateTag}&linkId=65b8ef45c2374543368f99864bb05425&language=ja_JP&ref_=as_li_ss_tl`,
-    },
-  ],
+  'タイムセール': [],
 
   // ============================================
   // カテゴリ10: ホーム&キッチン
   // ============================================
-  [
-    // 商品1: ホーム＆キッチンのセール商品
-    {
-      title: '👆ホーム＆キッチンのセール商品',
-      text: [
-        '🏠　🍳　🏠　🍳　🏠　🍳　🏠　🍳　🏠　🍳　🏠　🍳　🏠　🍳　🏠',
-        '人気のホーム＆キッチン商品をチェック！🏠✨',
-        '快適な生活を彩るアイテムが見つかります😊',
-        'お家時間をもっと充実させましょう💖',
-        '🏠　🍳　🏠　🍳　🏠　🍳　🏠　🍳　🏠　🍳　🏠　🍳　🏠　🍳　🏠',
-      ].join('\n'),
-      url: `https://www.amazon.co.jp/gp/bestsellers/kitchen?&linkCode=ll2&tag=${affiliateTag}&linkId=e8cf3fe16c4a621325996887e9408c41&language=ja_JP&ref_=as_li_ss_tl`,
-    },
-    // 商品2: シャープ 加湿 空気清浄機 KC-S50W-W
+  'ホーム&キッチン': [
+    // 商品1: シャープ 加湿 空気清浄機 KC-S50W-W
     {
       title: '👆【Amazon.co.jp限定】 シャープ 加湿 空気清浄機 KC-S50W-W プラズマクラスター 7000 浮遊ウィルス 花粉 空気浄化 おすすめ畳数 13畳 加湿量 500mL/h',
       text: [
@@ -376,7 +372,7 @@ export const saleProductLinks = [
       ].join('\n'),
       url: `https://www.amazon.co.jp/dp/B0FHGN1TQV?tag=${affiliateTag}&linkCode=ll2&language=ja_JP&ref_=as_li_ss_tl`,
     },
-    // 商品3: エレコム 電源タップ 6個口 3m
+    // 商品2: エレコム 電源タップ 6個口 3m
     {
       title: '👆エレコム 電源タップ 6個口 3m 雷ガード 個別スイッチ ほこりシャッター付 耐熱 PSE技術基準適合 ブラック',
       text: [
@@ -392,7 +388,7 @@ export const saleProductLinks = [
       ].join('\n'),
       url: `https://www.amazon.co.jp/dp/B07V1XJ56J?tag=${affiliateTag}&linkCode=ll2&linkId=48903a21d6b2618b6d192b7ce6d769c3&language=ja_JP&ref_=as_li_ss_tl`,
     },
-    // 商品4: Ziploc ジップロック フリーザーバッグ M 90枚入
+    // 商品3: Ziploc ジップロック フリーザーバッグ M 90枚入
     {
       title: '👆Ziploc 【大容量】ジップロック フリーザーバッグ ジッパー付き M 90枚入 クリア・ブルー',
       text: [
@@ -409,7 +405,7 @@ export const saleProductLinks = [
       ].join('\n'),
       url: `https://www.amazon.co.jp/dp/B0BSTYL2ZY?tag=${affiliateTag}&linkCode=ll2&linkId=b3187f1a14c6c81657e366985f50000c&language=ja_JP&ref_=as_li_ss_tl`,
     },
-    // 商品5: ルックプラス バスタブクレンジング
+    // 商品4: ルックプラス バスタブクレンジング
     {
       title: '👆ルックプラス バスタブクレンジング 銀イオンプラス 詰め替え ウルトラジャンボ2000ml 香りが残らないタイプ 大容量 お風呂 洗剤 こすらず一撃洗浄!',
       text: [
@@ -426,7 +422,7 @@ export const saleProductLinks = [
       ].join('\n'),
       url: `https://www.amazon.co.jp/dp/B0C1N19H4B?tag=${affiliateTag}&linkCode=ll2&linkId=2a1a7d4dc326bf6b744f9d0bc63209e6&language=ja_JP&ref_=as_li_ss_tl`,
     },
-    // 商品6: SwitchBot スマートロック 指紋認証パッド セット
+    // 商品5: SwitchBot スマートロック 指紋認証パッド セット
     {
       title: '👆SwitchBot スマートロック 指紋認証パッド セット Alexa スマートホーム スイッチボット オートロック 暗証番号 玄関 Google Home Siri LINE Clovaに対応 遠隔対応 工事不要 取付カンタン 防犯対策',
       text: [
@@ -443,7 +439,7 @@ export const saleProductLinks = [
       ].join('\n'),
       url: `https://www.amazon.co.jp/dp/B0B1ZJP9YK?tag=${affiliateTag}&linkCode=ll2&linkId=fd86ca4f428551279aaf540a1c13cb2d&language=ja_JP&ref_=as_li_ss_tl`,
     },
-    // 商品7: タオル研究所 ボリュームリッチ フェイスタオル
+    // 商品6: タオル研究所 ボリュームリッチ フェイスタオル
     {
       title: '👆【Amazon.co.jp限定】タオル研究所 [ボリュームリッチ] #003 フェイスタオル チャコールグレー 5枚セット ホテル仕様 厚手 ふかふか ボリューム 高速吸水 耐久性 綿100% 480GSM Amazonランキング1位',
       text: [
@@ -460,79 +456,131 @@ export const saleProductLinks = [
       ].join('\n'),
       url: `https://www.amazon.co.jp/dp/B086WCH4FH?tag=${affiliateTag}&linkCode=ll2&linkId=7d3b85d0b9fab34f9d7cd9a93bdefd4a&language=ja_JP&ref_=as_li_ss_tl`,
     },
+    // 商品7: シャープ ウォーターオーブン ヘルシオ AX-LSX3A-T
+    {
+      title: '👆シャープ ウォーターオーブン ヘルシオ AX-LSX3A-T ブラウン 30L 2段 コンベクション あぶり焼き 音声操作 対話 スマホ連携 高性能センサー プレミアムモデル',
+      text: [
+        '🍳　✨　🍳　✨　🍳　✨　🍳　✨　🍳　✨　🍳　✨　🍳　✨　🍳',
+        'これ、本当に手軽においしくできるので、買って良かったです！😆✨',
+        '料理が失敗なく手間がかからないという点が秀逸で、毎日の料理が楽になりました💪',
+        '家電芸人さんがテレビで紹介されているのを何度も見て、ヘルシオにしたいと思っていました⚡',
+        'まかせて調理は2回使っただけですが、唐揚げがふっくら柔らかく仕上がっていてビックリしました😊',
+        '今のレンジは凄く便利でビックリします！ボタン一つで色々出来るという感じです👍',
+        '庫内の掃除も簡単で大満足です💻',
+        '2段で異なるメニューやあぶり焼き等、幅広い料理を実現できるので、本当に便利です🍳',
+        '過熱水蒸気で調理するから、おいしい&余分な脂や塩分を落としてヘルシーなのも嬉しいです💖',
+        '🍳　✨　🍳　✨　🍳　✨　🍳　✨　🍳　✨　🍳　✨　🍳　✨　🍳',
+      ].join('\n'),
+      url: `https://www.amazon.co.jp/dp/B0CJXQM3VB?tag=${affiliateTag}&linkCode=ll2&linkId=18edea65b22004e196e66d3bf3e9412e&language=ja_JP&ref_=as_li_ss_tl`,
+    },
+    // 商品8: ヒツジのいらない枕 テンセル枕カバー付
+    {
+      title: '👆ヒツジのいらない枕 テンセル枕カバー付 まくら 低反発 高反発 丸洗いOK 安眠枕 寝返り 至極',
+      text: [
+        '🛏️　✨　🛏️　✨　🛏️　✨　🛏️　✨　🛏️　✨　🛏️　✨　🛏️　✨　🛏️',
+        'これ、Amazon枕ランキング1位で試しに買ってみたら、最高でした！😆✨',
+        '柔らかさと触り心地が本当に良くて、水枕に頭を置いているような不思議な感覚が得られます💪',
+        '肩こりや首の痛みを軽減してくれて、寝起きがスッキリするので、毎日の睡眠の質が上がりました⚡',
+        '低反発感があって、頭がしっかりと支えられるので、寝返りも楽に打てます😊',
+        'テンセル枕カバー付きで、肌触りも良く、清潔感があって気に入っています👍',
+        '丸洗いOKなので、いつでも清潔に使えるのが本当に便利です💻',
+        '安眠枕として、本当に至極の寝心地で、買って良かったと思っています🛏️',
+        '毎日使っていますが、肩こりが減って、朝の目覚めが全然違います💖',
+        '🛏️　✨　🛏️　✨　🛏️　✨　🛏️　✨　🛏️　✨　🛏️　✨　🛏️　✨　🛏️',
+      ].join('\n'),
+      url: `https://www.amazon.co.jp/dp/B08KFTF6GX?tag=${affiliateTag}&linkCode=ll2&linkId=e15d8031161f433cacc893c91525b5d4&language=ja_JP&ref_=as_li_ss_tl`,
+    },
+    // 商品9: Anker Eufy Clean X8 Pro with Self-Empty Station ロボット掃除機
+    {
+      title: '👆Anker Eufy Clean (ユーフィクリーン) X8 Pro with Self-Empty Station (ロボット掃除機) カーペット',
+      text: [
+        '🤖　✨　🤖　✨　🤖　✨　🤖　✨　🤖　✨　🤖　✨　🤖　✨　🤖',
+        'これ、Amazonおすすめの人気商品だけあって、本当に買って良かったです！😆✨',
+        'しっかりお掃除してくれて、粉塵の吸い取り能力が高いので、床がピカピカになります💪',
+        '自動で部屋のマッピングをしてくれるので、部屋全体を正確にマッピングできて、効率的に掃除してくれます⚡',
+        'マッピング機能も優秀で、自動で部屋をマッピングする機能が優れているので、一度設定すれば後は自動です😊',
+        'Self-Empty Stationが付いているので、ゴミを自動で回収してくれて、手間がかかりません👍',
+        'コストパフォーマンスも高く、非常にコスパが良いので、買って良かったと思っています💻',
+        '操作性も良く、アプリから簡単に操作できるので、外出先からでも掃除を開始できます🤖',
+        'カーペットにも対応していて、しっかりと掃除してくれるので、本当に便利です💖',
+        '🤖　✨　🤖　✨　🤖　✨　🤖　✨　🤖　✨　🤖　✨　🤖　✨　🤖',
+      ].join('\n'),
+      url: `https://www.amazon.co.jp/dp/B0C4NN6GGY?tag=${affiliateTag}&linkCode=ll2&linkId=f9be71622260b2716d0f17ec942b1482&language=ja_JP&ref_=as_li_ss_tl`,
+    },
+    // 商品10: De'Longhi 全自動コーヒーマシン マグニフィカスタート
+    {
+      title: '👆De\'Longhi (デロンギ) 全自動コーヒーマシン マグニフィカスタート ECAM22062B コーヒーメーカー エスプレッソマシン 全4メニュー ラテクレマシステム マイラテ機能 カフェラテ 自動ミルクフロッサー [ブラック] デロンギファミリー登録で3年保証',
+      text: [
+        '☕　✨　☕　✨　☕　✨　☕　✨　☕　✨　☕　✨　☕　✨　☕',
+        'これ、本当に美味しいコーヒーが楽しめます！😆✨',
+        '美味しさと使いやすさが好評で、簡単にエスプレッソが入れられて、お手軽で美味しいコーヒーが楽しめます💪',
+        '全自動で便利で、ボタン一つで本格的なエスプレッソやカフェラテが作れます⚡',
+        'ラテクレマシステムとマイラテ機能で、カフェラテも簡単に作れて、毎朝のコーヒーが楽しみになりました😊',
+        '自動ミルクフロッサーが付いているので、ふわふわのミルクフォームが作れて、本格的なカフェラテが楽しめます👍',
+        'メンテナンス性についても高く評価できて、全自動で便利なので、手入れも簡単です💻',
+        'デロンギファミリー登録で3年保証が付いているので、安心して使えます☕',
+        '全4メニューで、エスプレッソ、カフェラテ、カプチーノ、アメリカーノなど、いろんなコーヒーが楽しめます💖',
+        '☕　✨　☕　✨　☕　✨　☕　✨　☕　✨　☕　✨　☕　✨　☕',
+      ].join('\n'),
+      url: `https://www.amazon.co.jp/dp/B0DJW2CMMS?tag=${affiliateTag}&linkCode=ll2&linkId=17d3243a9aeb99f800ed48f1ca0f14e4&language=ja_JP&ref_=as_li_ss_tl`,
+    },
+    // 商品11: De'Longhi マルチダイナミックヒーター MDHU15-BK
+    {
+      title: '👆De\'Longhi (デロンギ) マルチダイナミックヒーター MDHU15-BK 電気ヒーター ゼロ風暖房 節電 直感操作クリックノブ リモコン付き 表面温度約60℃ 節電 [10-13畳] [ピュアホワイト×マットブラック] デロンギファミリー登録で5年保証',
+      text: [
+        '🔥　✨　🔥　✨　🔥　✨　🔥　✨　🔥　✨　🔥　✨　🔥　✨　🔥',
+        'これ、本当に暖かくて静かです！😆✨',
+        '暖かさと静音性を高く評価できて、オイルヒーターよりも速暖で、すぐに部屋が暖まります💪',
+        '室内犬も寒さで体調を崩すことが少なくなったので、ペットを飼っている家庭にも最適です⚡',
+        '赤ちゃんのいる家庭でも安全面では助かっていて、表面温度が約60℃なので、触っても安心です😊',
+        '静音性と安全性についてもめちゃくちゃ信頼できて、ゼロ風暖房なので、風が当たらず快適です👍',
+        '直感操作クリックノブとリモコン付きで、操作も簡単で、どこからでも温度調整ができます💻',
+        '節電機能も付いていて、電気代も抑えられるので、コストパフォーマンスも良いです🔥',
+        '10-13畳対応で、リビングや寝室など、広い部屋でもしっかり暖まります💖',
+        'デロンギファミリー登録で5年保証が付いているので、長く安心して使えます👍',
+        '🔥　✨　🔥　✨　🔥　✨　🔥　✨　🔥　✨　🔥　✨　🔥　✨　🔥',
+      ].join('\n'),
+      url: `https://www.amazon.co.jp/dp/B07HNMGFF5?tag=${affiliateTag}&linkCode=ll2&linkId=357bf3eb9a30c34e29fb8c33590856a2&language=ja_JP&ref_=as_li_ss_tl`,
+    },
+    // 商品12: ティファール 取っ手のとれる 鍋 フライパンセット 9点セット
+    {
+      title: '👆【オンライン限定】 ティファール 取っ手のとれる 鍋 フライパンセット 9点セット ガス火専用 PFOAなどの有害物質不使用 「インジニオ･ネオ フレーズグレー」 こびりつきにくさ長持ち グレー L16199',
+      text: [
+        '🍳　✨　🍳　✨　🍳　✨　🍳　✨　🍳　✨　🍳　✨　🍳　✨　🍳',
+        'これ、有名な「取っ手のとれる」やつですね！😆✨',
+        '思い切ってこれに統一してからの楽さがハンパじゃありません！完全に元を取れました💪',
+        'フライパンの使いやすさを高く評価できて、大きさや洗いやすさ、種類が豊富で使いやすいです⚡',
+        '深型のものは料理がこぼれないので、炒め物や煮物も安心して作れます😊',
+        '使い回しができる点も便利で、取っ手を外してオーブンに入れたり、そのままテーブルに出せたりします👍',
+        'こびりつきにくさが長持ちで、コーティングの耐久性も高いので、長く使えそうです💻',
+        'PFOAなどの有害物質不使用なので、安全面でも安心して使えます🍳',
+        '9点セットで、フライパン、ウォックパン、ソースパンなど、いろんな料理に対応できて本当に便利です💖',
+        '🍳　✨　🍳　✨　🍳　✨　🍳　✨　🍳　✨　🍳　✨　🍳　✨　🍳',
+      ].join('\n'),
+      url: `https://www.amazon.co.jp/dp/B09Y1GCP6P?tag=${affiliateTag}&linkCode=ll2&linkId=00ec621cac6618878a01747ef06001b0&language=ja_JP&ref_=as_li_ss_tl`,
+    },
   ],
 
   // ============================================
   // カテゴリ11: インテリア
   // ============================================
-  [
-    // 商品1: インテリアのセール商品
-    {
-      title: '👆インテリアのセール商品',
-      text: [
-        '🖼️　🕯️　🖼️　🕯️　🖼️　🕯️　🖼️　🕯️　🖼️　🕯️　🖼️　🕯️　🖼️　🕯️　🖼️',
-        '人気のインテリアをチェック！🖼️✨',
-        'お部屋を素敵に彩るアイテムが見つかります😊',
-        '理想のインテリアで快適な空間を作りましょう💖',
-        '🖼️　🕯️　🖼️　🕯️　🖼️　🕯️　🖼️　🕯️　🖼️　🕯️　🖼️　🕯️　🖼️　🕯️　🖼️',
-      ].join('\n'),
-      url: `https://www.amazon.co.jp/gp/bestsellers/kitchen/13945061?&linkCode=ll2&tag=${affiliateTag}&linkId=abb7a9053e0d017a992a944bad6e72a1&language=ja_JP&ref_=as_li_ss_tl`,
-    },
-  ],
+  'インテリア': [],
 
   // ============================================
   // カテゴリ12: 家具
   // ============================================
-  [
-    // 商品1: 家具のセール商品
-    {
-      title: '👆家具のセール商品',
-      text: [
-        '🛋️　🪑　🛋️　🪑　🛋️　🪑　🛋️　🪑　🛋️　🪑　🛋️　🪑　🛋️　🪑　🛋️',
-        '人気の家具をチェック！🛋️✨',
-        '快適な生活空間を作る家具が見つかります😊',
-        'あなたのお部屋にぴったりの家具を見つけてください💖',
-        '🛋️　🪑　🛋️　🪑　🛋️　🪑　🛋️　🪑　🛋️　🪑　🛋️　🪑　🛋️　🪑　🛋️',
-      ].join('\n'),
-      url: `https://www.amazon.co.jp/gp/bestsellers/kitchen/16428011?&linkCode=ll2&tag=${affiliateTag}&linkId=2a5dfdcdb27fad180fc7b73c56397b0a&language=ja_JP&ref_=as_li_ss_tl`,
-    },
-  ],
+  '家具': [],
 
   // ============================================
   // カテゴリ13: 生活雑貨
   // ============================================
-  [
-    // 商品1: 生活雑貨のセール商品
-    {
-      title: '👆生活雑貨のセール商品',
-      text: [
-        '🧹　🧺　🧹　🧺　🧹　🧺　🧹　🧺　🧹　🧺　🧹　🧺　🧹　🧺　🧹',
-        '人気の生活雑貨をチェック！🧹✨',
-        '毎日の生活を便利にするアイテムが見つかります😊',
-        '暮らしをもっと快適にしましょう💖',
-        '🧹　🧺　🧹　🧺　🧹　🧺　🧹　🧺　🧹　🧺　🧹　🧺　🧹　🧺　🧹',
-      ].join('\n'),
-      url: `https://www.amazon.co.jp/gp/bestsellers/kitchen/13938541?&linkCode=ll2&tag=${affiliateTag}&linkId=8ab511dca7f0c1c87fa960fd2d0eea6a&language=ja_JP&ref_=as_li_ss_tl`,
-    },
-  ],
+  '生活雑貨': [],
 
   // ============================================
   // カテゴリ14: ゲーム
   // ============================================
-  [
-    // 商品1: ゲームのセール商品
-    {
-      title: '👆ゲームのセール商品',
-      text: [
-        '🎮　👾　🎮　👾　🎮　👾　🎮　👾　🎮　👾　🎮　👾　🎮　👾　🎮',
-        '最新の人気ゲームをチェック！🎮✨',
-        '話題のタイトルから定番まで、今遊ぶべきゲームが見つかります😊',
-        'ゲーム好きの方はぜひチェックしてみてください💖',
-        '🎮　👾　🎮　👾　🎮　👾　🎮　👾　🎮　👾　🎮　👾　🎮　👾　🎮',
-      ].join('\n'),
-      url: `https://www.amazon.co.jp/gp/bestsellers/videogames?&linkCode=ll2&tag=${affiliateTag}&linkId=a1b2c3d4e5f6g7h8i9j0&language=ja_JP&ref_=as_li_ss_tl`,
-    },
-    // 商品2: ペルソナ5 ザ・ロイヤル - Switch
+  'ゲーム': [
+    // 商品1: ペルソナ5 ザ・ロイヤル - Switch
     {
       title: '👆ペルソナ5 ザ・ロイヤル - Switch',
       text: [
@@ -549,7 +597,7 @@ export const saleProductLinks = [
       ].join('\n'),
       url: `https://www.amazon.co.jp/dp/B0B5CMH6QX?tag=${affiliateTag}&linkCode=ll2&linkId=527287e723eaa2226801fc4def2555d2&language=ja_JP&ref_=as_li_ss_tl`,
     },
-    // 商品3: 真・女神転生Ⅴ Vengeance - Switch
+    // 商品2: 真・女神転生Ⅴ Vengeance - Switch
     {
       title: '👆真・女神転生Ⅴ Vengeance - Switch',
       text: [
@@ -571,20 +619,8 @@ export const saleProductLinks = [
   // ============================================
   // カテゴリ15: パソコン・周辺機器
   // ============================================
-  [
-    // 商品1: パソコン・周辺機器のセール商品
-    {
-      title: '👆パソコン・周辺機器のセール商品',
-      text: [
-        '📱　💻　📱　💻　📱　💻　📱　💻　📱　💻　📱　💻　📱　💻　📱',
-        '最新のPC関連商品をチェック！💻✨',
-        '仕事効率化やテレワークに役立つアイテムが満載です😊',
-        'あなたの作業環境をアップグレードしましょう💖',
-        '📱　💻　📱　💻　📱　💻　📱　💻　📱　💻　📱　💻　📱　💻　📱',
-      ].join('\n'),
-      url: `https://www.amazon.co.jp/gp/bestsellers/computers?&linkCode=ll2&tag=${affiliateTag}&linkId=b2c3d4e5f6g7h8i9j0k1&language=ja_JP&ref_=as_li_ss_tl`,
-    },
-    // 商品2: SanDisk SSD 外付け 2TB
+  'パソコン・周辺機器': [
+    // 商品1: SanDisk SSD 外付け 2TB
     {
       title: '👆【Amazon.co.jp限定】SanDisk SSD 外付け 2TB USB3.2Gen2 読出最大800MB/秒 SDSSDE30-2T00-GH26 ポータブルSSD Win Mac PS4 エコパッケージ メーカー3年保証',
       text: [
@@ -599,7 +635,7 @@ export const saleProductLinks = [
       ].join('\n'),
       url: `https://www.amazon.co.jp/dp/B0C3RDHQYG?tag=${affiliateTag}&linkCode=ll2&linkId=04d8c38427ddb1f3bc9ef1f29233a07e&language=ja_JP&ref_=as_li_ss_tl`,
     },
-    // 商品3: Anker PowerLine III Flow USB-C & USB-C ケーブル
+    // 商品2: Anker PowerLine III Flow USB-C & USB-C ケーブル
     {
       title: '👆Anker PowerLine III Flow USB-C & USB-C ケーブル Anker絡まないケーブル 240W 結束バンド付き USB PD対応 シリコン素材採用 iPhone 16 / 15 Galaxy iPad Pro MacBook Pro/Air 各種対応',
       text: [
@@ -615,7 +651,7 @@ export const saleProductLinks = [
       ].join('\n'),
       url: `https://www.amazon.co.jp/dp/B093L6298K?tag=${affiliateTag}&linkCode=ll2&linkId=3cdec2853e9a198d056a88a76b3f5dd2&language=ja_JP&ref_=as_li_ss_tl`,
     },
-    // 商品4: オーディオテクニカ ATH-M20x/1.6 モニターヘッドホン
+    // 商品3: オーディオテクニカ ATH-M20x/1.6 モニターヘッドホン
     {
       title: '👆【Amazon.co.jp限定】 オーディオテクニカ ATH-M20x/1.6 プロフェッショナル モニターヘッドホン 有線 ヘッドフォン ケーブル長1.6m レコーディング 楽器練習 ミキシング DJ ゲーム ゲーミング ブラック',
       text: [
@@ -632,7 +668,7 @@ export const saleProductLinks = [
       ].join('\n'),
       url: `https://www.amazon.co.jp/dp/B07QJ6RZN6?tag=${affiliateTag}&linkCode=ll2&linkId=1661380196a20e326f02a14d06f09f1a&language=ja_JP&ref_=as_li_ss_tl`,
     },
-    // 商品5: Belkin Qi2 25W ワイヤレス充電器 3 in 1
+    // 商品4: Belkin Qi2 25W ワイヤレス充電器 3 in 1
     {
       title: '👆【Amazon.co.jp限定】Belkin Qi2 25W ワイヤレス充電器 3 in 1 世界初 充電スタンド Qi2公式認証 MagSafe マグセーフ 急速充電 iPhone 17,16～12 Apple Watch アップルウォッチ Google Pixel 10 Pro XL チャコールブラック',
       text: [
@@ -650,7 +686,7 @@ export const saleProductLinks = [
       ].join('\n'),
       url: `https://www.amazon.co.jp/dp/B0FK4LRZQH?tag=${affiliateTag}&linkCode=ll2&linkId=28252e2115159e3e4809508c79d2dd82&language=ja_JP&ref_=as_li_ss_tl`,
     },
-    // 商品6: Anker MagGo Wireless Charging Station 3-in-1
+    // 商品5: Anker MagGo Wireless Charging Station 3-in-1
     {
       title: '👆Anker MagGo Wireless Charging Station (Foldable 3-in-1) Qi2対応 マグネット式 3-in-1 ワイヤレス充電ステーション/ワイヤレス出力/Apple Watchホルダー付 iPhone MagSafe対応 iPhone 17 / 17 Pro / 17 Pro Max / 16 / 15 / 14 / 13 ブラック',
       text: [
@@ -667,7 +703,7 @@ export const saleProductLinks = [
       ].join('\n'),
       url: `https://www.amazon.co.jp/dp/B0CM66LY5F?tag=${affiliateTag}&linkCode=ll2&linkId=db956796067f47b821befaeb3aca3671&language=ja_JP&ref_=as_li_ss_tl`,
     },
-    // 商品7: Apple iPad Air 11 整備済み品
+    // 商品6: Apple iPad Air 11 整備済み品
     {
       title: '👆【整備済み品】Apple iPad Air 11 インチ (M2) Wi-Fi 256GB スペースグレイ',
       text: [
@@ -684,7 +720,7 @@ export const saleProductLinks = [
       ].join('\n'),
       url: `https://www.amazon.co.jp/dp/B0DXSZSY17?tag=${affiliateTag}&linkCode=ll2&linkId=9d62d59c2ae6df391ae753d1dd01fff3&language=ja_JP&ref_=as_li_ss_tl`,
     },
-    // 商品10: Apple 11インチ iPad (A16)
+    // 商品7: Apple 11インチ iPad (A16)
     {
       title: '👆Apple 11 インチ iPad (A16): 11 インチモデル、Liquid Retina ディスプレイ、128GB',
       text: [
@@ -701,7 +737,7 @@ export const saleProductLinks = [
       ].join('\n'),
       url: `https://www.amazon.co.jp/dp/B0DZ8HV6RT?tag=${affiliateTag}&linkCode=ll2&linkId=c7912079ab3d18f74e6f66787055f61d&language=ja_JP&ref_=as_li_ss_tl`,
     },
-    // 商品11: Apple 2025 MacBook Air M4
+    // 商品8: Apple 2025 MacBook Air M4
     {
       title: '👆Apple 2025 MacBook Air (13インチ, 10コアCPUと8コアGPUを搭載したApple M4チップ, 16GB ユニファイドメモリ, 256GB)',
       text: [
@@ -718,7 +754,7 @@ export const saleProductLinks = [
       ].join('\n'),
       url: `https://www.amazon.co.jp/dp/B0DZDXLF1W?tag=${affiliateTag}&linkCode=ll2&linkId=1d564c5308a9add44698a82b07f9be4a&language=ja_JP&ref_=as_li_ss_tl`,
     },
-    // 商品12: Apple AirPods 4
+    // 商品9: Apple AirPods 4
     {
       title: '👆Apple AirPods 4 ワイヤレスイヤホン、Bluetooth5.3、パーソナライズされた空間オーディオ、耐汗耐水性能、USB-C 充電ケース、H2 チップ、最大 30 時間の バッテリー駆動時間、iPhoneで簡単に設定',
       text: [
@@ -735,7 +771,7 @@ export const saleProductLinks = [
       ].join('\n'),
       url: `https://www.amazon.co.jp/dp/B0DGJ63QY8?tag=${affiliateTag}&linkCode=ll2&linkId=d3546bf209637b789f403651488ac0ae&language=ja_JP&ref_=as_li_ss_tl`,
     },
-    // 商品8: Amazon Fire TV Stick 4K Max
+    // 商品10: Amazon Fire TV Stick 4K Max
     {
       title: '👆Amazon Fire TV Stick 4K Max(マックス) | Fire TV Stick史上最もパワフル',
       text: [
@@ -752,7 +788,7 @@ export const saleProductLinks = [
       ].join('\n'),
       url: `https://www.amazon.co.jp/dp/B0BW37QY2V?tag=${affiliateTag}&linkCode=ll2&linkId=249a108691229aa5d90049d24ae0dcf3&language=ja_JP&ref_=as_li_ss_tl`,
     },
-    // 商品9: Amazon Fire TV Cube
+    // 商品11: Amazon Fire TV Cube
     {
       title: '👆Amazon Fire TV Cube(キューブ) | 究極の体験をハンズフリーで | ストリーミングメディアプレイヤー',
       text: [
@@ -769,12 +805,29 @@ export const saleProductLinks = [
       ].join('\n'),
       url: `https://www.amazon.co.jp/dp/B09BZY8HBN?tag=${affiliateTag}&linkCode=ll2&linkId=b65a301f7f431899304c7c34e2fe011d&language=ja_JP&ref_=as_li_ss_tl`,
     },
+    // 商品12: Anker Prime Wall Charger (67W, 3 ports, GaN)
+    {
+      title: '👆Anker Prime Wall Charger (67W, 3 ports, GaN) (ブラック)【 PD対応/PSE技術基準適合/折りたたみ式プラグ】iPhone 17 / 17 Pro / 17 Pro Max 他 iPhone シリーズ MacBook Windows PC iPad Galaxy Android スマートフォン ノートPC 各種 その他機器対応',
+      text: [
+        '🔌　⚡　🔌　⚡　🔌　⚡　🔌　⚡　🔌　⚡　🔌　⚡　🔌　⚡　🔌',
+        'これ、充電器のサイズと性能を高く評価できて、本当に買って良かったです！😆✨',
+        'コンパクトで軽量で、高速で3ポート同時に充電できる点が好評で、デスクの上がスッキリします💪',
+        '高速で3台のデバイスを同時に充電できて、ノートパソコンやタブレット、スマホも同時に充電できる点も魅力的です⚡',
+        'GaN技術採用で、従来の充電器よりも小さくて軽いのに、67Wの大容量出力が可能です😊',
+        '折りたたみ式プラグなので、旅行や出張の時に持ち運びが簡単で、カバンに入れても邪魔になりません👍',
+        'PD対応で、iPhone 17、MacBook、iPad、Galaxyなど、いろんなデバイスに対応していて本当に便利です💻',
+        'PSE技術基準適合で、安全面でも安心して使えます🔌',
+        '3ポート同時充電で、家族みんなのデバイスを一度に充電できるので、コンセントがスッキリします💖',
+        '🔌　⚡　🔌　⚡　🔌　⚡　🔌　⚡　🔌　⚡　🔌　⚡　🔌　⚡　🔌',
+      ].join('\n'),
+      url: `https://www.amazon.co.jp/dp/B0C5CBV6L3?tag=${affiliateTag}&linkCode=ll2&linkId=2039830c455dd108e7c0cc3ec5c19686&language=ja_JP&ref_=as_li_ss_tl`,
+    },
   ],
 
   // ============================================
   // カテゴリ16: 書籍・学習
   // ============================================
-  [
+  '書籍・学習': [
     // 商品1: Audibleプレミアムプラン
     {
       title: '👆Audibleプレミアムプラン　最初の3か月は月額￥99（4か月目以降は月額￥1,500）このセールは12/1まで',
@@ -811,5 +864,4 @@ export const saleProductLinks = [
       url: `https://www.amazon.co.jp/kindle-dbs/hz/signup?tag=${affiliateTag}&linkCode=ll2&language=ja_JP&ref_=as_li_ss_tl`,
     },
   ],
-];
-
+};
