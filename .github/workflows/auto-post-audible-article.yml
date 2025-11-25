@@ -1,12 +1,12 @@
 name: Auto Post Audible Article
 
 on:
-  schedule:
-    # 1日に2回実行
-    # JST 6:30 = UTC 21:30（前日）
-    - cron: '30 21 * * *'   # JST 06:30
-    # JST 18:30 = UTC 09:30（当日）
-    - cron: '30 9 * * *'    # JST 18:30
+  # schedule:
+  # # 1日に2回実行
+  # # JST 6:30 = UTC 21:30（前日）
+  # - cron: '30 21 * * *'   # JST 06:30
+  # # JST 18:30 = UTC 09:30（当日）
+  # - cron: '30 9 * * *'    # JST 18:30
   workflow_dispatch:
 
 jobs:

@@ -79,6 +79,7 @@ import { affiliateConfig } from './affiliateConfig.js';
       categoryLinks,
       intro,
       closing,
+      saleName,
     });
 
     console.log(`✅ Amazonセール商品まとめ記事を投稿しました（セール名: ${saleName}）`);
