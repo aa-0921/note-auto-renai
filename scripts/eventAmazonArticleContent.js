@@ -108,7 +108,7 @@ Amazonの注文履歴画面から今年買ったものの中でセールにな�
 ];
 
 // 固定アフィリエイトリンク（必ず表示される3つ）
-const fixedLinkBlackFridayMainUrl = `https://www.amazon.co.jp/blackfriday?&linkCode=ll2&tag=${affiliateTag}&linkId=213b50b8f3333d64c518a3817bcc1088&language=ja_JP&ref_=as_li_ss_tl`;
+const fixedLinkBlackFridayMainUrl = `https://www.amazon.co.jp/blackfriday/2?_encoding=UTF8&pd_rd_w=ygD4C&content-id=amzn1.sym.deb8c7e3-e584-4f1c-bef7-5c8a19968d99&pf_rd_p=deb8c7e3-e584-4f1c-bef7-5c8a19968d99&pf_rd_r=YMVCW12K5WDRXTW6S222&pd_rd_wg=8ze3g&pd_rd_r=330bc4a7-b4c0-4fc1-b4cc-993aae48a763&linkCode=ll2&tag=${affiliateTag}&linkId=900a586885fe87e28b7abbff879b32eb&language=ja_JP&ref_=as_li_ss_tl`;
 const fixedLink80PercentUrl = `https://www.amazon.co.jp/blackfriday?ref_=nav_cs_td_bf_dt_cr&discounts-widget=%2522%257B%255C%2522state%255C%2522%253A%257B%255C%2522rangeRefinementFilters%255C%2522%253A%257B%255C%2522percentOff%255C%2522%253A%257B%255C%2522min%255C%2522%253A80%252C%255C%2522max%255C%2522%253A100%257D%257D%257D%252C%255C%2522version%255C%2522%253A1%257D%2522&linkCode=ll2&tag=${affiliateTag}&linkId=0f9989f6daa8f074182cafb0dfc61121&language=ja_JP&ref_=as_li_ss_tl`;
 const fixedLink60PercentUrl = `https://www.amazon.co.jp/blackfriday?ref_=nav_cs_td_bf_dt_cr&discounts-widget=%2522%257B%255C%2522state%255C%2522%253A%257B%255C%2522rangeRefinementFilters%255C%2522%253A%257B%255C%2522percentOff%255C%2522%253A%257B%255C%2522min%255C%2522%253A60%252C%255C%2522max%255C%2522%253A100%257D%257D%257D%252C%255C%2522version%255C%2522%253A1%257D%2522&linkCode=ll2&tag=${affiliateTag}&linkId=0f9989f6daa8f074182cafb0dfc61121&language=ja_JP&ref_=as_li_ss_tl`;
 
