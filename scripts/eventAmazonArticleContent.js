@@ -186,5 +186,5 @@ export const eventAmazonArticleAffiliateLinks = [
 ];
 
 // 記事末尾に追加する固定ハッシュタグ
-export const eventAmazonArticleFooterHashtags = `#Amazonブラックフライデー（アフターセール） #ブラックフライデー（アフターセール）セール #アマゾンセール #ブラックフライデー（アフターセール） #お得情報 #セール情報 #お買い物 #おすすめ商品 #Amazon #アマゾン #セール #特価 #お買い得 #商品レビュー #おすすめ`;
+export const eventAmazonArticleFooterHashtags = `#Amazonブラックフライデー #アマゾンセール #お得情報 #セール情報 #お買い物 #おすすめ商品 #Amazon #アマゾン #セール #特価 #お買い得 #商品レビュー #おすすめ`;
 

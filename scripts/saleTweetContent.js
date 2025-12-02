@@ -7,8 +7,8 @@ const { affiliateTag } = affiliateConfig;
 
 // ツイートメッセージ候補配列（メイン本文）
 export const saleTweetMessages = [
-  'Amazonの注文履歴画面から今年買ったものの中でセールになっているものを買っておくと、お得にストックすることができて節約になります！🉐',
-  'Amazonの注文履歴画面から今年買ったものの中でセールになっているものを買っておくと、お得にストックすることができて節約になります！🉐',
+  '注文履歴から今年買ったものの中でセールになっているものを買っておくと、お得にストックできて節約になります！🉐',
+  '注文履歴から今年買ったものの中でセールになっているものを買っておくと、お得にストックできて節約になります！🉐',
   '1年で一番安くなるのでブラックフライデー（アフターセール）だけは買ってしまう😅\n\nAmazon BFセール開催中！',
   '毎年このセールだけは我慢できずに買い物してしまう...\n\nAmazon BFセール始まりました🎉',
   '普段は我慢してるけど、ブラックフライデー（アフターセール）だけは買っちゃう😊\n\nAmazon BFセール開催中🔥',
@@ -57,8 +57,8 @@ export const saleTweetPrefixVariations = [
 
 // ハッシュタグ配列
 export const saleTweetHashtags = [
-  '#Amazonブラックフライデー（アフターセール）',
-  '#ブラックフライデー（アフターセール）セール',
+  '#Amazonブラックフライデー',
+  // '#ブラックフライデー（アフターセール）セール',
   // '#アマゾンセール',
   // '#ブラックフライデー（アフターセール）',
   // '#お得情報',
@@ -73,12 +73,13 @@ export const saleTweetHashtags = [
 ];
 
 // アフィリエイトリンク配列
-const saleLinkBlackFridayMainUrl = `https://www.amazon.co.jp/blackfriday?&linkCode=ll2&tag=${affiliateTag}&linkId=213b50b8f3333d64c518a3817bcc1088&language=ja_JP&ref_=as_li_ss_tl`;
+const saleLinkBlackFridayMainUrl = `https://www.amazon.co.jp/blackfriday/2?_encoding=UTF8&pd_rd_w=ygD4C&content-id=amzn1.sym.deb8c7e3-e584-4f1c-bef7-5c8a19968d99&pf_rd_p=deb8c7e3-e584-4f1c-bef7-5c8a19968d99&pf_rd_r=YMVCW12K5WDRXTW6S222&pd_rd_wg=8ze3g&pd_rd_r=330bc4a7-b4c0-4fc1-b4cc-993aae48a763&linkCode=ll2&tag=counselor888a-22&linkId=900a586885fe87e28b7abbff879b32eb&language=ja_JP&ref_=as_li_ss_tl`;
 // const saleLink80PercentUrl = `https://www.amazon.co.jp/blackfriday?ref_=nav_cs_td_bf_dt_cr&discounts-widget=%2522%257B%255C%2522state%255C%2522%253A%257B%255C%2522rangeRefinementFilters%255C%2522%253A%257B%255C%2522percentOff%255C%2522%253A%257B%255C%2522min%255C%2522%253A80%252C%255C%2522max%255C%2522%253A100%257D%257D%257D%252C%255C%2522version%255C%2522%253A1%257D%2522&linkCode=ll2&tag=${affiliateTag}&linkId=0f9989f6daa8f074182cafb0dfc61121&language=ja_JP&ref_=as_li_ss_tl`;
 // const saleLink60PercentUrl = `https://www.amazon.co.jp/blackfriday?ref_=nav_cs_td_bf_dt_cr&discounts-widget=%2522%257B%255C%2522state%255C%2522%253A%257B%255C%2522rangeRefinementFilters%255C%2522%253A%257B%255C%2522percentOff%255C%2522%253A%257B%255C%2522min%255C%2522%253A60%252C%255C%2522max%255C%2522%253A100%257D%257D%257D%252C%255C%2522version%255C%2522%253A1%257D%2522&linkCode=ll2&tag=${affiliateTag}&linkId=0f9989f6daa8f074182cafb0dfc61121&language=ja_JP&ref_=as_li_ss_tl`;
 
 export const saleTweetAffiliateLinks = [
-  `💰 🎁 Amazonブラックフライデー（アフターセール）セール会場はこちら⬇️\n${saleLinkBlackFridayMainUrl}`,
+  // `💰 🎁 Amazonブラックフライデー（アフターセール）セール会場はこちら⬇️\n${saleLinkBlackFridayMainUrl}`,
+  `💰 🎁 Amazonブラックフライデー セール会場はこちら⬇️\n${saleLinkBlackFridayMainUrl}`,
   // `💰 🎁 割引率80%以上の商品一覧\n${saleLink80PercentUrl}`,
   // `💰 🎁 割引率60%以上の商品一覧\n${saleLink60PercentUrl}`,
 ];
