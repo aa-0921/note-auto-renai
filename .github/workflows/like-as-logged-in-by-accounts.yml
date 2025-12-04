@@ -1,0 +1,43 @@
+name: Like As Logged In By Accounts
+
+on:
+  schedule:
+    # JST 0:00, 6:00, 12:00, 18:00の1日4回実行（6時間間隔）
+    - cron: '0 15 * * *'   # JST 00:00
+    - cron: '0 21 * * *'   # JST 06:00
+    - cron: '0 3 * * *'    # JST 12:00
+    - cron: '0 9 * * *'    # JST 18:00
+  workflow_dispatch:
+
+jobs:
+  like-as-logged-in:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Checkout note-auto-core
+        uses: actions/checkout@v4
+        with:
+          repository: aa-0921/note-auto-core
+          path: note-auto-core
+          ref: main
+          token: ${{ secrets.CORE_REPO_TOKEN }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - name: Install dependencies
+        run: |
+          cd note-auto-core && npm install
+          cd ..
+          npm install ./note-auto-core
+
+      - name: Run scripts/likeAsLoggedInByAccounts.js
+        env:
+          NOTE_EMAIL: ${{ secrets.NOTE_EMAIL }}
+          NOTE_PASSWORD: ${{ secrets.NOTE_PASSWORD }}
+        run: node scripts/likeAsLoggedInByAccounts.js
+
