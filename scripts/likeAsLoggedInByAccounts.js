@@ -2,8 +2,9 @@
 // 日本語コメント: renaiリポジトリ側から、note-auto-core の「ログイン済みスキ処理」を呼び出すスクリプト
 
 import dotenv from 'dotenv';
-// 日本語コメント: ローカルの note-auto-core を相対パスで参照
-import { runWithCore } from '../../note-auto-core/src/index.js';
+// 日本語コメント: note-auto-core をパッケージ名でインポート（CI環境でも動作）
+// ローカル開発環境では file:../note-auto-core が解決され、CI環境ではnpmパッケージが解決される
+import { runWithCore } from '@aa-0921/note-auto-core';
 
 // 日本語コメント: renai側の .env から NOTE_EMAIL / NOTE_PASSWORD などを読み込む
 dotenv.config();
