@@ -13,4 +13,3 @@ import { runWithCore } from '@aa-0921/note-auto-core';
     console.log('フォロー解除処理が完了しました');
   });
 })();
-
