@@ -1,18 +1,18 @@
 name: Auto Post Event Amazon Article
 
 on:
-  schedule:
-    # 朝6時から深夜2時までに9回投稿
-    # JST = UTC + 9時間
-    - cron: '0 21 * * *'   # 6:00 JST
-    - cron: '30 23 * * *'  # 8:30 JST
-    - cron: '0 2 * * *'    # 11:00 JST
-    - cron: '30 4 * * *'   # 13:30 JST
-    - cron: '0 7 * * *'    # 16:00 JST
-    - cron: '30 9 * * *'   # 18:30 JST
-    - cron: '0 12 * * *'   # 21:00 JST
-    - cron: '30 14 * * *'  # 23:30 JST
-    - cron: '0 16 * * *'   # 1:00 JST (翌日)
+  # schedule:
+  #   # 朝6時から深夜2時までに9回投稿
+  #   # JST = UTC + 9時間
+  #   - cron: '0 21 * * *'   # 6:00 JST
+  #   - cron: '30 23 * * *'  # 8:30 JST
+  #   - cron: '0 2 * * *'    # 11:00 JST
+  #   - cron: '30 4 * * *'   # 13:30 JST
+  #   - cron: '0 7 * * *'    # 16:00 JST
+  #   - cron: '30 9 * * *'   # 18:30 JST
+  #   - cron: '0 12 * * *'   # 21:00 JST
+  #   - cron: '30 14 * * *'  # 23:30 JST
+  #   - cron: '0 16 * * *'   # 1:00 JST (翌日)
   workflow_dispatch:
 
 jobs:

@@ -1,20 +1,20 @@
 name: Auto Create Sale Product Note
 
 on:
-  schedule:
-    # 6時から深夜2時（翌日）までの間に11回投稿（2時間間隔）
-    # 日本時間（JST）はUTC+9なので、UTC時間で設定
-    - cron: '0 21 * * *'   # 6時 JST = 21:00 UTC（前日）
-    - cron: '0 23 * * *'   # 8時 JST = 23:00 UTC（前日）
-    - cron: '0 1 * * *'    # 10時 JST = 01:00 UTC（当日）
-    - cron: '0 3 * * *'    # 12時 JST = 03:00 UTC（当日）
-    - cron: '0 5 * * *'    # 14時 JST = 05:00 UTC（当日）
-    - cron: '0 7 * * *'    # 16時 JST = 07:00 UTC（当日）
-    - cron: '0 9 * * *'    # 18時 JST = 09:00 UTC（当日）
-    - cron: '0 11 * * *'   # 20時 JST = 11:00 UTC（当日）
-    - cron: '0 13 * * *'   # 22時 JST = 13:00 UTC（当日）
-    - cron: '0 15 * * *'   # 0時 JST（翌日）= 15:00 UTC（当日）
-    - cron: '0 17 * * *'   # 2時 JST（翌日）= 17:00 UTC（当日）
+  # schedule:
+  #   # 6時から深夜2時（翌日）までの間に11回投稿（2時間間隔）
+  #   # 日本時間（JST）はUTC+9なので、UTC時間で設定
+  #   - cron: '0 21 * * *'   # 6時 JST = 21:00 UTC（前日）
+  #   - cron: '0 23 * * *'   # 8時 JST = 23:00 UTC（前日）
+  #   - cron: '0 1 * * *'    # 10時 JST = 01:00 UTC（当日）
+  #   - cron: '0 3 * * *'    # 12時 JST = 03:00 UTC（当日）
+  #   - cron: '0 5 * * *'    # 14時 JST = 05:00 UTC（当日）
+  #   - cron: '0 7 * * *'    # 16時 JST = 07:00 UTC（当日）
+  #   - cron: '0 9 * * *'    # 18時 JST = 09:00 UTC（当日）
+  #   - cron: '0 11 * * *'   # 20時 JST = 11:00 UTC（当日）
+  #   - cron: '0 13 * * *'   # 22時 JST = 13:00 UTC（当日）
+  #   - cron: '0 15 * * *'   # 0時 JST（翌日）= 15:00 UTC（当日）
+  #   - cron: '0 17 * * *'   # 2時 JST（翌日）= 17:00 UTC（当日）
   workflow_dispatch:
     inputs:
       sale_name:
