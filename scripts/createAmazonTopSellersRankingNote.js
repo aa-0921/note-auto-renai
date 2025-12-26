@@ -8,10 +8,10 @@ import { amazonTopSellersRankingLinks } from './affiliateConfig.js';
   await runWithCore(async ({ core, wantsBackground }) => {
     // タイトル候補からランダムに選択
     const titleCandidates = [
-      '✨ Amazon売れ筋ランキング　カテゴリ別リンクまとめ',
-      '💕 Amazon売れ筋ランキング　人気商品をサクッとチェック',
-      '🉐 Amazon売れ筋ランキング　失敗しない商品選び',
-      '💡 Amazon売れ筋ランキング　人気商品で時短リサーチ',
+      '✨ Amazon売れ筋ランキング　カテゴリ別リンクまとめ | Amazon | ランキング | おすすめ | お得 | 買ってよかった | フォロバ100 | フォロバ',
+      '💕 Amazon売れ筋ランキング　人気商品をサクッとチェック | Amazon | ランキング | おすすめ | お得 | 買ってよかった | フォロバ100 | フォロバ',
+      '🉐 Amazon売れ筋ランキング　失敗しない商品選び | Amazon | ランキング | おすすめ | お得 | 買ってよかった | フォロバ100 | フォロバ',
+      '💡 Amazon売れ筋ランキング　人気商品で時短リサーチ | Amazon | ランキング | おすすめ | お得 | 買ってよかった | フォロバ100 | フォロバ',
     ];
     const title =
       titleCandidates[Math.floor(Math.random() * titleCandidates.length)];

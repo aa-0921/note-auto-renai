@@ -9,10 +9,10 @@ import { amazonWishlistRankingLinks } from './affiliateConfig.js';
   await runWithCore(async ({ core, wantsBackground }) => {
     // タイトル候補からランダムに選択（ほしい物ランキング版）
     const titleCandidates = [
-      '💝 Amazonほしい物ランキング　カテゴリ別リンクまとめ',
-      '🎁 Amazonほしい物ランキング　保存して賢くお買い物',
-      '📝 Amazonほしい物ランキング　気になる商品を比較・管理',
-      '✨ Amazonほしい物ランキング　ギフト選びの近道',
+      '💝 Amazonほしい物ランキング　カテゴリ別リンクまとめ | Amazon | ランキング | おすすめ | お得 | 買ってよかった | フォロバ100 | フォロバ',
+      '🎁 Amazonほしい物ランキング　保存して賢くお買い物 | Amazon | ランキング | おすすめ | お得 | 買ってよかった | フォロバ100 | フォロバ',
+      '📝 Amazonほしい物ランキング　気になる商品を比較・管理 | Amazon | ランキング | おすすめ | お得 | 買ってよかった | フォロバ100 | フォロバ',
+      '✨ Amazonほしい物ランキング　ギフト選びの近道 | Amazon | ランキング | おすすめ | お得 | 買ってよかった | フォロバ100 | フォロバ',
     ];
     const title = titleCandidates[Math.floor(Math.random() * titleCandidates.length)];
 

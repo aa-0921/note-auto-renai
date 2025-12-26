@@ -7,7 +7,7 @@ import { affiliateLinks, affiliateConfig } from './affiliateConfig.js';
 (async () => {
   await runWithCore(async ({ core, wantsBackground }) => {
     // リポジトリ固有の設定
-    const title = '🛍️💖 買ってよかったおすすめ商品まとめ';
+    const title = '🛍️💖 買ってよかったおすすめ商品まとめ | Amazon | おすすめ | 買ってよかった | お得 | フォロバ100 | フォロバ';
 
     // 導入文
     const intro = [
