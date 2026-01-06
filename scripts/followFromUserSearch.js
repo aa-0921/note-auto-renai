@@ -22,7 +22,7 @@ import { runWithCore } from '@aa-0921/note-auto-core';
 
     await core.runFollowFromUserSearch({
       background: wantsBackground,
-      maxFollows: 15,
+      maxFollows: 30,
       // コア側で options.searchWords を優先使用
       searchWords,
     });
