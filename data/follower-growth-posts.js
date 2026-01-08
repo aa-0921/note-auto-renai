@@ -44,6 +44,13 @@
 
 export const posts = [
   {
+    title: '癒やしをどうぞ',
+    text: ``,
+    // image: 'images/follower-growth/anua-serum.jpg'
+    movie: 'movies/follower-growth/02176783176286200000000000000000000ffffac14ab68a5507c.mp4'
+  },
+  // ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+  {
     title: 'Anua全シリーズ本音レビュー',
     text: `🎀使い切って分かった指名買いリスト！
 
@@ -51,8 +58,7 @@ export const posts = [
 
 肌悩み別に選べばハズさないよ🎀`,
     image: 'images/follower-growth/anua-serum.jpg'
-  }
-  ,
+  },
   {
     title: 'Anua｜PDRNヒアルロン酸カプセル100セラム本音レビュー',
     text: `🎀内側しっとり、外側さらり。PDRN×ヒアルロン酸で一日中つっぱらないよ。
