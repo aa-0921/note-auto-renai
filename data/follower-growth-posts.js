@@ -55,6 +55,24 @@ export const posts = [
     // image: 'images/follower-growth/anua-serum.jpg'
     movie: 'movies/follower-growth/02176783176286200000000000000000000ffffac14ab68a5507c.mp4'
   },
+  {
+    title: '',
+    text: `#sora2 #sora #癒やし #動画`,
+    // image: 'images/follower-growth/anua-serum.jpg'
+    movie: 'movies/follower-growth/20260108_1126_01kedprtn9evjten208e9gr7yt.mp4'
+  },
+  {
+    title: '',
+    text: `#sora2 #sora #癒やし #動画`,
+    // image: 'images/follower-growth/anua-serum.jpg'
+    movie: 'movies/follower-growth/20260108_1154_01kedqb9cjft4scckd4ygtgg0t.mp4'
+  },
+  {
+    title: '',
+    text: `#sora2 #sora #癒やし #動画`,
+    // image: 'images/follower-growth/anua-serum.jpg'
+    movie: 'movies/follower-growth/20260108_1249_01kedtazcae1w902j5p13dbzcs.mp4'
+  },
   // ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
   {
     title: 'Anua全シリーズ本音レビュー',
