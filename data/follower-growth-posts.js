@@ -44,6 +44,12 @@
 
 export const posts = [
   {
+    title: '最後の表情が・・・・・・',
+    text: ``,
+    // image: 'images/follower-growth/anua-serum.jpg'
+    movie: 'movies/follower-growth/20260108_0954_01kedhe1p7frvs62a53k30my92.mp4'
+  },
+  {
     title: '癒やしをどうぞ',
     text: ``,
     // image: 'images/follower-growth/anua-serum.jpg'
