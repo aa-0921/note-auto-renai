@@ -45,13 +45,13 @@
 export const posts = [
   {
     title: '最後の表情が・・・・・・',
-    text: ``,
+    text: `#sora2 #sora #癒やし 動画`,
     // image: 'images/follower-growth/anua-serum.jpg'
     movie: 'movies/follower-growth/20260108_0954_01kedhe1p7frvs62a53k30my92.mp4'
   },
   {
     title: '癒やしをどうぞ',
-    text: ``,
+    text: `#sora2 #sora #癒やし 動画`,
     // image: 'images/follower-growth/anua-serum.jpg'
     movie: 'movies/follower-growth/02176783176286200000000000000000000ffffac14ab68a5507c.mp4'
   },
