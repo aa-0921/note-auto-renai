@@ -32,8 +32,10 @@ jobs:
           cd ..
           # ローカルパッケージを直接参照してインストール
           npm install ./note-auto-core
+      - name: 環境変数を設定
+        run: |
+          echo "OPENROUTER_API_KEY=${{ secrets.OPENROUTER_API_KEY }}" >> $GITHUB_ENV
+          echo "NOTE_EMAIL=${{ secrets.NOTE_EMAIL }}" >> $GITHUB_ENV
+          echo "NOTE_PASSWORD=${{ secrets.NOTE_PASSWORD }}" >> $GITHUB_ENV
       - name: Run commentOnArticleSearch.js
-        env:
-          NOTE_EMAIL: ${{ secrets.NOTE_EMAIL }}
-          NOTE_PASSWORD: ${{ secrets.NOTE_PASSWORD }}
         run: node scripts/commentOnArticleSearch.js
