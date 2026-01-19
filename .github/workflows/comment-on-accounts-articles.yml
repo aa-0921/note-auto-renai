@@ -1,14 +1,14 @@
-name: Comment On Article Search
+name: Comment On Accounts Articles
 
 on:
   schedule:
-    # 1日12回、2時間ごとに実行（JST 0:00, 2:00, 4:00, ..., 22:00）
+    # 1日2回実行（JST 9:00 と 21:00）
     # JST = UTC + 9時間
-    - cron: '0 0,2,4,6,8,10,12,14,16,18,20,22 * * *'  # JST 0:00, 2:00, 4:00, ..., 22:00（UTC 0:00, 2:00, 4:00, ..., 22:00）
+    - cron: '0 0,12 * * *'  # UTC 0:00（JST 9:00）と UTC 12:00（JST 21:00）
   workflow_dispatch:
 
 jobs:
-  comment-on-article-search:
+  comment-on-accounts-articles:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -37,5 +37,5 @@ jobs:
           echo "OPENROUTER_API_KEY=${{ secrets.OPENROUTER_API_KEY }}" >> $GITHUB_ENV
           echo "NOTE_EMAIL=${{ secrets.NOTE_EMAIL }}" >> $GITHUB_ENV
           echo "NOTE_PASSWORD=${{ secrets.NOTE_PASSWORD }}" >> $GITHUB_ENV
-      - name: Run commentOnArticleSearch.js
-        run: node scripts/commentOnArticleSearch.js
+      - name: Run commentOnAccountsArticles.js
+        run: node scripts/commentOnAccountsArticles.js
