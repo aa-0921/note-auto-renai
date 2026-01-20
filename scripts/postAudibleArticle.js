@@ -26,6 +26,9 @@ async function main() {
   logger.info(`タイトル候補数: ${audibleArticleTitles.length}`);
   logger.info('');
 
+  // 記事の最初と最後に追加するコメント募集テキスト
+  const commentRequestText = 'コメントを頂けますと大変励みになります✨ ご意見等どういった内容でもお待ちしておりますので気軽にコメントいただければと思います🌸💖';
+
   await runWithCore(async ({ core }) => {
     await postAudibleArticle({
       core,
@@ -36,6 +39,7 @@ async function main() {
       selectCount,
       thumbnailDir: 'thumbnails/audible',
       affiliateTag: affiliateConfig.affiliateTag,
+      commentRequestText,
       dryrun,
       logger,
     });

@@ -264,11 +264,15 @@ export { affiliateConfig, affiliateLinks };
       'https://note.com/counselor_risa/n/na8e2a969b19f', // TODO: リポジトリ用にnoteアカウント名を変更してください
     ];
 
+    // 記事の最初と最後に追加するコメント募集テキスト
+    const commentRequestText = '💕コメントを頂けますと大変励みになります✨ 扱う記事の題材やテーマも募集しておりますので、ご意見等どういった内容でもお待ちしておりますので気軽にコメントいただければと思います🌸💖';
+
     // 記事の自動生成と下書き保存機能を実行
     await core.runAutoCreateAndDraftNote({
       background: wantsBackground,
       topics,
       patterns,
+      commentRequestText,
       systemMessage,
       articleConditionsLines,
       rewriteConditionsLines,
