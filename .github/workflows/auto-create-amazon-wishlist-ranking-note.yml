@@ -1,11 +1,11 @@
 name: Auto Create Amazon Wishlist Ranking Note
 
 on:
-  # schedule:
-  # # 月水金の17時（JST）に実行 = UTC 8:00（一時的に週2回に変更）
-  # - cron: '0 8 * * 1'   # 月曜日 JST 17:00
-  # - cron: '0 8 * * 3'   # 水曜日 JST 17:00（一時的にコメントアウト）
-  # - cron: '0 8 * * 5'   # 金曜日 JST 17:00
+  schedule:
+  # 月水金の17時（JST）に実行 = UTC 8:00（一時的に週2回に変更）
+  - cron: '0 8 * * 1'   # 月曜日 JST 17:00
+  - cron: '0 8 * * 3'   # 水曜日 JST 17:00（一時的にコメントアウト）
+  - cron: '0 8 * * 5'   # 金曜日 JST 17:00
   workflow_dispatch:
 
 jobs:
