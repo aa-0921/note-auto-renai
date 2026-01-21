@@ -2,15 +2,15 @@ name: followFromUserSearch
 
 on:
   # フォロー制限予想 １回につき１５回で、１日のフォロー制限は１００人
-  schedule:
-    - cron: '0 0 * * *' # 毎日9:00(JST)
-    - cron: '0 3 * * *' # 毎日12:00(JST)
-    - cron: '0 6 * * *' # 毎日15:00(JST)
-    - cron: '0 9 * * *' # 毎日18:00(JST)
-    - cron: '0 12 * * *' # 毎日21:00(JST)
-    - cron: '0 15 * * *' # 毎日0:00(JST)
-    - cron: '0 18 * * *' # 毎日3:00(JST)
-    - cron: '0 21 * * *' # 毎日6:00(JST)
+  # schedule:
+  #   - cron: '0 0 * * *' # 毎日9:00(JST)
+  #   - cron: '0 3 * * *' # 毎日12:00(JST)
+  #   - cron: '0 6 * * *' # 毎日15:00(JST)
+  #   - cron: '0 9 * * *' # 毎日18:00(JST)
+  #   - cron: '0 12 * * *' # 毎日21:00(JST)
+  #   - cron: '0 15 * * *' # 毎日0:00(JST)
+  #   - cron: '0 18 * * *' # 毎日3:00(JST)
+  #   - cron: '0 21 * * *' # 毎日6:00(JST)
   workflow_dispatch:
 
 jobs:

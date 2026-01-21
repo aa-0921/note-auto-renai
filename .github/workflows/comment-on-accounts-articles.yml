@@ -1,10 +1,10 @@
 name: Comment On Accounts Articles
 
 on:
-  schedule:
-    # 1日2回実行（JST 9:00 と 21:00）
-    # JST = UTC + 9時間
-    - cron: '0 0,12 * * *'  # UTC 0:00（JST 9:00）と UTC 12:00（JST 21:00）
+  # schedule:
+  #   # 1日2回実行（JST 9:00 と 21:00）
+  #   # JST = UTC + 9時間
+  #   - cron: '0 0,12 * * *'  # UTC 0:00（JST 9:00）と UTC 12:00（JST 21:00）
   workflow_dispatch:
 
 jobs:
