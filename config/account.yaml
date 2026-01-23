@@ -104,7 +104,11 @@ ai:
   # または全機能共通のフォールバックモデル
   # fallback_model: 'nvidia/nemotron-nano-9b-v2:free'
   # No endpoints found for google/gemini-2.5-pro-exp-03-25 になりがち
-  fallback_model: 'google/gemini-2.5-pro-exp-03-25'
+
+  # なくなった？ 2026/01/21
+  # fallback_model: 'google/gemini-2.5-pro-exp-03-25'
+  fallback_model: 'meta-llama/llama-3.3-70b-instruct:free'
+
     # ---------------------------------------------------------
   # ーーcore側の実装参考ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
   # 各機能用のモデル設定（個別指定可能）
