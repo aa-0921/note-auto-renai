@@ -1,6 +1,6 @@
 # note-auto-hakushikisan
 
-何でも知ってる博識さん系note自動化スクリプト
+🏅恋愛・人間関係カウンセラーRisa🏅系note自動化スクリプト
 
 ## 📝 概要
 
