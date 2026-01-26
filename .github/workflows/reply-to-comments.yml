@@ -5,7 +5,7 @@ on:
     # 1日1回、12時に実行（JST 12:00）
     # JST = UTC + 9時間
     - cron: '0 3 * * *'  # JST 12:00（UTC 3:00）
-  workflow_dispatch:
+  workflow_dispatch:  # 手動実行も可能
 
 jobs:
   reply-to-comments:
