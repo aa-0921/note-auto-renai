@@ -28,8 +28,24 @@ import { runWithCore } from '@aa-0921/note-auto-core';
     // const maxComments = 5;  // 例: 5
     const maxComments = 5;  // 例: 5
 
+    // コメントの最初に入れるフレーズ配列（ランダムで1つ選択されます）
+    const commentOpeningPhrases = [
+      '読ませていただきました💕',
+      '素敵な記事をありがとうございます💜',
+      '面白かったです✨',
+      '参考になりました💖',
+      '大変勉強になりました💕',
+      'おもしろいですね！✨',
+      'お気持ち、よくわかります💜',
+      '興味深く拝読しました💕',
+      'おもしろい内容でした✨',
+    ];
+
+    // ランダムで1つのフレーズを選択
+    const selectedOpeningPhrase = commentOpeningPhrases[Math.floor(Math.random() * commentOpeningPhrases.length)];
+
     // コメントの先頭/末尾に付ける固定文（必要に応じてここを編集してください）
-    const commentPrefix = 'コメント失礼します💕フォロー・スキもさせていただきました💜';
+    const commentPrefix = `${selectedOpeningPhrase} コメント失礼します💕フォロー・スキもさせていただきました💜`;
     const commentSuffix =
       'もしよろしければなのですが、私の記事にもコメント・フォロー・スキいただけますと大変励みになりますー🙇‍♂️';
     
