@@ -9,6 +9,51 @@ import { runWithCore } from '@aa-0921/note-auto-core';
     // ここをカスタマイズしてください
     // ======================================
     
+    // コメントへの返信の最初に入れるフレーズ配列（ランダムで1つ選択されます）
+    const commentOpeningPhrases = [
+      'コメント感謝です💕',
+      'ありがとうございます！💜',
+      'コメント嬉しいです✨',
+      'コメントをありがとうございます💖',
+      'ご丁寧にコメントありがとうございます💕',
+      '温かいコメントありがとうございます💜',
+      'コメント、本当にありがとうございます✨',
+      'コメントいただき、ありがとうございます💖',
+      'コメントありがとうございます、励みになります💕',
+      'コメントいただき、感謝しています💜',
+      'コメントいただき、感謝です！💜',
+    ];
+
+    // ランダムで1つのフレーズを選択
+    const selectedOpeningPhrase = commentOpeningPhrases[Math.floor(Math.random() * commentOpeningPhrases.length)];
+
+    // コメントの最後に入れる前置きフレーズ配列（ランダムで1つ選択されます）
+    const commentSuffixOpeningPhrases = [
+      '💕もしよろしければ',
+      '💜よろしければ',
+      '✨もし差し支えなければ',
+      '💖差し支えなければ',
+      '💕もし可能でしたら',
+      '💜もしお時間があれば',
+      '✨もし良かったら',
+      '💖良かったら',
+      '💕もしお願いできれば',
+      '💜もしご都合がよろしければ',
+      '✨もしお気が向いたら',
+      '💖もしお暇があれば',
+      '💕お時間が許せば',
+      '💜もしお願いできましたら',
+      '✨お願いできましたら',
+    ];
+
+    // ランダムで1つの前置きフレーズを選択
+    const selectedSuffixOpeningPhrase = commentSuffixOpeningPhrases[Math.floor(Math.random() * commentSuffixOpeningPhrases.length)];
+
+    // 返信の先頭/末尾に付ける固定文（必要に応じてここを編集してください）
+    const commentPrefix = selectedOpeningPhrase;
+    const commentSuffix =
+      `${selectedSuffixOpeningPhrase}、私の他の記事にもコメント、あとフォロー・スキいただけますと大変励みになりますー🙇‍♂️`;
+
     // ベースプロンプトに追加するプロンプト（オプション）
     // 例：アカウントごとの口調（男性・女性など）を指定
     const additionalPrompt = `一般的な大人の女性の口調で書いてください。
@@ -31,6 +76,9 @@ import { runWithCore } from '@aa-0921/note-auto-core';
     const options = {
       additionalPrompt: additionalPrompt,
       additionalSystemMessage: additionalSystemMessage,
+      // AI生成本文の前後に固定文を付与（core側で付与）
+      commentPrefix: commentPrefix,
+      commentSuffix: commentSuffix
     };
     
     // コメント返信を実行
