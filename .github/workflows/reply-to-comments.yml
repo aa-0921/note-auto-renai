@@ -2,9 +2,12 @@ name: Reply To Comments
 
 on:
   schedule:
-    # 1日1回、12時に実行（JST 12:00）
+    # 1日4回、6時間ごとに実行（JST 6:00, 12:00, 18:00, 24:00）
     # JST = UTC + 9時間
-    - cron: '0 3 * * *'  # JST 12:00（UTC 3:00）
+    - cron: '0 21 * * *'  # JST 06:00（UTC 21:00）
+    - cron: '0 3 * * *'   # JST 12:00（UTC 3:00）
+    - cron: '0 9 * * *'   # JST 18:00（UTC 9:00）
+    - cron: '0 15 * * *'  # JST 24:00（UTC 15:00）
   workflow_dispatch:  # 手動実行も可能
 
 jobs:
