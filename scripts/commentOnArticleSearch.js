@@ -44,10 +44,32 @@ import { runWithCore } from '@aa-0921/note-auto-core';
     // ランダムで1つのフレーズを選択
     const selectedOpeningPhrase = commentOpeningPhrases[Math.floor(Math.random() * commentOpeningPhrases.length)];
 
+    // コメントの最後に入れる前置きフレーズ配列（ランダムで1つ選択されます）
+    const commentSuffixOpeningPhrases = [
+      '💕もしよろしければ',
+      '💜よろしければ',
+      '✨もし差し支えなければ',
+      '💖差し支えなければ',
+      '💕もし可能でしたら',
+      '💜もしお時間があれば',
+      '✨もし良かったら',
+      '💖良かったら',
+      '💕もしお願いできれば',
+      '💜もしご都合がよろしければ',
+      '✨もしお気が向いたら',
+      '💖もしお暇があれば',
+      '💕お時間が許せば',
+      '💜もしお願いできましたら',
+      '✨お願いできましたら',
+    ];
+
+    // ランダムで1つの前置きフレーズを選択
+    const selectedSuffixOpeningPhrase = commentSuffixOpeningPhrases[Math.floor(Math.random() * commentSuffixOpeningPhrases.length)];
+
     // コメントの先頭/末尾に付ける固定文（必要に応じてここを編集してください）
     const commentPrefix = `${selectedOpeningPhrase} コメント失礼します💕フォロー・スキもさせていただきました💜`;
     const commentSuffix =
-      'もしよろしければなのですが、私の記事にもコメント・フォロー・スキいただけますと大変励みになりますー🙇‍♂️';
+      `${selectedSuffixOpeningPhrase}、私の記事にもコメント・フォロー・スキいただけますと大変励みになりますー🙇‍♂️`;
     
     // コメント生成用のプロンプト（オプション、指定しない場合はデフォルトを使用）
     // プロンプト内で以下の変数を使用可能: {{title}}, {{headings}}, {{articleText}}
